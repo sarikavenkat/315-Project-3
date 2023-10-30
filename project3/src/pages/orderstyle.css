@@ -1,0 +1,43 @@
+  /* orderstyle.css */
+.categories{
+    align-items: left;
+    color: #000000;
+  }
+
+.item-boxes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .item-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    width: calc(33.33% - 20px); 
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .quantity-container {
+    display: inline-flex;
+    align-items: center;
+    text-align: center;
+  }
+
+  .centered-text {
+    margin: 0; /* Remove default margin */
+    text-align: center;
+    margin-right: 10px; /* Add spacing for separation from input */
+  }
+
+  .item-name,
+  .item-price,
+  .add-button-container {
+    margin: 10px; /* Adjust the margin to achieve equal spacing */
+  }
+
+  
+  input[type="number"] {
+    width: 40px; 
+  }

@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
-import Home from './pages/Home'
+import Home from './pages/Home';
+import Order from './pages/Order';
 
 import './style.css'; 
 // import App from "./app";
@@ -11,7 +12,7 @@ import './style.css';
 
 // Make these individual js/jsx files in the pages folder. Then put them into the index file like I did with home.
 const Menu = () => <div>Menu</div>;
-const Order = () => <div>Order</div>;
+//const Order = () => <div>Order</div>;
 const Login = () => <div>Login</div>;
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
           <ul className="nav-links">
             <li><Link to="/">Home</Link></li>
             <li><Link to="/menu">Menu</Link></li>
-            <li><Link to="/order">Order</Link></li>
+            <li><Link to="/Order">Order</Link></li>
             <li><Link to="/login">Login</Link></li>
           </ul>
         </nav>
