@@ -11,6 +11,29 @@ const Order = () => {
     { name: 'Item 6', price: 11.99 },
   ];
 
+  const drinkItems = [
+    { name: 'Drink Item 1', price: 2.99 },
+    { name: 'Drink Item 2', price: 3.49 },
+    { name: 'Drink Item 3', price: 1.99 },
+    { name: 'Drink Item 4', price: 2.49 },
+    { name: 'Drink Item 5', price: 3.99 },
+    { name: 'Drink Item 6', price: 4.99 },
+  ];
+
+  const nonFoodItems = [
+    { name: 'Non-Food Item 1', price: 5.99 },
+    { name: 'Non-Food Item 2', price: 7.49 },
+    { name: 'Non-Food Item 3', price: 6.99 },
+    { name: 'Non-Food Item 4', price: 8.49 },
+    { name: 'Non-Food Item 5', price: 4.99 },
+    { name: 'Non-Food Item 6', price: 5.49 },
+  ];
+
+  const seasonalItems = [
+    { name: 'Seasonal Item 1', price: 15.99 },
+    { name: 'Seasonal Item 2', price: 18.49 },
+  ];
+
   const [itemQuantities, setItemQuantities] = useState(foodItems.map(() => 0));
   const [customerName, setCustomerName] = useState('');
   const [cart, setCart] = useState([]);
@@ -55,13 +78,10 @@ const Order = () => {
     if (customerName.trim() === '') {
         alert('Please enter your name before submitting the order.');
     } else {
-        // Clear the shopping cart and the customer name
         setCart([]);
         setCustomerName('');
         // Add your logic to send the cart data to the database here
     }
-
-      // Add logic to send cart data to database 
   };
 
   return (
@@ -86,8 +106,9 @@ const Order = () => {
           <p>Total Price: ${calculateTotalPrice().toFixed(2)}</p>
           <button onClick={handleSubmitOrder}>Submit Order</button>
         </div>
-      </div>
-        <h1 className='categories'>Food</h1>
+    </div>
+    <div className="categories">
+        <h1 className='category-title'>Food</h1>
         <div className="item-boxes">
           {foodItems.map((item, index) => (
             <div key={index} className="item-box">
@@ -108,9 +129,76 @@ const Order = () => {
             </div>
           ))}
         </div>
-        <h1 className='categories'>Drinks</h1>
-        <h1 className='categories'>Non-Food</h1>
-        <h1 className='categories'>Seasonal Items</h1>
+    </div>
+    <div className="categories">
+        <h1 className='category-title'>Drinks</h1>
+        <div className="item-boxes">
+          {drinkItems.map((item, index) => (
+            <div key={index} className="item-box">
+              <h2>{item.name}</h2>
+              <p>Price: ${item.price.toFixed(2)}</p>
+              <div className="quantity-container">
+                <div className="centered-text">Quantity:</div>
+                <input
+                  type="number"
+                  value={itemQuantities[index]}
+                  onChange={(e) => handleQuantityChange(index, e.target.value)}
+                  min="0"
+                />
+              </div>
+              <div className="add-button-container">
+                <button onClick={() => handleAddToCart(index)}>Add Item to Cart</button>
+              </div>
+            </div>
+          ))}
+        </div>
+    </div>
+    <div className="categories">
+        <h1 className='category-title'>Non-Food</h1>
+        <div className="item-boxes">
+          {nonFoodItems.map((item, index) => (
+            <div key={index} className="item-box">
+              <h2>{item.name}</h2>
+              <p>Price: ${item.price.toFixed(2)}</p>
+              <div className="quantity-container">
+                <div className="centered-text">Quantity:</div>
+                <input
+                  type="number"
+                  value={itemQuantities[index]}
+                  onChange={(e) => handleQuantityChange(index, e.target.value)}
+                  min="0"
+                />
+              </div>
+              <div className="add-button-container">
+                <button onClick={() => handleAddToCart(index)}>Add Item to Cart</button>
+              </div>
+            </div>
+          ))}
+        </div>
+    </div>
+    <div className="categories">
+        <h1 className='category-title'>Seasonal Items</h1>
+        <div className="item-boxes">
+          {seasonalItems.map((item, index) => (
+            <div key={index} className="item-box">
+              <h2>{item.name}</h2>
+              <p>Price: ${item.price.toFixed(2)}</p>
+              <div className="quantity-container">
+                <div className="centered-text">Quantity:</div>
+                <input
+                  type="number"
+                  value={itemQuantities[index]}
+                  onChange={(e) => handleQuantityChange(index, e.target.value)}
+                  min="0"
+                />
+              </div>
+              <div className="add-button-container">
+                <button onClick={() => handleAddToCart(index)}>Add Item to Cart</button>
+              </div>
+            </div>
+          ))}
+        </div>
+    </div>
     </div>
   );
 };
