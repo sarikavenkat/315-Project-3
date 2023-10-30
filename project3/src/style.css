@@ -45,3 +45,17 @@
   padding: 20px;
   text-align: center;
 }
+
+.image {
+  width: 375px; 
+  height: auto; 
+  margin: 10px; 
+}
+
+.contact-bar {
+  background-color: #feed91; 
+  text-align: center;
+  color: #000000;
+  width: 100%;
+  line-height: 0.4;
+}
