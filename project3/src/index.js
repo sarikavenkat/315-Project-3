@@ -4,7 +4,7 @@ import './style.css';
 
 function App() {
   return (
-    <div>
+    <div className="app-container">
       <div className="store-header">
         <div className="store-name">Sweet Paris Crêperie & Café</div>
       </div>
@@ -17,7 +17,7 @@ function App() {
         </ul>
       </nav>
       <div className="content">
-        {/* Your page content goes here */}
+        {/* page content */}
       </div>
     </div>
   );
