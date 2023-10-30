@@ -1,0 +1,38 @@
+/* style.css */
+.store-header {
+  text-align: center;
+  padding: 20px 0;
+  background-color: #FFD700;
+}
+
+.store-name {
+  font-size: 40px;
+  font-weight: bold;
+  color: #333;
+}
+
+.navbar {
+  background-color: #f6e687; 
+  color: #FFF; 
+}
+
+.nav-links {
+  list-style: none;
+  padding: 0;
+  display: flex;
+}
+
+.nav-links li {
+  margin-right: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #000000; 
+  font-weight: bold;
+}
+
+.content {
+  padding: 20px;
+  text-align: center;
+}
