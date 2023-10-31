@@ -1,0 +1,71 @@
+/* style.css */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.store-header {
+  background-color: #FFD700;
+  width: 100%;
+  padding: 20px 0;
+}
+
+.store-name {
+  font-size: 50px;
+  font-weight: bold;
+  color: #333;
+}
+
+.navbar {
+  background-color: #feed91;
+  color: #FFF;
+  width: 100%
+}
+
+.nav-links {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-links li {
+  margin: 0 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #000000;
+  font-weight: bold;
+}
+
+.content {
+  padding: 20px;
+  text-align: center;
+}
+
+.homepage-images img{
+  width: 375px; 
+  height: auto; 
+  margin: 10px; 
+}
+
+.contact-bar {
+  background-color: #feed91; 
+  text-align: center;
+  color: #000000;
+  width: 100%;
+  line-height: 0.4;
+  padding: 5px;
+}
+
+.about-section {
+  background-color: #ecf3fb; 
+  border: 2px solid #8abdef; 
+  padding: 20px;
+  font-family: Apple Chancery, cursive;
+  font-size: 18px; 
+  color: #333; 
+}
