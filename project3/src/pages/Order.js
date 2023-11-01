@@ -92,6 +92,7 @@ const Order = () => {
         alert('Please enter your name before submitting the order.');
     } else {
         
+        
         // Add your logic to send the cart data to the database here
         let customerIdQueryStart = 'SELECT id FROM customers WHERE name = ';
         let customerIdQuery = customerIdQueryStart.concat(customerName);
