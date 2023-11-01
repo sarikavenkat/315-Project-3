@@ -116,9 +116,30 @@ const Order = () => {
         body: JSON.stringify(cart),
       });
 
+      alert("Your order was submitted!");
       setCart([]);
       setCustomerName("");
     }
+  };
+
+  const handleRemoveFromCart = (index) => {
+    const updatedCart = [...cart];
+  const itemToRemove = updatedCart[index];
+  
+  const itemIndexToRemove = updatedCart.findIndex(
+    (item) => item.name === itemToRemove.name
+  );
+
+  if (itemIndexToRemove !== -1) {
+    if (updatedCart[itemIndexToRemove].quantity > 1) {
+      updatedCart[itemIndexToRemove].quantity -= 1;
+      updatedCart[itemIndexToRemove].totalPrice =
+        updatedCart[itemIndexToRemove].price * updatedCart[itemIndexToRemove].quantity;
+    } else {
+      updatedCart.splice(itemIndexToRemove, 1);
+    }
+    setCart(updatedCart);
+  }
   };
 
   return (
@@ -141,6 +162,7 @@ const Order = () => {
                   {cartItem.price.toFixed(2)}, Total: $
                   {cartItem.totalPrice.toFixed(2)})
                 </span>
+                <button onClick={() => handleRemoveFromCart(index)}>Remove</button>
               </div>
             ))}
           </div>
