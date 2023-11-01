@@ -34,13 +34,17 @@ const Order = () => {
     { name: 'Seasonal Item 2', price: 18.49 },
   ];
 
+  const selectQuery = `
+  SELECT name, price
+  FROM orders;
+`;
   // -----------------------------------------------------------------------------
   const [menuItems, setMenuItems] = useState([]);
 
   useEffect(() => {
     fetchMenuItems();
   }, []);
-
+ 
   const fetchMenuItems = async () => {
     try {
       const response = await fetch('jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315_970_03db:/api/items'); // Make sure this matches your backend route
@@ -55,6 +59,12 @@ const Order = () => {
     } catch (error) {
       console.error('Error fetching menu items', error);
     }
+
+    const jsonOrders = data.map((order) => ({
+      name: order.name,
+      price: order.price,
+    }));
+    console.log(jsonOrders);
   };
   // -----------------------------------------------------------------------------
 
