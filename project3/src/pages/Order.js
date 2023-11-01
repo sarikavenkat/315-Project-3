@@ -1,6 +1,19 @@
 import React, { useState } from 'react';
 import './orderstyle.css';
 
+const express = require('express');
+const{Pool} = require('pg');
+const dotenv = require('dotenv').config();
+
+const pool = new Pool({
+  user: postgres.env.PSQL_USER,
+  host: postgres.env.PSQL_HOST,
+  database: postgres.env.PSQL_DATABASE,
+  password: postgres.env.PSQL_PASSWORD,
+  port: postgres.env.PSQL_PORT,
+  ssl: {rejectUnauthorized: false}
+  });
+
 const Order = () => {
   const foodItems = [
     { name: 'Item 1', price: 10.99 },
