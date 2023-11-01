@@ -87,13 +87,31 @@ const Order = () => {
     return cart.reduce((total, item) => total + item.totalPrice, 0);
   };
 
-  const handleSubmitOrder = () => {
+  const handleSubmitOrder = (req, res) => {
     if (customerName.trim() === '') {
         alert('Please enter your name before submitting the order.');
     } else {
-        setCart([]);
-        setCustomerName('');
+        
         // Add your logic to send the cart data to the database here
+        let customerIdQueryStart = 'SELECT id FROM customers WHERE name = ';
+        let customerIdQuery = customerIdQueryStart.concat(customerName);
+        let currentTime = new Date();
+        let timeString = (currentTime.getMonth()+1) +"/"+currentTime.getDate()+"/"+currentTime.getFullYear()+" "+currentTime.getHours()+currentTime.getMinutes()+currentTime.getSeconds();
+
+        pool
+          .query(customerIdQuery)
+          .then (query_res => {
+            var customerId = query_res_rows[0];
+          });
+          let insertQuery = 'INSERT INTO orders (' + timeString + ', '+customerId + ', '+ price +', '+ calories +')'; 
+        pool
+          .query(insertQuery)
+          .then(query_res => {
+
+          });
+          
+        //setCart([]);
+        //setCustomerName('');
     }
   };
 
