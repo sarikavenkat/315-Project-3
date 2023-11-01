@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './orderstyle.css';
 
 const express = require('express');
@@ -46,6 +46,40 @@ const Order = () => {
     { name: 'Seasonal Item 1', price: 15.99 },
     { name: 'Seasonal Item 2', price: 18.49 },
   ];
+
+  const selectQuery = `
+  SELECT name, price
+  FROM orders;
+`;
+  // -----------------------------------------------------------------------------
+  const [menuItems, setMenuItems] = useState([]);
+
+  useEffect(() => {
+    fetchMenuItems();
+  }, []);
+ 
+  const fetchMenuItems = async () => {
+    try {
+      const response = await fetch('jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315_970_03db:/api/items'); // Make sure this matches your backend route
+      console.log(response)
+      if (response.ok) {
+        const data = await response.json();
+        setMenuItems(data);
+        console.log(menuItems);
+      } else {
+        throw new Error('Failed to fetch menu items');
+      }
+    } catch (error) {
+      console.error('Error fetching menu items', error);
+    }
+
+    const jsonOrders = data.map((order) => ({
+      name: order.name,
+      price: order.price,
+    }));
+    console.log(jsonOrders);
+  };
+  // -----------------------------------------------------------------------------
 
   const [itemQuantities, setItemQuantities] = useState(foodItems.map(() => 0));
   const [customerName, setCustomerName] = useState('');
