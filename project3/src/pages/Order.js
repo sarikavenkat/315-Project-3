@@ -91,9 +91,12 @@ const Order = () => {
     if (customerName.trim() === '') {
         alert('Please enter your name before submitting the order.');
     } else {
-        setCart([]);
-        setCustomerName('');
+        
         // Add your logic to send the cart data to the database here
+        pool
+          .query('INSERT INTO orders (orderdatetime, customerid, price, calories) VALUES (?, ?, ?, ?)');
+        //setCart([]);
+        //setCustomerName('');
     }
   };
 
