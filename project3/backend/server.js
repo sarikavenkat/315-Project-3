@@ -87,6 +87,15 @@ app.post("/api/order", async (req, res) => {
 
     console.log(insertQuery)
     pool.query(insertQuery).then((query_res) => {});
+    pool.query('SELECT order_id FROM orders ORDER BY ID DESC LIMIT 1').then(query_res=>{ let orderId = query_res_rows[0]});
+    for(let i=0; i<cartItems.length;i++){
+      let itemName = cartItems[i].name;
+      let quantity = cartItems[i].quantity;
+      let insertItemQuery = 'INSERT INTO orderitems (order_id, item_name, quantity) VALUES (' +
+      orderId + ', ' + itemName + ', '+ quantity + ')';
+      pool.query(insertItemQuery).then((query_res) => {});
+
+    }
 
     client.release();
   } catch (error) {
