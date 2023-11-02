@@ -1,0 +1,1 @@
+INSERT INTO orderitems (order_id, item_name, quantity) VALUES (x, y, z)
