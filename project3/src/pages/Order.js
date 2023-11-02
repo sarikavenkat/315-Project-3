@@ -91,7 +91,7 @@ const Order = () => {
         const cartItem = {
           name: menuItems[index].name,
           price: menuItems[index].price,
-          quantity,
+          quantity: quantity,
           totalPrice: menuItems[index].price * quantity,
         };
         setCart([...cart, cartItem]);

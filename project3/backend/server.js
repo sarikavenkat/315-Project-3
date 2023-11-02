@@ -75,7 +75,7 @@ app.post("/api/order", async (req, res) => {
     // });
 
     let insertQuery =
-      "INSERT INTO orders (" +
+      "INSERT INTO orders (orderdatetime, customerid, price, calories) values (" +
       timeString +
       ", " +
       0 +
