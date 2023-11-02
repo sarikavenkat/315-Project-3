@@ -1,0 +1,1 @@
+INSERT INTO orders (orderdatetime, customerid, price, calories) VALUES (w, x, y, z)
