@@ -37,6 +37,7 @@ const Menu = () => {
             <div key={index} className="menu-item">
               <h3>{item.name}</h3>
               <p>Price: ${item.price.toFixed(2)}</p>
+              <p>Calories: {item.calories}</p>
             </div>
           ))}
         </div>
@@ -47,6 +48,7 @@ const Menu = () => {
             <div key={index} className="menu-item">
               <h3>{item.name}</h3>
               <p>Price: ${item.price.toFixed(2)}</p>
+              <p>Calories: {item.calories}</p>
             </div>
           ))}
         </div>
@@ -57,6 +59,7 @@ const Menu = () => {
             <div key={index} className="menu-item">
               <h3>{item.name}</h3>
               <p>Price: ${item.price.toFixed(2)}</p>
+              <p>Calories: {item.calories}</p>
             </div>
           ))}
         </div>
@@ -67,6 +70,7 @@ const Menu = () => {
             <div key={index} className="menu-item">
               <h3>{item.name}</h3>
               <p>Price: ${item.price.toFixed(2)}</p>
+              <p>Calories: {item.calories}</p>
             </div>
           ))}
         </div>
