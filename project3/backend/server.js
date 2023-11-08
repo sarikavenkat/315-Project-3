@@ -50,49 +50,14 @@ app.post("/api/order", async (req, res) => {
 
     let currentTime = new Date().toISOString();
 
-
-    // const cartItems = [
-    //   {
-    //     name: "Item 1",
-    //     price: 10.99,
-    //     quantity: 2,
-    //     totalPrice: 21.98,
-    //   },
-    // ];
-
-    // console.log(cartItems);
-    // console.log(req.query.name);
-    
-
-
-    // let customerIdQueryStart = "SELECT id FROM customers WHERE name = '";
-    // let customerIdQuery = customerIdQueryStart.concat(req.query.name + "'");
-    // let timeString =
-    //   currentTime.getMonth() +
-    //   1 +
-    //   "/" +
-    //   currentTime.getDate() +
-    //   "/" +
-    //   currentTime.getFullYear() +
-    //   " " +
-    //   currentTime.getHours() +
-    //   currentTime.getMinutes() +
-    //   currentTime.getSeconds();
-
-
-    // console.log(customerIdQuery)
-
-    // pool.query(customerIdQuery).then((query_res) => {
-    //   var customerId = query_res_rows[0];
-    // });
-
-    let calories = 501;
+    let calories = Math.floor(1000 + Math.random() * 2001);
+    let customerid = Math.floor(10000 + Math.random() * 90000);
 
     let insertQuery =
       "INSERT INTO orders (orderdatetime, customerid, price, calories) values (" +
       currentTime +
       ", " +
-      11111 +
+      customerid +
       ", " +
       totalPrice +
       ", " +
@@ -100,7 +65,7 @@ app.post("/api/order", async (req, res) => {
       ")";
 
       // let query = `INSERT INTO orders (orderdatetime, customerid, price, calories) VALUES ('2023-11-01 11:58:13', 11111, 62.50, 2500);`;
-      let customerid = 11112;
+      // let customerid = 11112;
 
       const query = `INSERT INTO orders (orderdatetime, customerid, price, calories) VALUES ('${currentTime}', ${customerid}, ${totalPrice}, ${calories});`;
 

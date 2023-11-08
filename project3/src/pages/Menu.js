@@ -24,7 +24,7 @@ const Menu = () => {
 
   const foodItems = menuItems.filter((item) => item.food);
   const drinkItems = menuItems.filter((item) => item.drink);
-  const nonFoodItems = menuItems.filter((item) => item.drink == false && item.food == false);
+  const nonFoodItems = menuItems.filter((item) => item.drink === false && item.food === false);
   const seasonalItems = menuItems.filter((item) => item.itemid > 26);
 
   return (
