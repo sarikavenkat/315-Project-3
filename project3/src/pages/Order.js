@@ -108,19 +108,31 @@ const Order = () => {
   };
 
   const handleSubmitOrder = async () => {
+    const test = {
+      "bruh": 1,
+      "okay": 2
+    };
+  
     if (customerName.trim() === "") {
       alert("Please enter your name before submitting the order.");
     } else {
-      await fetch("http://localhost:5000/api/order?name=" + customerName, {
+  
+      await fetch("http://localhost:5000/api/order", {
         method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(cart),
       });
-
+  
+      // console.log(cart);
+  
       alert("Your order was submitted!");
       setCart([]);
       setCustomerName("");
     }
   };
+  
 
   const handleRemoveFromCart = (index) => {
     const updatedCart = [...cart];
