@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import Order from './pages/Order';
+import Menu from './pages/Menu';
 
 import './style.css'; 
 // import App from "./app";
@@ -11,7 +12,7 @@ import './style.css';
 // const Home = () => <div>Home</div>;
 
 // Make these individual js/jsx files in the pages folder. Then put them into the index file like I did with home.
-const Menu = () => <div>Menu</div>;
+//const Menu = () => <div>Menu</div>;
 //const Order = () => <div>Order</div>;
 const Login = () => <div>Login</div>;
 
