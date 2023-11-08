@@ -1,0 +1,45 @@
+.menu {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .menu-columns {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .menu-column {
+    text-align: center;
+    margin: 10px;
+  }
+  
+  .menu-column h2 {
+    text-align: center;
+  }
+  
+  
+  h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+  
+  .menu-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+  }
+  
+  .menu-item h3 {
+    font-size: 18px;
+    margin: 0;
+  }
+  
+  .menu-item p {
+    font-size: 14px;
+    margin: 5px 0;
+  }
+  
+  /* Add more styling as needed */
+  
