@@ -47,7 +47,7 @@ const Login = () => {
             <h1 className='title'>Login</h1>
             <div className="textFields">
                 <div className='textField'>
-                    <p>Name:</p>
+                    <p>Username / Employee ID:</p>
                     <input
                         type="text"
                         value={username}
