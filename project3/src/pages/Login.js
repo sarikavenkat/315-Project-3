@@ -46,7 +46,7 @@
                 />
 
                 <input
-                type="text"
+                // type="text" 
                 value = {password}
                 onChange={(e) =>
                     handlePasswordChange(password)
