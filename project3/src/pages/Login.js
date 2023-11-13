@@ -54,7 +54,7 @@ const Login = () => {
             <h1 className='title'>Login</h1>
             <div className="textFields">
                 <div className='textField'>
-                    <p>Customer ID</p>
+                    <p>Name:</p>
                     <input
                         type="text"
                         value={username}
@@ -62,7 +62,7 @@ const Login = () => {
                     />
                 </div>
                 <div className='textField'>
-                    <p>Password:</p>
+                    <p>Customer ID:</p>
                     <input
                         type="password" 
                         value={password}

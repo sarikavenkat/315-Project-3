@@ -99,6 +99,26 @@ app.post("/api/order", async (req, res) => {
   }
 });
 
+app.get("/api/login", async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const query = "SELECT * FROM items";
+    const result = await client.query(query);
+    const menuItems = result.rows.map((row) => {
+      return {
+        ...row,
+        price: parseFloat(row.price)
+      }
+    });
+    client.release();
+
+    res.json(menuItems);
+  } catch (error) {
+    console.error("Error fetching menu items", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 app.listen(5000, () => {
   console.log("Server started on port 5000");
 });
