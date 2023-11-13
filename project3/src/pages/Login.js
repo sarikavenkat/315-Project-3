@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './loginstyle.css';
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     const handleUserChange = (newName) => {
         setUsername(newName);
@@ -42,12 +44,17 @@ const Login = () => {
         }
     };
 
+    const handleNaviClick = () => {
+        // Use the navigate function to go to the desired page
+        navigate('/emplogin');
+    };
+
     return (
         <div className="loginField">
             <h1 className='title'>Login</h1>
             <div className="textFields">
                 <div className='textField'>
-                    <p>Username / Employee ID:</p>
+                    <p>Customer ID</p>
                     <input
                         type="text"
                         value={username}
@@ -63,9 +70,12 @@ const Login = () => {
                     />
                 </div>
             </div>
-            <div className="submitButton">
+            <div className="Buttons">
                 <button onClick={handleLoginSubmission}>
                     Submit
+                </button>
+                <button onClick={handleNaviClick}>
+                    Employee Login
                 </button>
             </div>
         </div>

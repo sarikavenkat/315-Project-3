@@ -27,11 +27,15 @@ p {
     margin: 5px;
 }
 
-.submitButton {
+.Buttons {
     display: flex;
-    flex-direction: column;
+    flex-direction: rows;
     align-items: center;
     margin-top: 15px;
-    width: 25px;
+}
+
+button {
+    margin-left: 10px;
+    height: 50%;
 }
 

@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Order from './pages/Order';
 import Menu from './pages/Menu';
 import Login from './pages/Login';
+import EmployeeLogin from './pages/employeepages/EmployeeLogin';
 
 import './style.css'; 
 // import App from "./app";
@@ -37,6 +38,7 @@ function App() {
           <Route path="/menu" element={<Menu />} />
           <Route path="/order" element={<Order />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/emplogin" element={<EmployeeLogin />} />
         </Routes>
       </div>
     </BrowserRouter>
