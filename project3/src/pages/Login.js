@@ -1,65 +1,74 @@
-// import React from 'react';
-// import './loginstyle.css';
+import React, { useState } from 'react';
+import './loginstyle.css';
 
- const Login = () => {
-    let user = ""
-    let pass = ""
+const Login = () => {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
     const handleUserChange = (newName) => {
-        user = newName
-    }
+        setUsername(newName);
+    };
 
     const handlePasswordChange = (newPass) => {
-        pass = newPass
-    }
+        setPassword(newPass);
+    };
 
     const handleLoginSubmission = async () => {
-        const test = {
-            "bruh": 1,
-            "okay": 2
-        };
-        if(user.trim() === ""){
+        if (username.trim() === "") {
             alert("Username not provided, try again.");
-        }
-        else if (pass.trim() === ""){
+        } else if (password.trim() === "") {
             alert("Password not provided, try again.");
-        }
-        else{
-            await fetch("http://localhost:5000/api/login", {
-            method: "POST",
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(cart),
-        });
-        }
-    }
+        } else {
+            try {
+                const response = await fetch("http://localhost:5000/api/login", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
 
-    return(
-        <div class = "loginField">
-            <div class = "textFields">
-                <input 
-                type="text"
-                value = {username}
-                onChange={(e) =>
-                    handleUserChange(username)
+                // Check response status and handle accordingly
+                if (response.ok) {
+                    // Handle successful login
+                    console.log("Login successful");
+                } else {
+                    // Handle login failure
+                    console.error("Login failed");
                 }
-                />
+            } catch (error) {
+                console.error("Error during login:", error);
+            }
+        }
+    };
 
-                <input
-                // type="text" 
-                value = {password}
-                onChange={(e) =>
-                    handlePasswordChange(password)
-                }
-                />
+    return (
+        <div className="loginField">
+            <h1 className='title'>Login</h1>
+            <div className="textFields">
+                <div className='textField'>
+                    <p>Name:</p>
+                    <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => handleUserChange(e.target.value)}
+                    />
+                </div>
+                <div className='textField'>
+                    <p>Password:</p>
+                    <input
+                        type="password" 
+                        value={password}
+                        onChange={(e) => handlePasswordChange(e.target.value)}
+                    />
+                </div>
             </div>
-            <div class = "suubmitButton">
-                <button onClick={() => handleLoginSubmission(index)}>
-                  Submit
+            <div className="submitButton">
+                <button onClick={handleLoginSubmission}>
+                    Submit
                 </button>
             </div>
         </div>
-
     );
 };
 
