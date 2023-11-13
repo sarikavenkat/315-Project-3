@@ -17,10 +17,10 @@
             "bruh": 1,
             "okay": 2
         };
-        if(user.trim === ""){
+        if(user.trim() === ""){
             alert("Username not provided, try again.");
         }
-        else if (pass.trim === ""){
+        else if (pass.trim() === ""){
             alert("Password not provided, try again.");
         }
         else{
@@ -63,4 +63,4 @@
     );
 };
 
-// export default Login;
+export default Login;
