@@ -5,6 +5,7 @@ import './loginstyle.css';
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [name, setName] = useState("");
     const navigate = useNavigate();
 
     const handleUserChange = (newName) => {
@@ -22,21 +23,19 @@ const Login = () => {
             alert("Password not provided, try again.");
         } else {
             try {
-                const response = await fetch("http://localhost:5000/api/login", {
-                    method: "POST",
+                const response = await fetch(`http://localhost:5000/api/login?name=${username}&id=${password}`, {
+                    method: "GET",
                     headers: {
-                        'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
+                    // Include any other headers as needed
                     },
-                    body: JSON.stringify({ username, password }),
                 });
-
-                // Check response status and handle accordingly
                 if (response.ok) {
-                    // Handle successful login
-                    console.log("Login successful");
+                  const data = await response.json();
+                  console.log(data.rows[0].name);
+                  setName(data.rows[0].name);
                 } else {
-                    // Handle login failure
-                    console.error("Login failed");
+                  throw Error("Failed to authenticate user");
                 }
             } catch (error) {
                 console.error("Error during login:", error);

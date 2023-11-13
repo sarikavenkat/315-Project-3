@@ -100,21 +100,18 @@ app.post("/api/order", async (req, res) => {
 });
 
 app.get("/api/login", async (req, res) => {
+
+  const { name, id } = req.query;
+
   try {
     const client = await pool.connect();
-    const query = "SELECT * FROM items";
+    const query = `SELECT name FROM customers where name = '${name}' and id = ${id}`;
     const result = await client.query(query);
-    const menuItems = result.rows.map((row) => {
-      return {
-        ...row,
-        price: parseFloat(row.price)
-      }
-    });
     client.release();
 
-    res.json(menuItems);
+    res.json(result);
   } catch (error) {
-    console.error("Error fetching menu items", error);
+    console.error("Error fetching name", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
