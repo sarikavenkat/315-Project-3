@@ -1,0 +1,32 @@
+Scrum Meeting 2:
+
+Date and Time: 11/9/2023, 6:00 - 6:15 PM
+Goal: Team members provide updates on their progress, discuss any impediments, and plan the day's tasks.
+
+Task Breakdown:
+
+Simon: 
+- Develop the login page 
+    - Create a simple form that follows the existing design patterns
+    - Attempt API connection once queries are generated
+- Create Dummy Manager GUI 
+- Educate self on scrum and Agile methodology (Completed)
+
+Sarika: 
+- Develop the login page
+    - Creating React Component for the login section
+- Implement user profiles (Completed)
+
+Paul:
+- Set up database triggers
+    - Educate self on what are triggers, and what their purpose is
+- Identify any security vulnerabilities
+- Resolve said security vulnerabilities 
+
+Kayla:
+- Create additional queries for Login functionality (Completed)
+    - Grab existing logic from the second project
+- Create unit tests for front-end
+- Create unit tests for back-end
+
+Next Meeting: Daily Standup, 11/10/2023 
