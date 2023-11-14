@@ -122,7 +122,7 @@ app.get("/api/emplogin", async (req, res) => {
 
   try {
     const client = await pool.connect();
-    const query = `SELECT name FROM employees where id = ${id} and password = '${password}'`;
+    const query = `SELECT name, position FROM employees where id = ${id} and password = '${password}'`;
     const result = await client.query(query);
     client.release();
 

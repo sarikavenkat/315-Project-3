@@ -32,7 +32,15 @@ const EmployeeLogin = () => {
                 // Check response status and handle accordingly
                 if (response.ok) {
                     // Handle successful login
-                    console.log("Login successful");
+                    const data = await response.json();
+                    let name = "";
+                    let job = "";
+                    
+                    name = data.rows[0].name;
+                    job = data.rows[0].position;
+
+                    console.log(name, job);
+
                 } else {
                     // Handle login failure
                     console.error("Login failed");
