@@ -116,6 +116,23 @@ app.get("/api/login", async (req, res) => {
   }
 });
 
+app.get("/api/emplogin", async (req, res) => {
+
+  const { id, password } = req.query;
+
+  try {
+    const client = await pool.connect();
+    const query = `SELECT name FROM employees where id = ${id} and password = '${password}'`;
+    const result = await client.query(query);
+    client.release();
+
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching name", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 app.listen(5000, () => {
   console.log("Server started on port 5000");
 });

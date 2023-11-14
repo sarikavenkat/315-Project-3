@@ -21,7 +21,7 @@ const EmployeeLogin = () => {
             alert("Password not provided, try again.");
         } else {
             try {
-                const response = await fetch(`http://localhost:5000/api/login?name=${username}&id=${password}`, {
+                const response = await fetch(`http://localhost:5000/api/emplogin?id=${username}&password=${password}`, {
                     method: "GET",
                     headers: {
                     'Content-Type': 'application/json',
