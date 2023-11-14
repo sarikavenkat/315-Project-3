@@ -36,6 +36,22 @@ app.get("/api/items", async (req, res) => {
   }
 });
 
+
+app.get("/api/employees", async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const query = "SELECT * FROM employees";
+    const result = await client.query(query);
+    client.release();
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching employees", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 app.post("/api/order", async (req, res) => {
 
   try {
