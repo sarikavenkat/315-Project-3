@@ -1,0 +1,41 @@
+.loginField {
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+
+.textFields {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.textField {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+p {
+    margin: 5px;
+}
+
+.Buttons {
+    display: flex;
+    flex-direction: rows;
+    align-items: center;
+    margin-top: 15px;
+}
+
+button {
+    margin-left: 10px;
+    height: 50%;
+}
+
