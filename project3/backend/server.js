@@ -37,6 +37,7 @@ app.get("/api/items", async (req, res) => {
 });
 
 
+
 app.get("/api/employees", async (req, res) => {
   try {
     const client = await pool.connect();
@@ -64,6 +65,35 @@ app.get("/api/orders", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
+app.delete("/api/removeorder/:orderId", async (req, res) => {
+  const orderId = req.params.orderId;
+
+  try {
+    const client = await pool.connect();
+    
+    const checkQuery = "SELECT * FROM orders WHERE orderid = $1";
+    const checkResult = await client.query(checkQuery, [orderId]);
+
+    if (checkResult.rows.length === 0) {
+      res.status(404).json({ error: "Order not found" });
+      return;
+    }
+
+    const deleteQuery = "DELETE FROM orders WHERE orderid = $1";
+    await client.query(deleteQuery, [orderId]);
+
+    client.release();
+
+    res.json({ message: "Order removed successfully" });
+  } catch (error) {
+    console.error("Error removing order", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 
 app.post("/api/placeorder", async (req, res) => {
 
