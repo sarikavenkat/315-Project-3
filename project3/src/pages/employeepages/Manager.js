@@ -7,6 +7,7 @@ const Manager = () => {
   const [orders, setOrders] = useState([]);
   const [filteredEmployeeData, setFilteredData] = useState([]);
   const [orderList, setOrderList] = useState([]);
+  const [deleteOrderNumber, setDeleteOrderNumber] = useState(0);
   const [index, setIndex] = useState(0);
 
   const navigate = useNavigate();
@@ -49,6 +50,10 @@ const Manager = () => {
     }
   };
 
+  
+  
+  
+
   const handleCheckEmployeeSchedules = () => {
     const filteredEmployee = [];
     employee.forEach((element) => {
@@ -90,11 +95,33 @@ const Manager = () => {
     console.log("Viewing order history");
   };
 
-  const handleRemoveOrderItems = () => {
-    console.log("Removing order items from the database");
+  const handleDeleteOrderItems = async (orderId) => {
+    
+    try {
+      const response = await fetch(`http://localhost:5000/api/removeorder/${orderId}`, {
+        method: 'DELETE',
+      });
+      console.log("try");
+
+      if (response.ok) {
+        console.log("if");
+        console.log('Order removed successfully');
+        fetchOrders();
+      } else if (response.status === 404) {
+        console.log("else if");
+        console.log('Order not found');
+      } else {
+        console.log("else");
+        throw new Error('Failed to remove order');
+      }
+    } catch (error) {
+        console.log("error");
+        console.error('Error removing order', error);
+    }
   };
 
   const handleAppendToOrderHistory = () => {
+    
     console.log("Appending order specifics to order history");
   };
 
@@ -107,45 +134,51 @@ const Manager = () => {
 
   return (
     <div>
-      <h1>Welcome, Manager: {managerName}</h1>
+  <h1>Welcome, Manager: {managerName}</h1>
 
-      <div className="employee-times">
-        <button
-          onClick={() => {
-            handleCheckEmployeeSchedules();
-            setShowEmployeeTable(!showEmployeeTable);
-          }}
-        >
-          Check Employee Schedules
-        </button>
-      </div>
-      <div className="OrderHistory">
-        <button
-          onClick={() => {
-            handleViewOrderHistory();
-            setShowOrderHistory(!showOrderHistory);
-          }}
-        >
-          View Order History
-        </button>
-      </div>
+  <div className="employee-times">
+    <button
+      onClick={() => {
+        handleCheckEmployeeSchedules();
+        setShowEmployeeTable(!showEmployeeTable);
+      }}
+    >
+      Check Employee Schedules
+    </button>
+  </div>
+  <div className="OrderHistory">
+    <button
+      onClick={() => {
+        handleViewOrderHistory();
+        setShowOrderHistory(!showOrderHistory);
+      }}
+    >
+      View Order History
+    </button>
+  </div>
 
-      <button onClick={handleRemoveOrderItems}>Remove Order Items</button>
-      <button onClick={handleAppendToOrderHistory}>
-        Append to Order History
-      </button>
+  <label>
+    Delete Orders by Number:
+    <input
+      type="number"
+      value={deleteOrderNumber}
+      id = "myInput"
+      onChange={(e) => setDeleteOrderNumber(e.target.value)}
+    />
+    <button onClick={handleDeleteOrderItems(1)}>Delete Orders</button>
+  </label>
+  <button onClick={handleDeleteOrderItems}>Remove Order Items</button>
+  <button onClick={handleAppendToOrderHistory}>Append to Order History</button>
 
-      <button onClick={() => setIndex((prevIndex) => prevIndex - 20)}>
-        
-        Previous Orders
-      </button>
-      <button onClick={() => {
+  <button onClick={() => setIndex((prevIndex) => prevIndex - 20)}>
+    Previous Orders
+  </button>
+  <button
+    onClick={() => {
       setIndex((prevIndex) => prevIndex + 20);
-      }
-      }>
-        
-        Next Orders
-      </button>
+    }}>
+    Next Orders
+  </button>
 
       {/* Display the table only when showTable is true */}
       {showEmployeeTable && !showOrderHistory && (
