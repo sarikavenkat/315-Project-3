@@ -6,17 +6,11 @@ import Order from './pages/Order';
 import Menu from './pages/Menu';
 import Login from './pages/Login';
 import EmployeeLogin from './pages/employeepages/EmployeeLogin';
+import Manager from './pages/employeepages/Manager';
+import Cashier from './pages/employeepages/Cashier';
+
 
 import './style.css'; 
-// import App from "./app";
-
-// Components for different routes
-// const Home = () => <div>Home</div>;
-
-// Make these individual js/jsx files in the pages folder. Then put them into the index file like I did with home.
-//const Menu = () => <div>Menu</div>;
-//const Order = () => <div>Order</div>;
-// const Login = () => <div>Login</div>;
 
 function App() {
   return (
@@ -29,7 +23,7 @@ function App() {
           <ul className="nav-links">
             <li><Link to="/">Home</Link></li>
             <li><Link to="/menu">Menu</Link></li>
-            <li><Link to="/Order">Order</Link></li>
+            <li><Link to="/order">Order</Link></li>
             <li><Link to="/login">Login</Link></li>
           </ul>
         </nav>
@@ -39,6 +33,8 @@ function App() {
           <Route path="/order" element={<Order />} />
           <Route path="/login" element={<Login />} />
           <Route path="/emplogin" element={<EmployeeLogin />} />
+          <Route path="/cashlogin" element={<Cashier />} />
+          <Route path="/manglogin" element={<Manager />} />
         </Routes>
       </div>
     </BrowserRouter>
