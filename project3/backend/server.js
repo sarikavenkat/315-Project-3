@@ -1,7 +1,13 @@
 const express = require("express");
+// const session = require('express-session');
+// const passport = require('passport');
+// const authRoutes = require('./authRoutes');
 const { Pool } = require("pg");
 
 const cors = require("cors");
+// app.use(session({ secret: oauth.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 const app = express();
 app.use(cors());
@@ -36,7 +42,66 @@ app.get("/api/items", async (req, res) => {
   }
 });
 
-app.post("/api/order", async (req, res) => {
+
+
+app.get("/api/employees", async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const query = "SELECT * FROM employees";
+    const result = await client.query(query);
+    client.release();
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching employees", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.get("/api/orders", async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const query = "SELECT * FROM orders";
+    const result = await client.query(query);
+    client.release();
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching orders", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+app.delete("/api/removeorder/:orderId", async (req, res) => {
+  const orderId = req.params.orderId;
+
+  try {
+    const client = await pool.connect();
+    
+    const checkQuery = "SELECT * FROM orders WHERE orderid = $1";
+    const checkResult = await client.query(checkQuery, [orderId]);
+
+    if (checkResult.rows.length === 0) {
+      res.status(404).json({ error: "Order not found" });
+      return;
+    }
+
+    const deleteQuery = "DELETE FROM orders WHERE orderid = $1";
+    await client.query(deleteQuery, [orderId]);
+
+    client.release();
+
+    res.json({ message: "Order removed successfully" });
+  } catch (error) {
+    console.error("Error removing order", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
+app.post("/api/placeorder", async (req, res) => {
 
   try {
     const client = await pool.connect();
@@ -80,19 +145,6 @@ app.post("/api/order", async (req, res) => {
       pool.end();
     });
 
-    // console.log(insertQuery)
-    // pool.query(insertQuery).then((query_res) => {});
-    // pool.query('SELECT order_id FROM orders ORDER BY ID DESC LIMIT 1').then(query_res=>{ let orderId = query_res_rows[0]});
-    // for(let i=0; i<cartItems.length;i++){
-    //   let itemName = cartItems[i].name;
-    //   let quantity = cartItems[i].quantity;
-    //   let insertItemQuery = 'INSERT INTO orderitems (order_id, item_name, quantity) VALUES (' +
-    //   orderId + ', ' + itemName + ', '+ quantity + ')';
-    //   pool.query(insertItemQuery).then((query_res) => {});
-
-    // }
-
-    // client.release();
   } catch (error) {
     console.error("Error making order", error);
     res.status(500).json({ error: "Internal Server Error" });
