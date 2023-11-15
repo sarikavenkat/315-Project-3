@@ -10,9 +10,9 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
         // Code to handle user authentication and retrieval
-        console.log('TCL: profile', profile); -> Gives profile info
-        console.log('TCL: refreshToken', refreshToken); -> Null
-        console.log('TCL: accessToken', accessToken); 
+        //console.log('TCL: profile', profile); //Gives profile info
+        //console.log('TCL: refreshToken', refreshToken); //Null
+        //console.log('TCL: accessToken', accessToken); 
         // This attaches the user profile to the req object
         done(null, profile);
     }
