@@ -1,20 +1,11 @@
 const express = require("express");
-// const session = require('express-session');
-// const passport = require('passport');
-// const authRoutes = require('./authRoutes');
 const { Pool } = require("pg");
 
 const cors = require("cors");
-// app.use(session({ secret: oauth.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
-// app.use(passport.initialize());
-// app.use(passport.session());
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(session({ secret: oauth.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
-app.use(passport.initialize());
-app.use(passport.session());
 
 const pool = new Pool({
   user: "csce315_970_03user",
@@ -150,40 +141,6 @@ app.post("/api/placeorder", async (req, res) => {
 
   } catch (error) {
     console.error("Error making order", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-app.get("/api/login", async (req, res) => {
-
-  const { name, id } = req.query;
-
-  try {
-    const client = await pool.connect();
-    const query = `SELECT name FROM customers where name = '${name}' and id = ${id}`;
-    const result = await client.query(query);
-    client.release();
-
-    res.json(result);
-  } catch (error) {
-    console.error("Error fetching name", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-app.get("/api/emplogin", async (req, res) => {
-
-  const { id, password } = req.query;
-
-  try {
-    const client = await pool.connect();
-    const query = `SELECT name, position FROM employees where id = ${id} and password = '${password}'`;
-    const result = await client.query(query);
-    client.release();
-
-    res.json(result);
-  } catch (error) {
-    console.error("Error fetching name", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
