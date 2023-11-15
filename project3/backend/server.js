@@ -1,4 +1,7 @@
 const express = require("express");
+const session = require('express-session');
+const passport = require('passport');
+const authRoutes = require('./authRoutes');
 const { Pool } = require("pg");
 
 const cors = require("cors");
@@ -6,6 +9,9 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(session({ secret: oauth.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 const pool = new Pool({
   user: "csce315_970_03user",
