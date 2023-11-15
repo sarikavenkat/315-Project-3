@@ -9,6 +9,7 @@ import EmployeeLogin from './pages/employeepages/EmployeeLogin';
 import Manager from './pages/employeepages/Manager';
 import Cashier from './pages/employeepages/Cashier';
 
+
 import './style.css'; 
 
 function App() {

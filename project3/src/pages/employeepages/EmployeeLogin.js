@@ -47,7 +47,7 @@ const EmployeeLogin = () => {
                       } else if (job === 'cashier') {
                         navigate('/cashlogin', { state: { cashierName: name } });
                       }
-
+                  
                 } else {
                     // Handle login failure
                     console.error("Login failed");
