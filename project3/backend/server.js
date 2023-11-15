@@ -4,17 +4,11 @@ const express = require("express");
 // const authRoutes = require('./authRoutes');
 const { Pool } = require("pg");
 
+const app = express();
 const cors = require("cors");
 // app.use(session({ secret: oauth.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
 // app.use(passport.initialize());
 // app.use(passport.session());
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(session({ secret: oauth.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
-app.use(passport.initialize());
-app.use(passport.session());
 
 const pool = new Pool({
   user: "csce315_970_03user",
