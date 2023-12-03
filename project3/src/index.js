@@ -36,6 +36,13 @@ function App() {
           <Route path="/cashlogin" element={<Cashier />} />
           <Route path="/manglogin" element={<Manager />} />
         </Routes>
+
+        <div className="contactbar">
+          <p>CONTACT US!</p>
+          <p>Address: 123 Main Street, College Station, TX</p>
+          <p>Phone: (123) 456-7890</p>
+          <p>Email: info@sweetpariscollegestation.com</p>
+        </div>
       </div>
     </BrowserRouter>
   );
