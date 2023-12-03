@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import Home from './pages/Home';
@@ -9,8 +9,7 @@ import EmployeeLogin from './pages/employeepages/EmployeeLogin';
 import Manager from './pages/employeepages/Manager';
 import Cashier from './pages/employeepages/Cashier';
 
-
-import './style.css'; 
+import './style.css';
 
 function App() {
   return (
@@ -27,6 +26,7 @@ function App() {
             <li><Link to="/login">Login</Link></li>
           </ul>
         </nav>
+
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />

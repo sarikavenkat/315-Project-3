@@ -52,20 +52,20 @@
   margin: 10px; 
 }
 
-.contact-bar {
+.contactbar {
   background-color: #feed91; 
   text-align: center;
   color: #000000;
   width: 100%;
-  line-height: 0.4;
-  padding: 5px;
+  line-height: 1;
+  padding: 10px;
 }
 
-.about-section {
+.aboutsection {
   background-color: #ecf3fb; 
   border: 2px solid #8abdef; 
   padding: 20px;
   font-family: Apple Chancery, cursive;
-  font-size: 18px; 
+  font-size: var(--base-font-size);
   color: #333; 
 }

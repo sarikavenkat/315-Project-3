@@ -5,17 +5,6 @@ import './homestyle.css';
 const Home = () => {
     return (
       <div className="app-container">
-        {/* <div className="store-header">
-          <div className="store-name">Sweet Paris Crêperie & Café</div>
-        </div>
-        <nav className="navbar">
-          <ul className="nav-links">
-            <li><a href="/">Home</a></li>
-            <li><a href="/">Menu</a></li>
-            <li><a href="/">Order</a></li>
-            <li><a href="/">Login</a></li>
-          </ul>
-        </nav> */}
         <div className="homepage-images">
           <img src="/sp1.jpg" alt="sweet paris pic 1" className="image" />
           <img src="/sp2.jpg" alt="sweet paris pic 2" className="image" />
@@ -23,7 +12,7 @@ const Home = () => {
           <img src="/sp4.jpg" alt="sweet paris pic 4" className="image" />
         </div>
         <div className="content">
-        <div className="about-section">
+        <div className="aboutsection">
             <h2>Who OUI Are:</h2>
             <p>
               Our mission is to revive the art of eating crêpes!
@@ -39,7 +28,7 @@ const Home = () => {
             </p>
           </div>
         </div>
-        <div className="contact-bar">
+        <div className="contactbar">
           <p>CONTACT US!</p>
           <p>Address: 123 Main Street, College Station, TX</p>
           <p>Phone: (123) 456-7890</p>
