@@ -50,7 +50,12 @@ const Manager = () => {
     }
   };
 
+  
+  
+  
+
   const handleCheckEmployeeSchedules = () => {
+    console.log(employee);
     const filteredEmployee = [];
     employee.forEach((element) => {
       filteredEmployee.push({
@@ -62,6 +67,7 @@ const Manager = () => {
       });
     });
     setFilteredData(filteredEmployee);
+    console.log(filteredEmployee.length);
     console.log("Tracking employee work schedule");
   };
 
@@ -86,7 +92,7 @@ const Manager = () => {
       setOrderList(tempOrderList);
     }
 
-    console.log(orderList);
+    //console.log(orderList);
     console.log(orders.length);
     console.log("Viewing order history");
   };
@@ -117,7 +123,7 @@ const Manager = () => {
   };
 
   const handleAppendToOrderHistory = () => {
-    
+
     console.log("Appending order specifics to order history");
   };
 
@@ -138,6 +144,8 @@ const Manager = () => {
       onClick={() => {
         handleCheckEmployeeSchedules();
         setShowEmployeeTable(!showEmployeeTable);
+        setShowOrderHistory(false);
+
       }}
     >
       Check Employee Schedules
@@ -147,6 +155,7 @@ const Manager = () => {
     <button
       onClick={() => {
         handleViewOrderHistory();
+        setShowEmployeeTable(false);
         setShowOrderHistory(!showOrderHistory);
       }}
     >
@@ -162,22 +171,24 @@ const Manager = () => {
       id = "myInput"
       onChange={(e) => setDeleteOrderNumber(e.target.value)}
     />
-    <button onClick={handleDeleteOrderItems(1)}>Delete Orders</button>
+    <button onClick={() =>handleDeleteOrderItems(1)}>Delete Orders</button>
   </label>
-  <button onClick={handleDeleteOrderItems}>Remove Order Items</button>
-  <button onClick={handleAppendToOrderHistory}>Append to Order History</button>
 
-  <button onClick={() => setIndex((prevIndex) => prevIndex - 20)}>
-    Previous Orders
-  </button>
-  <button
-    onClick={() => {
-      setIndex((prevIndex) => prevIndex + 20);
-    }}>
-    Next Orders
-  </button>
+  {showOrderHistory && (
+  <div>
+    <button onClick={() => setIndex((prevIndex) => prevIndex - 20)}>
+      Previous Orders
+    </button>
+    <button
+      onClick={() => {
+        setIndex((prevIndex) => prevIndex + 20);
+      }}
+    >
+      Next Orders
+    </button>
+  </div>
+)}
 
-      {/* Display the table only when showTable is true */}
       {showEmployeeTable && !showOrderHistory && (
         <table>
           <thead>
