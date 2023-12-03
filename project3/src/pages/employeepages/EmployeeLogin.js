@@ -5,6 +5,7 @@ import '../loginstyle.css';
 const EmployeeLogin = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     const handleUserChange = (newName) => {
         setUsername(newName);
@@ -41,6 +42,12 @@ const EmployeeLogin = () => {
 
                     console.log(name, job);
 
+                    if (job === 'manager') {
+                        navigate('/manglogin', { state: { managerName: name } });
+                      } else if (job === 'cashier') {
+                        navigate('/cashlogin', { state: { cashierName: name } });
+                      }
+                  
                 } else {
                     // Handle login failure
                     console.error("Login failed");
