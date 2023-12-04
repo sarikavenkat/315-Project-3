@@ -12,12 +12,21 @@ app.use(cors());
 app.use(express.json()); 
 
 const pool = new Pool({
+  user: "csce315_970_03user",
+  host: "csce-315-db.engr.tamu.edu",
+  database: "csce315_970_03db",
+  password: "fourfsd",
+  port: 5432,
+  ssl: { rejectUnauthorized: false },
+});
+/*
+  user: "SuperCoolSquad",
   host: "database-2.cxydtb3isptx.us-east-2.rds.amazonaws.com",
   database: "initial_db",
   password: "fourfsd!",
   port: 5432,
   ssl: { rejectUnauthorized: false },
-});
+  */
 
 app.get("/api/items", async (req, res) => {
   try {
