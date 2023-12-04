@@ -24,7 +24,7 @@ const Login = () => {
             alert("Password not provided, try again.");
         } else {
             try {
-                const response = await fetch(`http://localhost:5000/api/login?name=${username}&id=${password}`, {
+                const response = await fetch(`http://3.22.171.17:5000/api/login?name=${username}&id=${password}`, {
                     method: "GET",
                     headers: {
                     'Content-Type': 'application/json',
