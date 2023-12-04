@@ -1,0 +1,28 @@
+Scrum Meeting 2:
+
+Date and Time: 11/28/2023, 6:00 - 6:15 PM
+Goal: Team members provide updates on their progress, discuss any impediments, and plan the day's tasks.
+
+Task Breakdown:
+
+Simon: 
+- Alter database schema and internal data in order to fix Orders functionality
+- Do integration testing for the entire POS system
+
+Sarika: 
+- Research methods in which to cater to the visually challenged
+- Alter the style of the website in order to make it more intuitive
+    - Change color scheme to fit existing design
+
+Paul:
+- Finish hosting on AWS servers
+- Finisg Orders API Call from the Database
+
+Kayla:
+- Create unit tests for front-end
+- Create unit tests for back-end
+    - Educate self on how to create proper unit tests
+
+Overall: Struggling to tackle hosting and database issues. Frontend going smoothly
+
+Next Meeting: Daily Standup, 11/30/2023
