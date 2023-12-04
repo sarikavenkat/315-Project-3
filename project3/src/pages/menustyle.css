@@ -32,7 +32,7 @@
   }
   
   .menu-item h3 {
-    font-size: 18px;
+    font-size: var(--base-font-size);
     margin: 0;
   }
   

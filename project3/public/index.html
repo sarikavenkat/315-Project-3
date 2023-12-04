@@ -24,11 +24,107 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>Sweet Paris</title>
+
+    <p>
+      Select your preferred language:
+    </p>
+
+    <div id="google_translate_element"></div>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {pageLanguage: 'en'},
+                'google_translate_element'
+            );
+        }
+    </script>
+
+    <script type="text/javascript"
+            src= "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+    </script>
+
+    <style>
+      :root {
+        --base-font-size: 16px; /* Default font size */
+      }
+
+      body {
+        font-size: var(--base-font-size);
+      }
+
+      #weather-section {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      #font-size-section {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+
+  <div id="weather-section">
+    <h2>Current Weather in College Station, Texas</h2>
+    <p id="weather-info">Loading...</p>
+  </div>
+
+  <div id="font-size-section">
+    <label for="fontSizeSelector">Select Font Size: </label>
+    <select id="fontSizeSelector" onchange="changeFontSize()">
+      <option value="10">Small</option>
+      <option value="16" selected>Medium (Default)</option>
+      <option value="22">Large</option>
+    </select>
+  </div>
+
+  <script>
+    // Function to make a request to the OpenWeatherMap API
+    function fetchWeather() {
+      const apiKey = '707addd1b41fbc9c15fe263362950e45';
+      const city = 'College Station';  // You can change the city as needed
+      const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`;
+
+      // Make the API request
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          // Parse the relevant weather information from the response
+          const temperature = data.main.temp;
+          const description = data.weather[0].description;
+
+          // Display the weather information on the page
+          const weatherInfoElement = document.getElementById('weather-info');
+          weatherInfoElement.textContent = `Temperature: ${temperature}°F, Description: ${description}`;
+        })
+        .catch(error => {
+          console.error('Error fetching weather data:', error);
+          const weatherInfoElement = document.getElementById('weather-info');
+          weatherInfoElement.textContent = 'Failed to fetch weather data';
+        });
+    }
+
+    function changeFontSize() {
+      const fontSizeSelector = document.getElementById('fontSizeSelector');
+      const selectedFontSize = fontSizeSelector.value;
+
+      // Apply the selected font size to text
+      document.documentElement.style.setProperty('--base-font-size', `${selectedFontSize}px`);
+    }
+
+    // Call the fetchWeather function when the page loads
+    window.onload = function () {
+      fetchWeather();
+      changeFontSize(); // Apply default font size on page load
+    };
+  </script>
+
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
