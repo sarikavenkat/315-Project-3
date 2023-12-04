@@ -42,7 +42,7 @@ const Order = () => {
 
   const fetchMenuItems = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/items");
+      const response = await fetch("http://172.31.32.166:5000/api/items");
       console.log(response);
 
       if (response.ok) {
