@@ -11,6 +11,14 @@ app.get('/', (req, res) => res.json("API IS UP AND RUNNING :)"))
 app.use(cors());
 app.use(express.json()); 
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://3.22.171.17:5000'); 
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
+
 const pool = new Pool({
   user: "csce315_970_03user",
   host: "csce-315-db.engr.tamu.edu",
