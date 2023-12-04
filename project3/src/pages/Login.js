@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Layout from '../Layout';
 import './loginstyle.css';
 
 const Login = () => {
@@ -49,35 +50,37 @@ const Login = () => {
     };
 
     return (
-        <div className="loginField">
-            <h1 className='title'>Login</h1>
-            <div className="textFields">
-                <div className='textField'>
-                    <p>Name:</p>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => handleUserChange(e.target.value)}
-                    />
+        <Layout>
+            <div className="loginField">
+                <h1 className='title'>Login</h1>
+                <div className="textFields">
+                    <div className='textField'>
+                        <p>Name:</p>
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => handleUserChange(e.target.value)}
+                        />
+                    </div>
+                    <div className='textField'>
+                        <p>Customer ID:</p>
+                        <input
+                            type="password" 
+                            value={password}
+                            onChange={(e) => handlePasswordChange(e.target.value)}
+                        />
+                    </div>
                 </div>
-                <div className='textField'>
-                    <p>Customer ID:</p>
-                    <input
-                        type="password" 
-                        value={password}
-                        onChange={(e) => handlePasswordChange(e.target.value)}
-                    />
+                <div className="Buttons">
+                    <button onClick={handleLoginSubmission}>
+                        Submit
+                    </button>
+                    <button onClick={handleNaviClick}>
+                        Employee Login
+                    </button>
                 </div>
             </div>
-            <div className="Buttons">
-                <button onClick={handleLoginSubmission}>
-                    Submit
-                </button>
-                <button onClick={handleNaviClick}>
-                    Employee Login
-                </button>
-            </div>
-        </div>
+        </Layout>
     );
 };
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../loginstyle.css';
+import Layout from '../../Layout';
 
 const EmployeeLogin = () => {
     const [username, setUsername] = useState("");
@@ -59,32 +60,34 @@ const EmployeeLogin = () => {
     };
 
     return (
-        <div className="loginField">
-            <h1 className='title'>Employee Login</h1>
-            <div className="textFields">
-                <div className='textField'>
-                    <p>Employee ID:</p>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => handleUserChange(e.target.value)}
-                    />
+        <Layout>
+            <div className="loginField">
+                <h1 className='title'>Employee Login</h1>
+                <div className="textFields">
+                    <div className='textField'>
+                        <p>Employee ID:</p>
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => handleUserChange(e.target.value)}
+                        />
+                    </div>
+                    <div className='textField'>
+                        <p>Password:</p>
+                        <input
+                            type="password" 
+                            value={password}
+                            onChange={(e) => handlePasswordChange(e.target.value)}
+                        />
+                    </div>
                 </div>
-                <div className='textField'>
-                    <p>Password:</p>
-                    <input
-                        type="password" 
-                        value={password}
-                        onChange={(e) => handlePasswordChange(e.target.value)}
-                    />
+                <div className="Buttons">
+                    <button onClick={handleLoginSubmission}>
+                        Submit
+                    </button>
                 </div>
             </div>
-            <div className="Buttons">
-                <button onClick={handleLoginSubmission}>
-                    Submit
-                </button>
-            </div>
-        </div>
+        </Layout>
     );
 };
 
