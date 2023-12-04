@@ -1,12 +1,22 @@
 const express = require("express");
+const authRoutes = require("./auth-routes");
+const passportSetup = require('./passport');
+const mongoose = require('mongoose');
+const keys = require('./keys')
 const { Pool } = require("pg");
 
 const app = express();
 const cors = require("cors");
 
-const app = express();
+//const app = express();
+
 app.use(cors());
 app.use(express.json());
+
+mongoose.connect(keys.mongodb.dbURI, ()=>{
+  console.log("connected to mongodb");
+});
+app.use("/auth",authRoutes);
 
 const pool = new Pool({
   user: "csce315_970_03user",
