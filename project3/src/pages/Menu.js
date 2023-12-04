@@ -11,7 +11,7 @@ const Menu = () => {
   const fetchMenuItems = async () => {
     try {
       console.log("running");
-      const response = await fetch("ec2-3-22-171-17.us-east-2.compute.amazonaws.com:5000/api/items");
+      const response = await fetch("https://3.22.171.17:5000/api/items");
       //const response = await fetch("http://172.31.32.166:5000/api/items");
       console.log("Successfully interacted w db!");
       console.log("response: " + response);
