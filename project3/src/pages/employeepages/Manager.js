@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./managerstyle.css";
+import Layout from '../../Layout';
 
 const Manager = () => {
   const [employee, setEmployee] = useState([]);
@@ -49,10 +50,6 @@ const Manager = () => {
       console.error("Error fetching menu items", error);
     }
   };
-
-  
-  
-  
 
   const handleCheckEmployeeSchedules = () => {
     console.log(employee);
@@ -135,110 +132,112 @@ const Manager = () => {
   const [showOrderHistory, setShowOrderHistory] = useState(false);
 
   return (
-    <div>
-  <h1>Welcome, Manager: {managerName}</h1>
-  <button onClick={handleLogout}>Logout</button>
+    <Layout>
+      <div>
+        <h1>Welcome, Manager: {managerName}</h1>
+        <button onClick={handleLogout}>Logout</button>
 
-  <div className="employee-times">
-    <button
-      onClick={() => {
-        handleCheckEmployeeSchedules();
-        setShowEmployeeTable(!showEmployeeTable);
-        setShowOrderHistory(false);
+        <div className="employee-times">
+          <button
+            onClick={() => {
+              handleCheckEmployeeSchedules();
+              setShowEmployeeTable(!showEmployeeTable);
+              setShowOrderHistory(false);
 
-      }}
-    >
-      Check Employee Schedules
-    </button>
-  </div>
-  <div className="OrderHistory">
-    <button
-      onClick={() => {
-        handleViewOrderHistory();
-        setShowEmployeeTable(false);
-        setShowOrderHistory(!showOrderHistory);
-      }}
-    >
-      View Order History
-    </button>
-  </div>
+            }}
+          >
+            Check Employee Schedules
+          </button>
+        </div>
+        <div className="OrderHistory">
+          <button
+            onClick={() => {
+              handleViewOrderHistory();
+              setShowEmployeeTable(false);
+              setShowOrderHistory(!showOrderHistory);
+            }}
+          >
+            View Order History
+          </button>
+        </div>
 
-  <label>
-    Delete Orders by Number:
-    <input
-      type="number"
-      value={deleteOrderNumber}
-      id = "myInput"
-      onChange={(e) => setDeleteOrderNumber(e.target.value)}
-    />
-    <button onClick={() =>handleDeleteOrderItems(1)}>Delete Orders</button>
-  </label>
+        <label>
+          Delete Orders by Number:
+          <input
+            type="number"
+            value={deleteOrderNumber}
+            id = "myInput"
+            onChange={(e) => setDeleteOrderNumber(e.target.value)}
+          />
+          <button onClick={() =>handleDeleteOrderItems(1)}>Delete Orders</button>
+        </label>
 
-  {showOrderHistory && (
-  <div>
-    <button onClick={() => setIndex((prevIndex) => prevIndex - 20)}>
-      Previous Orders
-    </button>
-    <button
-      onClick={() => {
-        setIndex((prevIndex) => prevIndex + 20);
-      }}
-    >
-      Next Orders
-    </button>
-  </div>
-)}
-
-      {showEmployeeTable && !showOrderHistory && (
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>ID</th>
-              <th>Next Work Day</th>
-              <th>Start Time</th>
-              <th>End Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredEmployeeData.map((employee, index) => (
-              <tr key={index}>
-                <td>{employee.name}</td>
-                <td>{employee.id}</td>
-                <td>{employee.next_work_day}</td>
-                <td>{employee.start_time}</td>
-                <td>{employee.end_time}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {showOrderHistory && (
+        <div>
+          <button onClick={() => setIndex((prevIndex) => prevIndex - 20)}>
+            Previous Orders
+          </button>
+          <button
+            onClick={() => {
+              setIndex((prevIndex) => prevIndex + 20);
+            }}
+          >
+            Next Orders
+          </button>
+        </div>
       )}
 
-      {showOrderHistory && !showEmployeeTable && (
-        <table>
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>customer ID</th>
-              <th>Date/Time</th>
-              <th>Price</th>
-              <th>Calories</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orderList.map((orders, index) => (
-              <tr key={index}>
-                <td>{orders.orderid}</td>
-                <td>{orders.customerid}</td>
-                <td>{orders.orderdatetime}</td>
-                <td>{orders.price}</td>
-                <td>{orders.calories}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+            {showEmployeeTable && !showOrderHistory && (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>ID</th>
+                    <th>Next Work Day</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredEmployeeData.map((employee, index) => (
+                    <tr key={index}>
+                      <td>{employee.name}</td>
+                      <td>{employee.id}</td>
+                      <td>{employee.next_work_day}</td>
+                      <td>{employee.start_time}</td>
+                      <td>{employee.end_time}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+
+            {showOrderHistory && !showEmployeeTable && (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>customer ID</th>
+                    <th>Date/Time</th>
+                    <th>Price</th>
+                    <th>Calories</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orderList.map((orders, index) => (
+                    <tr key={index}>
+                      <td>{orders.orderid}</td>
+                      <td>{orders.customerid}</td>
+                      <td>{orders.orderdatetime}</td>
+                      <td>{orders.price}</td>
+                      <td>{orders.calories}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+    </Layout>
   );
 };
 
