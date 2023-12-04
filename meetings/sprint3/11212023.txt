@@ -1,0 +1,26 @@
+Scrum Meeting 1:
+
+Date and Time: 11/21/2023, 6:00 - 6:15 PM
+Goal: Discussing goals for the current sprint, task allocation, and planning.
+
+Task Breakdown:
+
+Simon: 
+- Develop shopping cart / pre-checkout functionality with Sarika
+- Fix inability to alter orders and view newly placed orders
+
+Sarika: 
+- Develop shopping cart / pre-checkout functionality with Simon
+
+Paul:
+- Set up database triggers
+    - Educate self on what are triggers, and what their purpose is
+- Research better hosting platforms due to difficulties with Render
+
+Kayla:
+- Continue implentation of user profiles
+- Gather user feedback on GUI on on various web browsers and devices
+
+Overall: Continuing to work on missing functionality from Sprint 2, researching improvements to current model
+
+Next Meeting: Daily Standup, 11/28/2023 

@@ -1,0 +1,29 @@
+Scrum Meeting 3:
+
+Date and Time: 11/30/2023, 6:00 - 6:15 PM
+Goal: Team members provide updates on their progress, discuss any impediments, and plan the day's tasks.
+
+Task Breakdown:
+
+Simon: 
+- Continue to create API Calls for additional database functionality
+
+Sarika: 
+- Complete API Calls
+    - Weather
+    - Google Translate
+- Complete Accesibility Features
+
+Paul:
+- Set up database shift to AWS
+- Set up backend build file on AWS rather than Renders
+
+Kayla:
+- Complete OAuth, as well as neccessary dependencies
+- Create unit tests for front-end
+- Create unit tests for back-end
+    - Educate self on how to create proper unit tests
+
+Overall: Good amount of work completed, however the end task seems more daunting than initially planned
+
+Next Meeting: Daily Standup, 12/6/2023 
