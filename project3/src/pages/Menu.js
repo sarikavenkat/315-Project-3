@@ -10,10 +10,11 @@ const Menu = () => {
 
   const fetchMenuItems = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/items");
+      const response = await fetch("http://3.22.171.17/:5000/api/items");
       if (response.ok) {
         const data = await response.json();
         setMenuItems(data);
+        console.log("Successfully interacted w db!");
       } else {
         throw Error("Failed to fetch menu items");
       }
