@@ -1,10 +1,10 @@
-  /* orderstyle.css */
+  /* cashierstyle.css */
   .categories{
     text-decoration: underline;
     color: #000000;
   }
 
-.item-boxes {
+  .item-boxes {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;

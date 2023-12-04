@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./cashierstyle.css";
+import Layout from '../../Layout';
 
 const Cashier = () => {
   const [menuItems, setMenuItems] = useState([]);
@@ -126,86 +127,88 @@ const Cashier = () => {
   };
 
   return (
-    <div className="order">
-      {/* Cart Section */}
-      <div className="cashier">
-        <h1>
-          Welcome, Cashier: {cashierName} 
-        </h1>
-        <button onClick={handleLogout}>Logout</button>
-      </div>
-      <div className="cart-section">
-        <div className="cart-box">
-          <h2>Shopping Cart</h2>
-          <input
-            type="text"
-            placeholder="Enter Customer's name"
-            value={customerName}
-            onChange={(e) => setCustomerName(e.target.value)}
-          />
-          <p></p>
-          <div className="cart-items">
-            {cart.map((cartItem, index) => (
-              <div key={index} className="cart-item">
-                <span>
-                  {cartItem.name} (Quantity: {cartItem.quantity}, Price: $
-                  {cartItem.price.toFixed(2)}, Total: $
-                  {cartItem.totalPrice.toFixed(2)})
-                </span>
-                <button onClick={() => handleRemoveFromCart(index)}>Remove</button>
-              </div>
-            ))}
-          </div>
-          <p>Total Price: ${calculateTotalPrice().toFixed(2)}</p>
-          <button onClick={handleSubmitOrder}>Submit Order</button>
-        </div>
-      </div>
-
-      {/* Menu Categories */}
-      {Object.entries(openCategories).map(([category, isOpen]) => (
-        <div key={category} className="categories">
-          <h1 className="category-title" onClick={() => toggleCategory(category)}>
-            {category}
+    <Layout>
+      <div className="cashierorder">
+        {/* Cart Section */}
+        <div className="cashier">
+          <h1>
+            Welcome, Cashier: {cashierName} 
           </h1>
-          {isOpen && (
-            <div className="item-boxes">
-                {menuItems
-                    .filter((item) => {
-                      if (category === "Food") {
-                        return item.food;
-                      } else if (category === "Drinks") {
-                        return item.drink;
-                      } else if (category === "SeasonalItems") {
-                        return item.itemid > 26;
-                      } else {
-                        return item.food == false && item.drink == false;
-                      }
-                    })
-                .map((item, index) => (
-                  <div key={index} className="item-box">
-                    <h2>{item.name}</h2>
-                    <p>Price: ${item.price.toFixed(2)}</p>
-                    <div className="quantity-container">
-                      <div className="centered-text">Quantity:</div>
-                      <input
-                        type="number"
-                        value={itemQuantities[index]}
-                        onChange={(e) => handleQuantityChange(index, e.target.value)}
-                        min="0"
-                      />
-                    </div>
-                    <div className="add-button-container">
-                      <button onClick={() => handleAddToCart(index)}>
-                        Add Item to Cart
-                      </button>
-                    </div>
-                  </div>
-                ))}
-            </div>
-          )}
+          <button onClick={handleLogout}>Logout</button>
         </div>
-      ))}
-    </div>
+        <div className="cart-section">
+          <div className="cart-box">
+            <h2>Shopping Cart</h2>
+            <input
+              type="text"
+              placeholder="Enter Customer's name"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+            />
+            <p></p>
+            <div className="cart-items">
+              {cart.map((cartItem, index) => (
+                <div key={index} className="cart-item">
+                  <span>
+                    {cartItem.name} (Quantity: {cartItem.quantity}, Price: $
+                    {cartItem.price.toFixed(2)}, Total: $
+                    {cartItem.totalPrice.toFixed(2)})
+                  </span>
+                  <button onClick={() => handleRemoveFromCart(index)}>Remove</button>
+                </div>
+              ))}
+            </div>
+            <p>Total Price: ${calculateTotalPrice().toFixed(2)}</p>
+            <button onClick={handleSubmitOrder}>Submit Order</button>
+          </div>
+        </div>
+
+        {/* Menu Categories */}
+        {Object.entries(openCategories).map(([category, isOpen]) => (
+          <div key={category} className="categories">
+            <h1 className="category-title" onClick={() => toggleCategory(category)}>
+              {category}
+            </h1>
+            {isOpen && (
+              <div className="item-boxes">
+                  {menuItems
+                      .filter((item) => {
+                        if (category === "Food") {
+                          return item.food;
+                        } else if (category === "Drinks") {
+                          return item.drink;
+                        } else if (category === "SeasonalItems") {
+                          return item.itemid > 26;
+                        } else {
+                          return item.food == false && item.drink == false;
+                        }
+                      })
+                  .map((item, index) => (
+                    <div key={index} className="item-box">
+                      <h2>{item.name}</h2>
+                      <p>Price: ${item.price.toFixed(2)}</p>
+                      <div className="quantity-container">
+                        <div className="centered-text">Quantity:</div>
+                        <input
+                          type="number"
+                          value={itemQuantities[index]}
+                          onChange={(e) => handleQuantityChange(index, e.target.value)}
+                          min="0"
+                        />
+                      </div>
+                      <div className="add-button-container">
+                        <button onClick={() => handleAddToCart(index)}>
+                          Add Item to Cart
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </Layout>
   );
 };
 
