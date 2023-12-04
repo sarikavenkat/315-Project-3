@@ -8,10 +8,9 @@ app.use(cors());
 app.use(express.json());
 
 const pool = new Pool({
-  user: "csce315_970_03user",
-  host: "csce-315-db.engr.tamu.edu",
-  database: "csce315_970_03db",
-  password: "fourfsd",
+  host: "database-2.cxydtb3isptx.us-east-2.rds.amazonaws.com",
+  database: "initial_db",
+  password: "fourfsd!",
   port: 5432,
   ssl: { rejectUnauthorized: false },
 });
@@ -171,7 +170,6 @@ app.get("/api/emplogin", async (req, res) => {
     const query = `SELECT name, position FROM employees where id = ${id} and password = '${password}'`;
     const result = await client.query(query);
     client.release();
-
     res.json(result);
   } catch (error) {
     console.error("Error fetching name", error);
