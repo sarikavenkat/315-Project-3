@@ -8,13 +8,17 @@ import Login from './pages/Login';
 import EmployeeLogin from './pages/employeepages/EmployeeLogin';
 import Manager from './pages/employeepages/Manager';
 import Cashier from './pages/employeepages/Cashier';
+import { ThemeProvider, useTheme } from './ThemeContext';
 
+import './dark.css';
 import './style.css';
 
 function App() {
+  const { isDarkTheme, toggleTheme } = useTheme();
+
   return (
     <BrowserRouter>
-      <div className="app-container">
+      <div className={`app-container ${isDarkTheme ? 'dark-theme' : 'light-theme'}`}>
         <div className="store-header">
           <div className="store-name">Sweet Paris Crêperie & Café</div>
         </div>
@@ -26,6 +30,9 @@ function App() {
             <li><Link to="/login">Login</Link></li>
           </ul>
         </nav>
+        <button className="theme-toggle" onClick={toggleTheme}>
+            {isDarkTheme ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+        </button>
 
         <Routes>
           <Route path="/" element={<Home />} />
@@ -50,7 +57,7 @@ function App() {
 
 const root = document.getElementById('root');
 ReactDOM.createRoot(root).render(
-  <>
+  <ThemeProvider> 
     <App />
-  </>
+  </ThemeProvider>,
 );

@@ -1,71 +1,71 @@
-/* style.css */
-.light-theme .app-container {
+/* dark.css */
+.dark-theme .app-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
 
-.light-theme .store-header {
-  background-color: #FFD700;
+.dark-theme .store-header {
+  background-color: #000000;
   width: 100%;
   padding: 20px 0;
 }
 
-.light-theme .store-name {
+.dark-theme .store-name {
   font-size: 50px;
   font-weight: bold;
-  color: #333;
+  color: #eed64b;
 }
 
-.light-theme .navbar {
-  background-color: #feed91;
-  color: #FFF;
+.dark-theme .navbar {
+  background-color: #626262;
+  color: #ffffff;
   width: 100%
 }
 
-.light-theme .nav-links {
+.dark-theme .nav-links {
   list-style: none;
   padding: 0;
   display: flex;
   justify-content: center;
 }
 
-.light-theme .nav-links li {
+.dark-theme .nav-links li {
   margin: 0 20px;
 }
 
-.light-theme .nav-links a {
+.dark-theme .nav-links a {
   text-decoration: none;
-  color: #000000;
+  color: #fff5bc;
   font-weight: bold;
 }
 
-.light-theme .content {
+.dark-theme .content {
   padding: 20px;
   text-align: center;
 }
 
-.light-theme .homepage-images img{
+.dark-theme .homepage-images img{
   width: 400px; 
   height: auto; 
   margin: 10px; 
 }
 
-.light-theme .contactbar {
-  background-color: #feed91; 
+.dark-theme .contactbar {
+  background-color: #000000; 
   text-align: center;
-  color: #000000;
+  color: #ffffff;
   width: 100%;
   line-height: 1;
   padding: 5px;
 }
 
-.light-theme .aboutsection {
-  background-color: #ecf3fb; 
-  border: 2px solid #8abdef; 
+.dark-theme .aboutsection {
+  background-color: #404040; 
+  border: 2px solid #000000; 
   padding: 20px;
   font-family: Apple Chancery, cursive;
   font-size: var(--base-font-size);
-  color: #333; 
+  color: #c7e1ff; 
 }
