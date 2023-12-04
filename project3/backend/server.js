@@ -4,8 +4,12 @@ const { Pool } = require("pg");
 const cors = require("cors");
 
 const app = express();
+
+//app.listen(5004, ()=>console.log("API RUNNING ON PORT 5004"))
+
+app.get('/', (req, res) => res.json("API IS UP AND RUNNING :)"))
 app.use(cors());
-app.use(express.json());
+app.use(express.json()); 
 
 const pool = new Pool({
   host: "database-2.cxydtb3isptx.us-east-2.rds.amazonaws.com",
