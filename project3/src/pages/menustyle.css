@@ -1,6 +1,8 @@
 .menu {
     text-align: center;
     padding: 20px;
+    margin-left: 320px;
+    margin-right: 320px;
   }
   
   .menu-columns {
@@ -29,6 +31,7 @@
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin: 10px;
+    width: 200px;
   }
   
   .menu-item h3 {

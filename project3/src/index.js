@@ -30,9 +30,11 @@ function App() {
             <li><Link to="/login">Login</Link></li>
           </ul>
         </nav>
-        <button className="theme-toggle" onClick={toggleTheme}>
-            {isDarkTheme ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
-        </button>
+        <div className='modebutton'>
+          <button className="theme-toggle" onClick={toggleTheme}>
+              {isDarkTheme ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+          </button>
+        </div>
 
         <Routes>
           <Route path="/" element={<Home />} />

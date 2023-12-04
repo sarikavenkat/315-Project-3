@@ -69,3 +69,18 @@
   font-size: var(--base-font-size);
   color: #333; 
 }
+
+.light-theme .theme-toggle {
+  background-color: #FFD700;
+  color: #000000;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  outline: none;
+  width: 200px;
+}
+
+.light-theme .page-container {
+  background-color: white; 
+}

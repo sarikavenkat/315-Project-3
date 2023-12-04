@@ -21,7 +21,7 @@
 .dark-theme .navbar {
   background-color: #626262;
   color: #ffffff;
-  width: 100%
+  width: 100%;
 }
 
 .dark-theme .nav-links {
@@ -56,7 +56,7 @@
   background-color: #000000; 
   text-align: center;
   color: #ffffff;
-  width: 100%;
+  width: 99.5%;
   line-height: 1;
   padding: 5px;
 }
@@ -69,3 +69,31 @@
   font-size: var(--base-font-size);
   color: #c7e1ff; 
 }
+
+.dark-theme .theme-toggle {
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  outline: none;
+  width: 200px;
+}
+
+.dark-theme .modebutton{
+  background-color: rgb(71, 71, 71);
+  padding-left: 757px;
+  padding-right: 757px
+}
+
+.dark-theme .page-container {
+  background-color: rgb(71, 71, 71); 
+  color: white;
+}
+
+.dark-theme .categories {
+  color: white;
+}
+
+

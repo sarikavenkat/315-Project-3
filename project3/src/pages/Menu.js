@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Layout from '../Layout';
 import "./menustyle.css";
 
 const Menu = () => {
@@ -28,54 +29,56 @@ const Menu = () => {
   const seasonalItems = menuItems.filter((item) => item.itemid > 26);
 
   return (
-    <div className="menu">
-      <h1>Menu</h1>
-      <div className="menu-columns">
-        <div className="menu-column">
-          <h2>Food</h2>
-          {foodItems.map((item, index) => (
-            <div key={index} className="menu-item">
-              <h3>{item.name}</h3>
-              <p>Price: ${item.price.toFixed(2)}</p>
-              <p>Calories: {item.calories}</p>
-            </div>
-          ))}
-        </div>
+    <Layout>
+      <div className="menu">
+        <h1>Menu</h1>
+        <div className="menu-columns">
+          <div className="menu-column">
+            <h2>Food</h2>
+            {foodItems.map((item, index) => (
+              <div key={index} className="menu-item">
+                <h3>{item.name}</h3>
+                <p>Price: ${item.price.toFixed(2)}</p>
+                <p>Calories: {item.calories}</p>
+              </div>
+            ))}
+          </div>
 
-        <div className="menu-column">
-          <h2>Drink</h2>
-          {drinkItems.map((item, index) => (
-            <div key={index} className="menu-item">
-              <h3>{item.name}</h3>
-              <p>Price: ${item.price.toFixed(2)}</p>
-              <p>Calories: {item.calories}</p>
-            </div>
-          ))}
-        </div>
+          <div className="menu-column">
+            <h2>Drink</h2>
+            {drinkItems.map((item, index) => (
+              <div key={index} className="menu-item">
+                <h3>{item.name}</h3>
+                <p>Price: ${item.price.toFixed(2)}</p>
+                <p>Calories: {item.calories}</p>
+              </div>
+            ))}
+          </div>
 
-        <div className="menu-column">
-          <h2>Non-Food</h2>
-          {nonFoodItems.map((item, index) => (
-            <div key={index} className="menu-item">
-              <h3>{item.name}</h3>
-              <p>Price: ${item.price.toFixed(2)}</p>
-              <p>Calories: {item.calories}</p>
-            </div>
-          ))}
-        </div>
+          <div className="menu-column">
+            <h2>Non-Food</h2>
+            {nonFoodItems.map((item, index) => (
+              <div key={index} className="menu-item">
+                <h3>{item.name}</h3>
+                <p>Price: ${item.price.toFixed(2)}</p>
+                <p>Calories: {item.calories}</p>
+              </div>
+            ))}
+          </div>
 
-        <div className="menu-column">
-          <h2>Seasonal</h2>
-          {seasonalItems.map((item, index) => (
-            <div key={index} className="menu-item">
-              <h3>{item.name}</h3>
-              <p>Price: ${item.price.toFixed(2)}</p>
-              <p>Calories: {item.calories}</p>
-            </div>
-          ))}
+          <div className="menu-column">
+            <h2>Seasonal</h2>
+            {seasonalItems.map((item, index) => (
+              <div key={index} className="menu-item">
+                <h3>{item.name}</h3>
+                <p>Price: ${item.price.toFixed(2)}</p>
+                <p>Calories: {item.calories}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
