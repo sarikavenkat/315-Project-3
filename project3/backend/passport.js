@@ -12,6 +12,20 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
         // Code to handle user authentication and retrieval
+        User.findOne({googleId:profile.id}).then((currentUser)=>{
+          if(currentUser){
+            //user already exists
+
+          }
+          else{
+            new User({
+              username: profile.displayName,
+              googleId: profile.id
+            }).save().then((newUser)=>{
+              //new user created
+            });
+          }
+        });
         
         // This attaches the user profile to the req object
         done(null, profile);

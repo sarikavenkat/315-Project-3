@@ -2,16 +2,25 @@ const express = require("express");
 const authRoutes = require("./auth-routes");
 const passportSetup = require('./passport');
 const mongoose = require('mongoose');
-const keys = require('./keys')
+const keys = require('./keys');
+const cookieSession = require('cookie-session');
 const { Pool } = require("pg");
 
 const app = express();
 const cors = require("cors");
 
-//const app = express();
+////const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use(cookieSession({
+  maxAge: 24 * 60 * 60 * 1000,
+  keys: [keys.session.cookieKey]
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 mongoose.connect(keys.mongodb.dbURI, ()=>{
   console.log("connected to mongodb");
