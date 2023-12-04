@@ -11,27 +11,36 @@ app.get('/', (req, res) => res.json("API IS UP AND RUNNING :)"))
 app.use(cors());
 app.use(express.json()); 
 
+
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://172.31.32.166:5000'); 
+  res.header('Access-Control-Allow-Origin', 'ec2-3-22-171-17.us-east-2.compute.amazonaws.com:3000'); 
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
 
 
+
 const pool = new Pool({
-  user: "csce315_970_03user",
-  host: "csce-315-db.engr.tamu.edu",
-  database: "csce315_970_03db",
-  password: "fourfsd",
-  port: 5432,
-  ssl: { rejectUnauthorized: false },
-});
-/*
+  
   user: "SuperCoolSquad",
   host: "database-2.cxydtb3isptx.us-east-2.rds.amazonaws.com",
   database: "initial_db",
   password: "fourfsd!",
+  port: 5432,
+  ssl: { rejectUnauthorized: false },
+});
+
+
+console.log("successfully connected!");
+
+/*
+
+
+  user: "csce315_970_03user",
+  host: "csce-315-db.engr.tamu.edu",
+  database: "csce315_970_03db",
+  password: "fourfsd",
   port: 5432,
   ssl: { rejectUnauthorized: false },
   */
@@ -39,6 +48,7 @@ const pool = new Pool({
 app.get("/api/items", async (req, res) => {
   try {
     const client = await pool.connect();
+    console.log("successfully connected!");
     const query = "SELECT * FROM items";
     const result = await client.query(query);
     const menuItems = result.rows.map((row) => {
