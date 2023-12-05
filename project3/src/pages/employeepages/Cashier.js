@@ -211,3 +211,5 @@ const Cashier = () => {
     </Layout>
   );
 };
+
+export default Cashier;

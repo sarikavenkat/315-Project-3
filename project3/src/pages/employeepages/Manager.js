@@ -94,6 +94,7 @@ const Manager = () => {
     console.log("Viewing order history");
   };
 
+
   const handleDeleteOrderItems = async (orderId) => {
     
     try {
@@ -124,53 +125,182 @@ const Manager = () => {
     console.log("Appending order specifics to order history");
   };
 
+  // const [showPopup, setShowPopup] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const handleProductUsageChart = () => {
+
+  };
+    
+
   const handleLogout = () => {
     navigate("/emplogin");
   };
 
+  // TODO
+  const handleInventory = () => {
+
+  }
+
+  // TODO
+  const handleSalesReport = () => {
+
+  }
+
+   // TODO
+  const handleExcessReport = () => {
+
+  }
+
+  // TODO
+  const handleRestockReport = () => {
+
+  }
+
+  // TODO
+  const handleUpdateItems = () => {
+    
+  }
+
+  // TODO
+  const handleTrendReport = () => {
+    
+  }
+
+  // TODO
+  const handlePopularityAnalysis = () => {
+    
+  }
+
   const [showEmployeeTable, setShowEmployeeTable] = useState(false);
   const [showOrderHistory, setShowOrderHistory] = useState(false);
+  const [showProductUsageChart, setshowProductUsageChart] = useState(false);
 
   return (
     <Layout>
-      <div>
+      {/* <div className="components"> */}
+        
         <h1>Welcome, Manager: {managerName}</h1>
         <button onClick={handleLogout}>Logout</button>
+        <div className="options"> 
+          <div className="employee-times">
+            <button
+              onClick={() => {
+                handleCheckEmployeeSchedules();
+                setShowEmployeeTable(!showEmployeeTable);
+                setShowOrderHistory(false);
 
-        <div className="employee-times">
-          <button
-            onClick={() => {
-              handleCheckEmployeeSchedules();
-              setShowEmployeeTable(!showEmployeeTable);
-              setShowOrderHistory(false);
+              }}
+            >
+              Check Employee Schedules
+            </button>
+          </div>
+          <div className="OrderHistory">
+            <button
+              onClick={() => {
+                handleViewOrderHistory();
+                setShowEmployeeTable(false);
+                setShowOrderHistory(!showOrderHistory);
+              }}
+            >
+              View Order History
+            </button>
+          </div>
 
-            }}
-          >
-            Check Employee Schedules
-          </button>
+          <div className="ProductUsageChart">
+            <button
+              onClick={() => {
+                handleProductUsageChart();
+              }}
+            >
+              Product Usage Chart
+            </button>
+          </div>
+
+          <div className="Inventory">
+            <button
+              onClick={() => {
+                handleInventory();
+              }}
+            >
+              Inventory
+            </button>
+          </div>
+
+          <div className="SalesReport">
+            <button
+              onClick={() => {
+                handleSalesReport();
+              }}
+            >
+              Sales Report
+            </button>
+          </div>
+
+          <div className="ExcessReport">
+            <button
+              onClick={() => {
+                handleExcessReport();
+              }}
+            >
+              Excess Report
+            </button>
+          </div>
+
+          <div className="RestockReport">
+            <button
+              onClick={() => {
+                handleRestockReport();
+              }}
+            >
+              Restock Report
+            </button>
+          </div>
+
+          <div className="UpdateItems">
+            <button
+              onClick={() => {
+                handleUpdateItems();
+              }}
+            >
+              Update Items
+            </button>
+          </div>
+
+          <div className="TrendReport">
+            <button
+              onClick={() => {
+                handleTrendReport();
+              }}
+            >
+              Ordering Trend Report
+            </button>
+          </div>
+
+          <div className="PopularityAnalysis">
+            <button
+              onClick={() => {
+                handlePopularityAnalysis();
+              }}
+            >
+              Popularity Analysis
+            </button>
+          </div>
+          
+          {/* <div className="DeleteOrder">
+            <label>
+              Delete Orders by Number:
+              <input
+                type="number"
+                value={deleteOrderNumber}
+                id = "myInput"
+                onChange={(e) => setDeleteOrderNumber(e.target.value)}
+              />
+              <button onClick={() =>handleDeleteOrderItems(1)}>Delete Orders</button>
+            </label>
+          </div> */}
         </div>
-        <div className="OrderHistory">
-          <button
-            onClick={() => {
-              handleViewOrderHistory();
-              setShowEmployeeTable(false);
-              setShowOrderHistory(!showOrderHistory);
-            }}
-          >
-            View Order History
-          </button>
-        </div>
-
-        <label>
-          Delete Orders by Number:
-          <input
-            type="number"
-            value={deleteOrderNumber}
-            id = "myInput"
-            onChange={(e) => setDeleteOrderNumber(e.target.value)}
-          />
-          <button onClick={() =>handleDeleteOrderItems(1)}>Delete Orders</button>
-        </label>
 
         {showOrderHistory && (
         <div>
@@ -180,8 +310,7 @@ const Manager = () => {
           <button
             onClick={() => {
               setIndex((prevIndex) => prevIndex + 20);
-            }}
-          >
+            }}>
             Next Orders
           </button>
         </div>
@@ -236,7 +365,11 @@ const Manager = () => {
                 </tbody>
               </table>
             )}
-          </div>
+
+            
+
+            
+          {/* </div> */}
     </Layout>
   );
 };
