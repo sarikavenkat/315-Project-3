@@ -125,10 +125,6 @@ const Manager = () => {
     console.log("Appending order specifics to order history");
   };
 
-  // const [showPopup, setShowPopup] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-
   const handleProductUsageChart = () => {
 
   };
@@ -139,24 +135,99 @@ const Manager = () => {
   };
 
   // TODO
+  useEffect(() => {
+    // Fetch inventory data on component mount
+    fetch('http://localhost:5000/api/inventory')
+      .then(response => response.json())
+      .then(data => setInventory(data))
+      .catch(error => console.error('Error:', error));
+  }, []);
+
+  const [inventory, setInventory] = useState([]);
+  const [selectedItem, setSelectedItem] = useState('');
+  const [newQuantity, setNewQuantity] = useState(0);
+  const [showInventory, setShowInventory] = useState(false)
+  
   const handleInventory = () => {
-
+    setShowInventory(!showInventory)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
   }
 
-  // TODO
+  const handleQuantityUpdate = () => {
+    // Update quantity when the button is clicked
+    if (selectedItem && newQuantity !== '') {
+      fetch(`http://localhost:5000/api/inventory/${selectedItem}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ quantity: newQuantity }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message);
+          // Refresh the inventory data after updating quantity
+          fetch('http://localhost:5000/api/inventory')
+            .then(response => response.json())
+            .then(data => setInventory(data))
+            .catch(error => console.error('Error:', error));
+        })
+        .catch(error => console.error('Error:', error));
+    }
+  };
+
+  const [salesData, setSalesData] = useState([]);
+  const [SALEstartDate, setSALEStartDate] = useState('');
+  const [SALEendDate, setSALEEndDate] = useState('');
+  const [showSalesRep, setshowSalessRep] = useState(false)
+
   const handleSalesReport = () => {
-
+    setshowSalessRep(!showSalesRep)
   }
 
-   // TODO
+  const processSalesReport = () => {
+    console.log(SALEstartDate, SALEendDate)
+    if (SALEstartDate && SALEendDate) {
+      fetch(`http://localhost:5000/api/sales-report?start=${SALEstartDate}&end=${SALEendDate}`)
+        .then(response => response.json())
+        .then(data => setSalesData(data))
+        .catch(error => console.error('Error:', error));
+    } 
+  }
+
+
+
+  const [excessData, setExcessData] = useState([]);
+  const [thresholdDate, setThresholdDate] = useState('');
+  const [showExcessReport, setshowExcessReport] = useState(false)
+
   const handleExcessReport = () => {
-
+    setshowExcessReport(!showExcessReport)
   }
 
+  const processExcessReport = () => {
+    if (thresholdDate) {
+      fetch(`http://localhost:5000/api/excess-report?thresholdDate=${thresholdDate}`)
+        .then(response => response.json())
+        .then(data => setExcessData(data))
+        .catch(error => console.error('Error:', error));
+    }
+  };
+
+  const [restockData, setRestockData] = useState([]);
+  const [showRestock, setshowRestock] = useState(false)
   // TODO
   const handleRestockReport = () => {
-
+    setshowRestock(!showRestock)
   }
+
+  const processRestockReport = () => {
+    fetch('http://localhost:5000/api/restock-report')
+      .then(response => response.json())
+      .then(data => setRestockData(data))
+      .catch(error => console.error('Error:', error));
+  };
 
   // TODO
   const handleUpdateItems = () => {
@@ -175,7 +246,7 @@ const Manager = () => {
 
   const [showEmployeeTable, setShowEmployeeTable] = useState(false);
   const [showOrderHistory, setShowOrderHistory] = useState(false);
-  const [showProductUsageChart, setshowProductUsageChart] = useState(false);
+  // const [showProductUsageChart, setshowProductUsageChart] = useState(false);
 
   return (
     <Layout>
@@ -190,6 +261,7 @@ const Manager = () => {
                 handleCheckEmployeeSchedules();
                 setShowEmployeeTable(!showEmployeeTable);
                 setShowOrderHistory(false);
+                setShowInventory(false)
 
               }}
             >
@@ -317,28 +389,30 @@ const Manager = () => {
       )}
 
             {showEmployeeTable && !showOrderHistory && (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>ID</th>
-                    <th>Next Work Day</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredEmployeeData.map((employee, index) => (
-                    <tr key={index}>
-                      <td>{employee.name}</td>
-                      <td>{employee.id}</td>
-                      <td>{employee.next_work_day}</td>
-                      <td>{employee.start_time}</td>
-                      <td>{employee.end_time}</td>
+              <div className="">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>ID</th>
+                      <th>Next Work Day</th>
+                      <th>Start Time</th>
+                      <th>End Time</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {filteredEmployeeData.map((employee, index) => (
+                      <tr key={index}>
+                        <td>{employee.name}</td>
+                        <td>{employee.id}</td>
+                        <td>{employee.next_work_day}</td>
+                        <td>{employee.start_time}</td>
+                        <td>{employee.end_time}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
 
             {showOrderHistory && !showEmployeeTable && (
@@ -366,7 +440,156 @@ const Manager = () => {
               </table>
             )}
 
-            
+      {showInventory && (
+        <div>
+          <label htmlFor="itemDropdown">Select Item:</label>
+          <select id="itemDropdown" onChange={(e) => setSelectedItem(e.target.value)}>
+            {inventory.map(item => (
+              <option key={item.id} value={item.id}>{item.name}</option>
+            ))}
+          </select>
+
+          <label htmlFor="quantityInput">Enter Quantity:</label>
+          <input type="number" id="quantityInput" value={newQuantity} onChange={(e) => setNewQuantity(e.target.value)} min="0" />
+
+          <button onClick={handleQuantityUpdate}>Update Quantity</button>
+
+
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {inventory.map(item => (
+                <tr key={item.id}>
+                  <td>{item.name}</td>
+                  <td>{item.quantity}</td>
+                  <td>{item.price}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          
+        </div>
+      )}
+
+      {showSalesRep && (
+        <div>
+        <h2>Sales Report</h2>
+  
+        <label htmlFor="startDateInput">Start Date:</label>
+        <input
+          type="date"
+          id="startDateInput"
+          value={SALEstartDate}
+          onChange={(e) => setSALEStartDate(e.target.value)}
+        />
+  
+        <label htmlFor="endDateInput">End Date:</label>
+        <input
+          type="date"
+          id="endDateInput"
+          value={SALEendDate}
+          onChange={(e) => setSALEEndDate(e.target.value)}
+        />
+  
+        <button onClick={processSalesReport}>Generate Report</button>
+  
+        {salesData.length > 0 && (
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Item Name</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                {salesData.map(item => (
+                  <tr key={item.order_id}>
+                    <td>{item.order_id}</td>
+                    <td>{item.item_name}</td>
+                    <td>{item.quantity}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+      )}
+
+      {showExcessReport && (
+        <div>
+        <h2>Excess Report</h2>
+  
+        <label htmlFor="thresholdDateInput">Threshold Date:</label>
+        <input
+          type="date"
+          id="thresholdDateInput"
+          value={thresholdDate}
+          onChange={(e) => setThresholdDate(e.target.value)}
+        />
+  
+        <button onClick={processExcessReport}>Generate Report</button>
+  
+        {excessData.length > 0 && (
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Quantity Sold</th>
+                </tr>
+              </thead>
+              <tbody>
+                {excessData.map(item => (
+                  <tr key={item.item_name}>
+                    <td>{item.item_name}</td>
+                    <td>{item.total_sold}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+      )}
+
+      {showRestock && (
+        <div>
+        <h2>Restock Report</h2>
+  
+        <button onClick={processRestockReport}>Generate Report</button>
+  
+        {restockData.length > 0 && (
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                {restockData.map(item => (
+                  <tr key={item.name}>
+                    <td>{item.name}</td>
+                    <td>{item.quantity}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+      )}   
 
             
           {/* </div> */}

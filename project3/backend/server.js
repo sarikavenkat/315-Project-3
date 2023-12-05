@@ -162,6 +162,91 @@ app.get("/api/login", async (req, res) => {
   }
 });
 
+app.get('/api/inventory', async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT items.name, inventory.quantity, items.price FROM inventory inner join items on items.itemid = inventory.itemid');
+    res.send(result.rows);
+    client.release();
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+app.put('/api/inventory/:id', async (req, res) => {
+  const { id } = req.params;
+  const { quantity } = req.body;
+  try {
+    const client = await pool.connect();
+    await client.query('UPDATE inventory SET quantity = $1 WHERE name = $2', [quantity, id]);
+    res.send({ message: `Updated item ${id} quantity to ${quantity}` });
+    client.release();
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+app.get('/api/sales-report', async (req, res) => {
+  const { start, end } = req.query;
+  try {
+    const client = await pool.connect();
+    console.log(`SELECT orderitems.order_id, orderitems.item_name, orderitems.quantity
+    FROM orderitems
+    INNER JOIN orders ON orders.orderid = orderitems.order_id
+    WHERE orders.orderdatetime BETWEEN '${start} 00:00:00' AND '${end} 23:59:59'
+    ORDER BY orders.orderdatetime`)
+    const result = await client.query(
+      `SELECT orderitems.order_id, orderitems.item_name, orderitems.quantity
+       FROM orderitems
+       INNER JOIN orders ON orders.orderid = orderitems.order_id
+       WHERE orders.orderdatetime BETWEEN '${start} 00:00:00' AND '${end} 23:59:59'
+       ORDER BY orders.orderdatetime`
+    );
+    res.send(result.rows);
+    client.release();
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+app.get('/api/excess-report', async (req, res) => {
+  const { thresholdDate } = req.query;
+  try {
+    const client = await pool.connect();
+    const result = await client.query(
+      `SELECT orderitems.item_name, SUM(orderitems.quantity) AS total_sold
+       FROM orders
+       INNER JOIN orderitems ON orders.orderid = orderitems.order_id
+       WHERE orders.orderdatetime BETWEEN '${thresholdDate} 00:00:00' AND '2023-12-18 23:59:59'
+       GROUP BY orderitems.item_name
+       HAVING SUM(orderitems.quantity) < 10
+       ORDER BY total_sold ASC`
+    );
+    res.send(result.rows);
+    client.release();
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+app.get('/api/restock-report', async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query(
+      `SELECT items.name, inventory.quantity
+       FROM inventory
+       INNER JOIN items ON items.itemid = inventory.itemid
+       WHERE inventory.quantity < 20`
+    );
+    res.send(result.rows);
+    client.release();
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+
+
 app.get("/api/emplogin", async (req, res) => {
 
   const { id, password } = req.query;
