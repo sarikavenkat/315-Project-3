@@ -10,6 +10,12 @@ const Manager = () => {
   const [orderList, setOrderList] = useState([]);
   const [index, setIndex] = useState(0);
   const [selectedSwitchPosition, setSelectedSwitchPosition] = useState('');
+  const [newUserName, setNewUserName] = useState('');
+  const [newUserID, setNewUserID] = useState('');
+  const [newUserPosition, setNewUserPosition] = useState('');
+  const [newUserNextWorkDay, setNewUserNextWorkDay] = useState('2023-10-07');
+  const [newUserStartTime, setNewUserStartTime] = useState('08:00:00');
+  const [newUserEndTime, setNewUserEndTime] = useState('12:00:00');
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -138,6 +144,41 @@ const Manager = () => {
   
       // Refresh the employee data after deletion
       fetchEmployees();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleAddUser = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/employees', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: newUserName,
+          id: newUserID,
+          position: newUserPosition,
+          next_work_day: newUserNextWorkDay,
+          start_time: newUserStartTime,
+          end_time: newUserEndTime,
+          // Add other properties as needed
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add new user');
+      }
+
+      // Refresh the employee data after adding a new user
+      fetchEmployees();
+      setNewUserName('');
+      setNewUserID('');
+      setNewUserPosition('');
+      setNewUserNextWorkDay('2023-10-07');
+      setNewUserStartTime('08:00:00');
+      setNewUserEndTime('12:00:00');
     } catch (error) {
       console.error('Error:', error);
     }
@@ -648,6 +689,59 @@ const Manager = () => {
             {showEmployeeTable && !showOrderHistory && (
               <div className="">
                 <h2>Employee Schedules</h2>
+                {/* Add New User Form */}
+                <div>
+                  <label htmlFor="newUserName">Name:</label>
+                  <input
+                    type="text"
+                    id="newUserName"
+                    value={newUserName}
+                    onChange={(e) => setNewUserName(e.target.value)}
+                  />
+                  <label htmlFor="newUserID">ID:</label>
+                  <input
+                    type="text"
+                    id="newUserID"
+                    value={newUserID}
+                    onChange={(e) => setNewUserID(e.target.value)}
+                  />
+                  <label htmlFor="newUserPosition">Position:</label>
+                  <select
+                    id="newUserPosition"
+                    value={newUserPosition}
+                    onChange={(e) => setNewUserPosition(e.target.value)}
+                  >
+                    <option value="cashier">Cashier</option>
+                    <option value="manager">Manager</option>
+                    <option value="server">Server</option>
+                    <option value="busser">Busser</option>
+                    <option value="cook">Cook</option>
+                    <option value="barista">Barista</option>
+                    {/* Add other position options as needed */}
+                  </select>
+                  <label htmlFor="newUserNextWorkDay">Next Work Day:</label>
+                  <input
+                    type="text"
+                    id="newUserNextWorkDay"
+                    value={newUserNextWorkDay}
+                    onChange={(e) => setNewUserNextWorkDay(e.target.value)}
+                  />
+                  <label htmlFor="newUserStartTime">Start Time:</label>
+                  <input
+                    type="text"
+                    id="newUserStartTime"
+                    value={newUserStartTime}
+                    onChange={(e) => setNewUserStartTime(e.target.value)}
+                  />
+                  <label htmlFor="newUserEndTime">End Time:</label>
+                  <input
+                    type="text"
+                    id="newUserEndTime"
+                    value={newUserEndTime}
+                    onChange={(e) => setNewUserEndTime(e.target.value)}
+                  />
+                  <button onClick={handleAddUser}>Add New User</button>
+                </div>
                 {console.log(filteredEmployeeData)}
                 <table>
                   <thead>

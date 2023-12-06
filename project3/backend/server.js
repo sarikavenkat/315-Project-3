@@ -72,6 +72,33 @@ app.get("/api/employees", async (req, res) => {
   }
 });
 
+app.post('/api/employees', async (req, res) => {
+  try {
+    const {
+      name,
+      id,
+      position,
+      next_work_day,
+      start_time,
+      end_time,
+      // Add other properties as needed
+    } = req.body;
+
+    const client = await pool.connect();
+    const query = `
+      INSERT INTO employees (name, id, position, next_work_day, start_time, end_time, phone_number, hourly_pay, manager, password)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    `;
+    await client.query(query, [name, id, position, next_work_day, start_time, end_time, '1234567890', 12.25, 'Katharina Johnson', '11111']);
+    client.release();
+
+    res.json({ message: 'Employee added successfully' });
+  } catch (error) {
+    console.error('Error adding employee:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 app.put('/api/employees/:employeeId', async (req, res) => {
   const { employeeId } = req.params;
   const { position, password } = req.body;
