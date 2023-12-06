@@ -1,18 +1,32 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const keys = require('./keys');
+const User = require('./user-model');
 
 passport.use(
   new GoogleStrategy(
     {
-      clientID: oauth.env.CLIENT_ID,
-      clientSecret: oauth.env.CLIENT_SECRET,
-      callbackURL: '/auth/google/callback',
+      clientID: keys.google.clientID,
+      clientSecret: keys.google.clientSecret,
+      callbackURL: '/auth/google/redirect',
     },
     (accessToken, refreshToken, profile, done) => {
         // Code to handle user authentication and retrieval
-        //console.log('TCL: profile', profile); //Gives profile info
-        //console.log('TCL: refreshToken', refreshToken); //Null
-        //console.log('TCL: accessToken', accessToken); 
+        User.findOne({googleId:profile.id}).then((currentUser)=>{
+          if(currentUser){
+            //user already exists
+
+          }
+          else{
+            new User({
+              username: profile.displayName,
+              googleId: profile.id
+            }).save().then((newUser)=>{
+              //new user created
+            });
+          }
+        });
+        
         // This attaches the user profile to the req object
         done(null, profile);
     }

@@ -49,6 +49,10 @@ const Login = () => {
         navigate('/emplogin');
     };
 
+    const handleGoogleClick = () =>{
+        navigate('/auth/google');
+    }
+
     return (
         <Layout>
             <div className="loginField">
@@ -78,6 +82,9 @@ const Login = () => {
                     <button onClick={handleNaviClick}>
                         Employee Login
                     </button>
+                <button onClick={handleGoogleClick}>
+                    Google Login
+                </button>
                 </div>
             </div>
         </Layout>
