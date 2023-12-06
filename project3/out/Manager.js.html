@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Manager.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Manager.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import "./managerstyle.css";
+import Layout from '../../Layout';
+
+/**A module representing the HTML for Sweet Paris' home page.
+ * @module Manager
+ * @returns HTML for Manager page
+*/
+const Manager = () => {
+  const [employee, setEmployee] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [filteredEmployeeData, setFilteredData] = useState([]);
+  const [orderList, setOrderList] = useState([]);
+  const [deleteOrderNumber, setDeleteOrderNumber] = useState(0);
+  const [index, setIndex] = useState(0);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { state } = location;
+  const managerName = state &amp;&amp; state.managerName;
+
+  useEffect(() => {
+    fetchEmployees();
+    fetchOrders();
+  }, []);
+
+  /**Fetches record of orders from Postgres database
+   * @alias module:Manager.fetchOrders
+   */
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/orders");
+      if (response.ok) {
+        console.log("fetchorders");
+        const data = await response.json();
+        setOrders(data);
+      } else {
+        throw new Error("Failed to fetch orders");
+      }
+    } catch (error) {
+      console.error("Error fetching orders", error);
+    }
+  };
+
+  /** Fetches list of employees from Postgres database
+   * @alias module:Manager.fetchEmployees
+   */
+  const fetchEmployees = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/employees");
+      if (response.ok) {
+        console.log("fetchemployees");
+        const data = await response.json();
+        setEmployee(data);
+      } else {
+        throw new Error("Failed to fetch employees");
+      }
+    } catch (error) {
+      console.error("Error fetching employees", error);
+    }
+  };
+  /** Fetches details for each employee's next work day from the Postgres database
+   * @alias module:Manager.handleCheckEmployeeSchedules
+  */
+  const handleCheckEmployeeSchedules = () => {
+    console.log(employee);
+    const filteredEmployee = [];
+    employee.forEach((element) => {
+      filteredEmployee.push({
+        name: element.name,
+        id: element.id,
+        next_work_day: element.next_work_day.slice(0, -14),
+        start_time: element.start_time,
+        end_time: element.end_time,
+      });
+    });
+    setFilteredData(filteredEmployee);
+    console.log(filteredEmployee.length);
+    console.log("Tracking employee work schedule");
+  };
+
+  /** Views 20 of the orders from the orders database
+   * @alias module:Manager.handleViewOrderHistory
+   */
+  const handleViewOrderHistory = () => {
+    const subsetStartIndex = index;
+    const subsetEndIndex = index + 20;
+    const tempOrderList = [];
+
+    if (subsetEndIndex &lt; orders.length &amp;&amp; subsetStartIndex >= 0) {
+      for (let i = subsetStartIndex; i &lt; subsetEndIndex; i++) {
+        tempOrderList.push({
+          orderid: orders[i].orderid,
+          orderdatetime:
+            orders[i].orderdatetime.slice(0, -14) +
+            " " +
+            orders[i].orderdatetime.slice(-13, -5),
+          customerid: orders[i].customerid,
+          price:"$" +orders[i].price,
+          calories: orders[i].calories
+        });
+      }
+      setOrderList(tempOrderList);
+    }
+
+    //console.log(orderList);
+    console.log(orders.length);
+    console.log("Viewing order history");
+  };
+  /** Removes an order from the postgres database
+   * @alias module:Manager.handleDeleteOrderItems
+   * @param {int} orderId - Specifies which order to remove
+   */
+  const handleDeleteOrderItems = async (orderId) => {
+    
+    try {
+      const response = await fetch(`http://localhost:5000/api/removeorder/${orderId}`, {
+        method: 'DELETE',
+      });
+      console.log("try");
+
+      if (response.ok) {
+        console.log("if");
+        console.log('Order removed successfully');
+        fetchOrders();
+      } else if (response.status === 404) {
+        console.log("else if");
+        console.log('Order not found');
+      } else {
+        console.log("else");
+        throw new Error('Failed to remove order');
+      }
+    } catch (error) {
+        console.log("error");
+        console.error('Error removing order', error);
+    }
+  };
+
+  /** Currently "appends order specifics to order history"-update this later
+   *  @alias module:Manager.handleAppendToOrderHistory
+   */
+  const handleAppendToOrderHistory = () => {
+
+    console.log("Appending order specifics to order history");
+  };
+
+  /** Navigates back to employeelogin, thus "logging out"
+   *  @alias module:Manager.handleLogout
+   */
+  const handleLogout = () => {
+    navigate("/emplogin");
+  };
+
+  const [showEmployeeTable, setShowEmployeeTable] = useState(false);
+  const [showOrderHistory, setShowOrderHistory] = useState(false);
+
+  return (
+    &lt;Layout>
+      &lt;div>
+        &lt;h1>Welcome, Manager: {managerName}&lt;/h1>
+        &lt;button onClick={handleLogout}>Logout&lt;/button>
+
+        &lt;div className="employee-times">
+          &lt;button
+            onClick={() => {
+              handleCheckEmployeeSchedules();
+              setShowEmployeeTable(!showEmployeeTable);
+              setShowOrderHistory(false);
+
+            }}
+          >
+            Check Employee Schedules
+          &lt;/button>
+        &lt;/div>
+        &lt;div className="OrderHistory">
+          &lt;button
+            onClick={() => {
+              handleViewOrderHistory();
+              setShowEmployeeTable(false);
+              setShowOrderHistory(!showOrderHistory);
+            }}
+          >
+            View Order History
+          &lt;/button>
+        &lt;/div>
+
+        &lt;label>
+          Delete Orders by Number:
+          &lt;input
+            type="number"
+            value={deleteOrderNumber}
+            id = "myInput"
+            onChange={(e) => setDeleteOrderNumber(e.target.value)}
+          />
+          &lt;button onClick={() =>handleDeleteOrderItems(1)}>Delete Orders&lt;/button>
+        &lt;/label>
+
+        {showOrderHistory &amp;&amp; (
+        &lt;div>
+          &lt;button onClick={() => setIndex((prevIndex) => prevIndex - 20)}>
+            Previous Orders
+          &lt;/button>
+          &lt;button
+            onClick={() => {
+              setIndex((prevIndex) => prevIndex + 20);
+            }}
+          >
+            Next Orders
+          &lt;/button>
+        &lt;/div>
+      )}
+
+            {showEmployeeTable &amp;&amp; !showOrderHistory &amp;&amp; (
+              &lt;table>
+                &lt;thead>
+                  &lt;tr>
+                    &lt;th>Name&lt;/th>
+                    &lt;th>ID&lt;/th>
+                    &lt;th>Next Work Day&lt;/th>
+                    &lt;th>Start Time&lt;/th>
+                    &lt;th>End Time&lt;/th>
+                  &lt;/tr>
+                &lt;/thead>
+                &lt;tbody>
+                  {filteredEmployeeData.map((employee, index) => (
+                    &lt;tr key={index}>
+                      &lt;td>{employee.name}&lt;/td>
+                      &lt;td>{employee.id}&lt;/td>
+                      &lt;td>{employee.next_work_day}&lt;/td>
+                      &lt;td>{employee.start_time}&lt;/td>
+                      &lt;td>{employee.end_time}&lt;/td>
+                    &lt;/tr>
+                  ))}
+                &lt;/tbody>
+              &lt;/table>
+            )}
+
+            {showOrderHistory &amp;&amp; !showEmployeeTable &amp;&amp; (
+              &lt;table>
+                &lt;thead>
+                  &lt;tr>
+                    &lt;th>Order ID&lt;/th>
+                    &lt;th>customer ID&lt;/th>
+                    &lt;th>Date/Time&lt;/th>
+                    &lt;th>Price&lt;/th>
+                    &lt;th>Calories&lt;/th>
+                  &lt;/tr>
+                &lt;/thead>
+                &lt;tbody>
+                  {orderList.map((orders, index) => (
+                    &lt;tr key={index}>
+                      &lt;td>{orders.orderid}&lt;/td>
+                      &lt;td>{orders.customerid}&lt;/td>
+                      &lt;td>{orders.orderdatetime}&lt;/td>
+                      &lt;td>{orders.price}&lt;/td>
+                      &lt;td>{orders.calories}&lt;/td>
+                    &lt;/tr>
+                  ))}
+                &lt;/tbody>
+              &lt;/table>
+            )}
+          &lt;/div>
+    &lt;/Layout>
+  );
+};
+
+export default Manager;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Manager.html">Manager</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Dec 06 2023 15:42:56 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

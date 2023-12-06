@@ -3,6 +3,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "./managerstyle.css";
 import Layout from '../../Layout';
 
+/**A module representing the HTML for Sweet Paris' home page.
+ * @module Manager
+ * @returns HTML for Manager page
+*/
 const Manager = () => {
   const [employee, setEmployee] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -27,6 +31,9 @@ const Manager = () => {
     fetchOrders();
   }, []);
 
+  /**Fetches record of orders from Postgres database
+   * @alias module:Manager.fetchOrders
+   */
   const fetchOrders = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/orders");
@@ -42,6 +49,9 @@ const Manager = () => {
     }
   };
 
+  /** Fetches list of employees from Postgres database
+   * @alias module:Manager.fetchEmployees
+   */
   const fetchEmployees = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/employees");
@@ -50,13 +60,15 @@ const Manager = () => {
         const data = await response.json();
         setEmployee(data);
       } else {
-        throw new Error("Failed to fetch menu items");
+        throw new Error("Failed to fetch employees");
       }
     } catch (error) {
-      console.error("Error fetching menu items", error);
+      console.error("Error fetching employees", error);
     }
   };
-
+  /** Fetches details for each employee's next work day from the Postgres database
+   * @alias module:Manager.handleCheckEmployeeSchedules
+  */
   const handleCheckEmployeeSchedules = () => {
     console.log(employee);
     const filteredEmployee = [];
@@ -183,7 +195,7 @@ const Manager = () => {
       console.error('Error:', error);
     }
   };
-
+  
   const handleViewOrderHistory = () => {
     const subsetStartIndex = index;
     const subsetEndIndex = index + 20;
@@ -209,20 +221,11 @@ const Manager = () => {
     console.log(orders.length);
     console.log("Viewing order history");
   };
-
-  const handleDeleteOrder = (orderid) => {
-    fetch(`http://localhost:5000/api/orders/${orderid}`, {
-      method: 'DELETE',
-    })
-      .then(response => response.json())
-      .then(() => {
-        fetchItems(); // Refresh the items after deleting one
-      })
-      .catch(error => console.error('Error:', error));
-  };
-
-
-  // const handleDeleteOrderItems = async (orderId) => {
+  /** Removes an order from the postgres database
+   * @alias module:Manager.handleDeleteOrderItems
+   * @param {int} orderId - Specifies which order to remove
+   */
+  const handleDeleteOrderItems = async (orderId) => {
     
   //   try {
   //     const response = await fetch(`http://localhost:5000/api/removeorder/${orderId}`, {
@@ -280,6 +283,9 @@ const Manager = () => {
   };
     
 
+  /** Navigates back to employeelogin, thus "logging out"
+   *  @alias module:Manager.handleLogout
+   */
   const handleLogout = () => {
     navigate("/emplogin");
   };

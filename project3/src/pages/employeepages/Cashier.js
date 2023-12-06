@@ -3,6 +3,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "./cashierstyle.css";
 import Layout from '../../Layout';
 
+/**A module representing the HTML for Sweet Paris' cashier page.
+ * @module Cashier
+ * @returns HTML for Cashier page
+ */
 const Cashier = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [itemQuantities, setItemQuantities] = useState(menuItems.map(() => 0));
@@ -23,7 +27,9 @@ const Cashier = () => {
   useEffect(() => {
     fetchMenuItems();
   }, []);
-
+  /** Fetches menu items from postgres database, which the site then displays
+   * @alias module:Cashier.fetchMenuItems
+   */
   const fetchMenuItems = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/items");
@@ -38,17 +44,27 @@ const Cashier = () => {
     }
   };
 
+  /** Returns the sum of the prices of every item ordered
+   * @alias module:Cashier.calculateTotalPrice
+  */
   const calculateTotalPrice = () => {
     return cart.reduce((total, item) => total + item.totalPrice, 0);
   };
-
+  /**Changes the quantity of each item ordered, at each menu item
+   * @alias module:Cashier.handleQuantityChange
+   * @param {num} index - The index of the item to change the amount of
+   * @param {num} newQuantity - The quantity of items to set
+   */
   const handleQuantityChange = (index, newQuantity) => {
     newQuantity = Math.max(0, newQuantity);
     const updatedQuantities = [...itemQuantities];
     updatedQuantities[index] = newQuantity;
     setItemQuantities(updatedQuantities);
   };
-
+  /**Adds a menu item to the order
+   * @alias module:Cashier.handleAddToCart
+   * @param {num} index  - The index of the item to add
+  */
   const handleAddToCart = (index) => {
     const quantity = itemQuantities[index];
     if (quantity > 0) {
@@ -76,7 +92,10 @@ const Cashier = () => {
       setItemQuantities(updatedQuantities);
     }
   };
-
+  /** Removes a menu item from the order
+   * @alias module:Cashier.handleRemoveFromCart
+   * @param {num} index - The index of the item to remove
+   */
   const handleRemoveFromCart = (index) => {
     const updatedCart = [...cart];
     const itemToRemove = updatedCart[index];
@@ -96,7 +115,9 @@ const Cashier = () => {
       setCart(updatedCart);
     }
   };
-
+  /** Puts the completed order into the postgrees database
+   * @alias module:Cashier.handleSubmitOrder
+   */
   const handleSubmitOrder = async () => {
     if (customerName.trim() === "") {
       alert("Please enter Customer's name before submitting the order.");
@@ -115,13 +136,19 @@ const Cashier = () => {
     }
   };
 
+  /** Toggles whether a given category of menu items is listed on the site
+   * @alias module:Cashier.toggleCategory
+   * @param {string} category - Specifies which category to toggle
+   */
   const toggleCategory = (category) => {
     setOpenCategories((prevOpenCategories) => ({
       ...prevOpenCategories,
       [category]: !prevOpenCategories[category],
     }));
   };
-
+  /** Navigates back to employeelogin, thus "logging out"
+   *  @alias module:Cashier.handleLogout
+   */
   const handleLogout = () => {
     navigate('/emplogin'); 
   };

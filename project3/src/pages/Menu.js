@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import Layout from '../Layout';
 import "./menustyle.css";
 
+/** A module representing the HTML for Sweet Paris' menu page.
+ *  @module Menu
+ *  @returns HTML for Menu page
+ */
 const Menu = () => {
   const [menuItems, setMenuItems] = useState([]);
 
@@ -9,6 +13,9 @@ const Menu = () => {
     fetchMenuItems();
   }, []);
 
+  /** Fetches menu items from postgres database, which the site then displays
+   * @alias module:Menu.fetchMenuItems
+  */
   const fetchMenuItems = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/items");

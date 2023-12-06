@@ -13,6 +13,7 @@ import { ThemeProvider, useTheme } from './ThemeContext';
 import './dark.css';
 import './style.css';
 
+/** Returns header and footer that is present on all pages */
 function App() {
   const { isDarkTheme, toggleTheme } = useTheme();
 
