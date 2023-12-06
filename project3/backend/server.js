@@ -8,6 +8,16 @@ const { Pool } = require("pg");
 
 const app = express();
 const cors = require("cors");
+const { auth } = require('express-openid-connect');
+
+const config = {
+  authRequired: false,
+  auth0Logout: true,
+  secret: keys.auth0.clientSecret,
+  baseURL: 'http://localhost:3000',
+  clientID: keys.auth0.clientID,
+  issuerBaseURL: keys.auth0.baseURL
+};
 
 ////const app = express();
 
@@ -27,16 +37,7 @@ mongoose.connect(keys.mongodb.dbURI, ()=>{
 });
 app.use("/auth",authRoutes);*/
 
-const { auth } = require('express-openid-connect');
 
-const config = {
-  authRequired: false,
-  auth0Logout: true,
-  secret: keys.auth0.clientSecret,
-  baseURL: 'http://localhost:3000',
-  clientID: keys.auth0.clientID,
-  issuerBaseURL: keys.auth0.baseURL
-};
 
 // auth router attaches /login, /logout, and /callback routes to the baseURL
 app.use(auth(config));
