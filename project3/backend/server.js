@@ -1,9 +1,9 @@
 const express = require("express");
-const authRoutes = require("./auth-routes");
-const passportSetup = require('./passport');
-const mongoose = require('mongoose');
+//const authRoutes = require("./auth-routes");
+//const passportSetup = require('./passport');
+//const mongoose = require('mongoose');
 const keys = require('./keys');
-const cookieSession = require('cookie-session');
+//const cookieSession = require('cookie-session');
 const { Pool } = require("pg");
 
 const app = express();
