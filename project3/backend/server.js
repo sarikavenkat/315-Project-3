@@ -1,7 +1,8 @@
 const express = require("express");
-//const authRoutes = require("./auth-routes");
-//const passportSetup = require('./passport');
-//const mongoose = require('mongoose');
+const authRoutes = require("./auth-routes");
+const passportSetup = require('./passport');
+const passport = require('passport');
+// const mongoose = require('mongoose');
 const keys = require('./keys');
 //const cookieSession = require('cookie-session');
 const { Pool } = require("pg");
@@ -19,6 +20,9 @@ const config = {
   issuerBaseURL: keys.auth0.baseURL
 };
 
+app.use(cors());
+app.use(express.json());
+
 ////const app = express();
 
 app.use(cors());
@@ -32,20 +36,15 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
+// mongoose.connect(keys.mongodb.dbURI, ()=>{
+//   console.log("connected to mongodb");
+// });
+app.use("/auth",authRoutes);
+=======
 mongoose.connect(keys.mongodb.dbURI, ()=>{
   console.log("connected to mongodb");
 });
 app.use("/auth",authRoutes);*/
-
-
-
-// auth router attaches /login, /logout, and /callback routes to the baseURL
-app.use(auth(config));
-
-// req.isAuthenticated is provided from the auth router
-app.get('/', (req, res) => {
-  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
-});
 
 const pool = new Pool({
   user: "csce315_970_03user",
@@ -77,7 +76,6 @@ app.get("/api/items", async (req, res) => {
 });
 
 
-
 app.get("/api/employees", async (req, res) => {
   try {
     const client = await pool.connect();
@@ -89,6 +87,64 @@ app.get("/api/employees", async (req, res) => {
   } catch (error) {
     console.error("Error fetching employees", error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.post('/api/employees', async (req, res) => {
+  try {
+    const {
+      name,
+      id,
+      position,
+      next_work_day,
+      start_time,
+      end_time,
+      // Add other properties as needed
+    } = req.body;
+
+    const client = await pool.connect();
+    const query = `
+      INSERT INTO employees (name, id, position, next_work_day, start_time, end_time, phone_number, hourly_pay, manager, password)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    `;
+    await client.query(query, [name, id, position, next_work_day, start_time, end_time, '1234567890', 12.25, 'Katharina Johnson', '11111']);
+    client.release();
+
+    res.json({ message: 'Employee added successfully' });
+  } catch (error) {
+    console.error('Error adding employee:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.put('/api/employees/:employeeId', async (req, res) => {
+  const { employeeId } = req.params;
+  const { position, password } = req.body;
+
+  try {
+    if (position) {
+      // Convert position to lowercase before updating
+      console.log('Employee ID:', employeeId);
+      console.log('New Position:', position);
+
+      const query = 'UPDATE employees SET position = LOWER($1) WHERE id = $2';
+      console.log('SQL Query:', query);
+
+      const result = await pool.query(query, [position, employeeId]);
+      console.log('Employee position updated successfully');
+    }
+
+    if (password) {
+      // Update the password if provided
+      const passwordQuery = 'UPDATE employees SET password = $1 WHERE id = $2';
+      await pool.query(passwordQuery, [password, employeeId]);
+      console.log('Employee password updated successfully');
+    }
+
+    res.json({ message: 'Employee details updated successfully' });
+  } catch (error) {
+    console.error('Error updating employee details:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -399,4 +455,21 @@ app.get("/api/emplogin", async (req, res) => {
 
 app.listen(5000, () => {
   console.log("Server started on port 5000");
+});
+
+app.delete('/api/employees/:employeeId', async (req, res) => {
+  const { employeeId } = req.params;
+
+  try {
+    // Use a SQL DELETE query to delete the employee
+    const query = 'DELETE FROM employees WHERE id = $1';
+    const result = await pool.query(query, [employeeId]);
+
+    console.log('Employee deleted successfully');
+
+    res.json({ message: 'Employee deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting employee:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
