@@ -245,7 +245,23 @@ app.get('/api/restock-report', async (req, res) => {
   }
 });
 
-
+app.get('/api/product-usage-chart', async (req, res) => {
+  const { start, end } = req.query;
+  try {
+    const client = await pool.connect();
+    const result = await client.query(
+      `SELECT orderitems.item_name, SUM(orderitems.quantity) AS total_sold
+       FROM orders
+       INNER JOIN orderitems ON orders.orderid = orderitems.order_id
+       WHERE orders.orderdatetime BETWEEN '${start} 00:00:00' AND '${end} 23:59:59'
+       GROUP BY orderitems.item_name
+       ORDER BY orderitems.item_name`
+    );
+    res.send(result.rows);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
 
 app.get("/api/emplogin", async (req, res) => {
 

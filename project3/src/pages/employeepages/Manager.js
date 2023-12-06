@@ -125,8 +125,22 @@ const Manager = () => {
     console.log("Appending order specifics to order history");
   };
 
-  const handleProductUsageChart = () => {
+  const [productUsageData, setProductUsageData] = useState([]);
+  const [PRODstartDate, setPRODStartDate] = useState('');
+  const [PRODendDate, setPRODEndDate] = useState('');
+  const [showProd, setshowProd] = useState(false)
 
+  const processProductUsageChart = () => {
+    if (PRODstartDate && setPRODStartDate) {
+      fetch(`http://localhost:5000/api/product-usage-chart?start=${PRODstartDate}&end=${PRODendDate}`)
+        .then(response => response.json())
+        .then(data => setProductUsageData(data))
+        .catch(error => console.error('Error:', error));
+    }
+  };
+
+  const handleProductUsageChart = () => {
+    setshowProd(!showProd)
   };
     
 
@@ -589,7 +603,52 @@ const Manager = () => {
           </div>
         )}
       </div>
-      )}   
+      )} 
+
+      {showProd && (
+        <div>
+        <h2>Product Usage Chart</h2>
+  
+        <label htmlFor="startDateInput">Start Date:</label>
+        <input
+          type="date"
+          id="startDateInput"
+          value={PRODstartDate}
+          onChange={(e) => setPRODStartDate(e.target.value)}
+        />
+  
+        <label htmlFor="endDateInput">End Date:</label>
+        <input
+          type="date"
+          id="endDateInput"
+          value={PRODendDate}
+          onChange={(e) => setPRODEndDate(e.target.value)}
+        />
+  
+        <button onClick={processProductUsageChart}>Generate Chart</button>
+  
+        {productUsageData.length > 0 && (
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Total Sold</th>
+                </tr>
+              </thead>
+              <tbody>
+                {productUsageData.map(item => (
+                  <tr key={item.item_name}>
+                    <td>{item.item_name}</td>
+                    <td>{item.total_sold}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+      )}  
 
             
           {/* </div> */}
