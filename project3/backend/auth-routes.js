@@ -3,7 +3,7 @@ const passport = require('passport');
 
 //auth login
 router.get('/login', (req,res) => {
-    res.redirect('/login');
+    res.redirect('/');
 });
 
 //auth logout
@@ -15,9 +15,11 @@ router.get('/logout', (req,res) => {
 
 
 //auth with google
-router.get('/google', ppassport.authenticate('google', {
+router.get('/google', passport.authenticate('google', {
     scope: ['profile']
-}));
+}), (req,res)=>{
+    res.send("Congratulations, you made it.")
+});
 
 //callback route for google
 router.get('/google/redirect', passport.authenticate('google'), (req, res) =>{

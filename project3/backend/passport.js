@@ -9,9 +9,11 @@ passport.use(
       clientID: keys.google.clientID,
       clientSecret: keys.google.clientSecret,
       callbackURL: '/auth/google/redirect',
+      scope: ['profile']
     },
     (accessToken, refreshToken, profile, done) => {
         // Code to handle user authentication and retrieval
+        console.log("You are in fact reaching this part in passport");
         User.findOne({googleId:profile.id}).then((currentUser)=>{
           if(currentUser){
             //user already exists
