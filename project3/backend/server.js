@@ -1,18 +1,30 @@
 const express = require("express");
-const authRoutes = require("./auth-routes");
-const passportSetup = require('./passport');
-const passport = require('passport');
-const mongoose = require('mongoose');
+//const authRoutes = require("./auth-routes");
+//const passportSetup = require('./passport');
+//const mongoose = require('mongoose');
 const keys = require('./keys');
-const cookieSession = require('cookie-session');
+//const cookieSession = require('cookie-session');
 const { Pool } = require("pg");
 
 const app = express();
 const cors = require("cors");
+const { auth } = require('express-openid-connect');
+
+const config = {
+  authRequired: false,
+  auth0Logout: true,
+  secret: keys.auth0.clientSecret,
+  baseURL: 'http://localhost:3000',
+  clientID: keys.auth0.clientID,
+  issuerBaseURL: keys.auth0.baseURL
+};
 
 ////const app = express();
 
-app.use(cookieSession({
+app.use(cors());
+app.use(express.json());
+
+/*app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,
   keys: [keys.session.cookieKey]
 }));
@@ -23,7 +35,17 @@ app.use(passport.session());
 mongoose.connect(keys.mongodb.dbURI, ()=>{
   console.log("connected to mongodb");
 });
-app.use("/auth",authRoutes);
+app.use("/auth",authRoutes);*/
+
+
+
+// auth router attaches /login, /logout, and /callback routes to the baseURL
+app.use(auth(config));
+
+// req.isAuthenticated is provided from the auth router
+app.get('/', (req, res) => {
+  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+});
 
 const pool = new Pool({
   user: "csce315_970_03user",

@@ -3,20 +3,35 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../Layout';
 import './loginstyle.css';
 
+
+/** A module representing the HTML for Sweet Paris' login page.
+ *  @module Login
+ * @returns HTML for login page*/
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const navigate = useNavigate();
-
+    
+    /** Helper function to set username to user input
+     * @alias module:Login.handleUserChange
+     * @param {string} newName - The user input to set the username to
+    */
     const handleUserChange = (newName) => {
         setUsername(newName);
     };
-
+    /** Helper function to set password to user input
+     * @alias module:Login.handlePasswordChange
+     * @param {string} newPass - The user input to set the password to
+    */
     const handlePasswordChange = (newPass) => {
         setPassword(newPass);
     };
 
+    /**Sends username and password to postgres database,
+     * then determine if the login is valid
+     * @alias module:Login.handleLoginSubmission
+     */
     const handleLoginSubmission = async () => {
         if (username.trim() === "") {
             alert("Username not provided, try again.");
@@ -44,11 +59,17 @@ const Login = () => {
         }
     };
 
+    /**Navigates to separate employee login page 
+     * @alias module:Login.handleNaviClick
+    */
     const handleNaviClick = () => {
         // Use the navigate function to go to the desired page
         navigate('/emplogin');
     };
 
+    /**Navigates to separate login page that authenticates through google
+     * @alias module:Login.handleGoogleClick
+    */
     const handleGoogleClick = () =>{
         navigate('/auth/google');
     }

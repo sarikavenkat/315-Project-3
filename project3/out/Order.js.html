@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Order.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Order.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from "react";
+import "./orderstyle.css";
+import Layout from "../Layout";
+
+/**A module to represent the HTML for the page where customers place orders.
+   * @module Order
+   * @returns HTML for Orders page
+   */
+const Order = () => {
+  // const foodItems = [
+  //   { name: "Item 1", price: 10.99 },
+  //   { name: "Item 2", price: 12.49 },
+  //   { name: "Item 3", price: 8.99 },
+  //   { name: "Item 4", price: 9.49 },
+  //   { name: "Item 5", price: 7.99 },
+  //   { name: "Item 6", price: 11.99 },
+  // ];
+
+  // const drinkItems = [
+  //   { name: "Drink Item 1", price: 2.99 },
+  //   { name: "Drink Item 2", price: 3.49 },
+  //   { name: "Drink Item 3", price: 1.99 },
+  //   { name: "Drink Item 4", price: 2.49 },
+  //   { name: "Drink Item 5", price: 3.99 },
+  //   { name: "Drink Item 6", price: 4.99 },
+  // ];
+
+  // const nonFoodItems = [
+  //   { name: "Non-Food Item 1", price: 5.99 },
+  //   { name: "Non-Food Item 2", price: 7.49 },
+  //   { name: "Non-Food Item 3", price: 6.99 },
+  //   { name: "Non-Food Item 4", price: 8.49 },
+  //   { name: "Non-Food Item 5", price: 4.99 },
+  //   { name: "Non-Food Item 6", price: 5.49 },
+  // ];
+
+  // const seasonalItems = [
+  //   { name: "Seasonal Item 1", price: 15.99 },
+  //   { name: "Seasonal Item 2", price: 18.49 },
+  // ];
+
+  const [menuItems, setMenuItems] = useState([]);
+
+  useEffect(() => {
+    fetchMenuItems();
+  }, []);
+
+  /** Fetches menu items from postgres database, which the site then displays
+   * @alias module:Order.fetchMenuItems
+   */
+  const fetchMenuItems = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/items");
+      console.log(response);
+
+      if (response.ok) {
+        const data = await response.json();
+        setMenuItems(data);
+        console.log(menuItems);
+      } else {
+        throw new Error("Failed to fetch menu items");
+      }
+    } catch (error) {
+      console.error("Error fetching menu items", error);
+    }
+
+    const jsonOrders = menuItems.map((order) => ({
+      name: order.name,
+      price: order.price,
+    }));
+    console.log(jsonOrders);
+  };
+  // -----------------------------------------------------------------------------
+
+  const [itemQuantities, setItemQuantities] = useState(menuItems.map(() => 0));
+  const [customerName, setCustomerName] = useState("");
+  const [cart, setCart] = useState([]);
+
+  /**Changes the quantity of each item ordered, at each menu item
+   * @alias module:Order.handleQuantityChange
+   * @param {num} index - The index of the item to change the amount of
+   * @param {num} newQuantity - The quantity of items to set
+   */
+  const handleQuantityChange = (index, newQuantity) => {
+    newQuantity = Math.max(0, newQuantity);
+    const updatedQuantities = [...itemQuantities];
+    updatedQuantities[index] = newQuantity;
+    setItemQuantities(updatedQuantities);
+  };
+
+  /**Adds a menu item to the order
+   * @alias module:Order.handleAddToCart
+   * @param {num} index  - The index of the item to add
+  */
+  const handleAddToCart = (index) => {
+    const quantity = itemQuantities[index];
+    if (quantity > 0) {
+      const existingCartItemIndex = cart.findIndex(
+        (item) => item.name === menuItems[index].name
+      );
+      if (existingCartItemIndex !== -1) {
+        const updatedCart = [...cart];
+        updatedCart[existingCartItemIndex].quantity += quantity;
+        updatedCart[existingCartItemIndex].totalPrice =
+          updatedCart[existingCartItemIndex].quantity * menuItems[index].price;
+        setCart(updatedCart);
+      } else {
+        const cartItem = {
+          name: menuItems[index].name,
+          price: menuItems[index].price,
+          quantity: quantity,
+          totalPrice: menuItems[index].price * quantity,
+        };
+        setCart([...cart, cartItem]);
+      }
+
+      const updatedQuantities = [...itemQuantities];
+      updatedQuantities[index] = 0;
+      setItemQuantities(updatedQuantities);
+    }
+  };
+
+
+  /** Returns the sum of the prices of every item ordered
+   * @alias module:Order.calculateTotalPrice
+  */
+  const calculateTotalPrice = () => {
+    return cart.reduce((total, item) => total + item.totalPrice, 0);
+  };
+
+  /** Puts the completed order into the postgrees database
+   * @alias module:Order.handleSubmitOrder
+   */
+  const handleSubmitOrder = async () => {
+    const test = {
+      "bruh": 1,
+      "okay": 2
+    };
+  
+    if (customerName.trim() === "") {
+      alert("Please enter your name before submitting the order.");
+    } else {
+  
+      await fetch("http://localhost:5000/api/order", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cart),
+      });
+  
+      // console.log(cart);
+  
+      alert("Your order was submitted!");
+      setCart([]);
+      setCustomerName("");
+    }
+  };
+  
+  /** Removes a menu item from the order
+   * @alias module:Order.handleRemoveFromCart
+   * @param {num} index - The index of the item to remove
+   */
+  const handleRemoveFromCart = (index) => {
+    const updatedCart = [...cart];
+  const itemToRemove = updatedCart[index];
+  
+  const itemIndexToRemove = updatedCart.findIndex(
+    (item) => item.name === itemToRemove.name
+  );
+
+  if (itemIndexToRemove !== -1) {
+    if (updatedCart[itemIndexToRemove].quantity > 1) {
+      updatedCart[itemIndexToRemove].quantity -= 1;
+      updatedCart[itemIndexToRemove].totalPrice =
+        updatedCart[itemIndexToRemove].price * updatedCart[itemIndexToRemove].quantity;
+    } else {
+      updatedCart.splice(itemIndexToRemove, 1);
+    }
+    setCart(updatedCart);
+  }
+  };
+
+  return (
+    &lt;Layout>
+      &lt;div className="order">
+        &lt;div className="cart-section">
+          &lt;div className="cart-box">
+            &lt;h2>Shopping Cart&lt;/h2>
+            &lt;input
+              type="text"
+              placeholder="Enter your name"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+            />
+            &lt;p>&lt;/p>
+            &lt;div className="cart-items">
+              {cart.map((cartItem, index) => (
+                &lt;div key={index} className="cart-item">
+                  &lt;span>
+                    {cartItem.name} (Quantity: {cartItem.quantity}, Price: $
+                    {cartItem.price.toFixed(2)}, Total: $
+                    {cartItem.totalPrice.toFixed(2)})
+                  &lt;/span>
+                  &lt;button onClick={() => handleRemoveFromCart(index)}>Remove&lt;/button>
+                &lt;/div>
+              ))}
+            &lt;/div>
+            &lt;p>Total Price: ${calculateTotalPrice().toFixed(2)}&lt;/p>
+            &lt;button onClick={handleSubmitOrder}>Submit Order&lt;/button>
+          &lt;/div>
+        &lt;/div>
+        &lt;div className="categories">
+          &lt;h1 className="category-title">Food&lt;/h1>
+          &lt;div className="item-boxes">
+            {menuItems
+              .filter((item) => item.food)
+              .map((item, index) => (
+                &lt;div key={index} className="item-box">
+                  &lt;h2>{item.name}&lt;/h2>
+                  &lt;p>Price: ${item.price.toFixed(2)}&lt;/p>
+                  &lt;div className="quantity-container">
+                    &lt;div className="centered-text">Quantity:&lt;/div>
+                    &lt;input
+                      type="number"
+                      value={itemQuantities[index]}
+                      onChange={(e) =>
+                        handleQuantityChange(index, e.target.value)
+                      }
+                      min="0"
+                    />
+                  &lt;/div>
+                  &lt;div className="add-button-container">
+                    &lt;button onClick={() => handleAddToCart(index)}>
+                      Add Item to Cart
+                    &lt;/button>
+                  &lt;/div>
+                &lt;/div>
+              ))}
+          &lt;/div>
+        &lt;/div>
+        &lt;div className="categories">
+          &lt;h1 className="category-title">Drinks&lt;/h1>
+          &lt;div className="item-boxes">
+            {menuItems
+              .filter((item) => item.drink)
+              .map((item, index) => (
+                &lt;div key={index} className="item-box">
+                  &lt;h2>{item.name}&lt;/h2>
+                  &lt;p>Price: ${item.price.toFixed(2)}&lt;/p>
+                  &lt;div className="quantity-container">
+                    &lt;div className="centered-text">Quantity:&lt;/div>
+                    &lt;input
+                      type="number"
+                      value={itemQuantities[index]}
+                      onChange={(e) =>
+                        handleQuantityChange(index, e.target.value)
+                      }
+                      min="0"
+                    />
+                  &lt;/div>
+                  &lt;div className="add-button-container">
+                    &lt;button onClick={() => handleAddToCart(index)}>
+                      Add Item to Cart
+                    &lt;/button>
+                  &lt;/div>
+                &lt;/div>
+              ))}
+          &lt;/div>
+        &lt;/div>
+        &lt;div className="categories">
+          &lt;h1 className="category-title">Non-Food&lt;/h1>
+          &lt;div className="item-boxes">
+            {menuItems
+              .filter((item) => item.drink == false &amp;&amp; item.food == false)
+              .map((item, index) => (
+                &lt;div key={index} className="item-box">
+                  &lt;h2>{item.name}&lt;/h2>
+                  &lt;p>Price: ${item.price.toFixed(2)}&lt;/p>
+                  &lt;div className="quantity-container">
+                    &lt;div className="centered-text">Quantity:&lt;/div>
+                    &lt;input
+                      type="number"
+                      value={itemQuantities[index]}
+                      onChange={(e) =>
+                        handleQuantityChange(index, e.target.value)
+                      }
+                      min="0"
+                    />
+                  &lt;/div>
+                  &lt;div className="add-button-container">
+                    &lt;button onClick={() => handleAddToCart(index)}>
+                      Add Item to Cart
+                    &lt;/button>
+                  &lt;/div>
+                &lt;/div>
+              ))}
+          &lt;/div>
+        &lt;/div>
+        &lt;div className="categories">
+          &lt;h1 className="category-title">Seasonal Items&lt;/h1>
+          &lt;div className="item-boxes">
+            {menuItems.filter((item) => item.itemid > 26).map((item, index) => (
+              &lt;div key={index} className="item-box">
+                &lt;h2>{item.name}&lt;/h2>
+                &lt;p>Price: ${item.price.toFixed(2)}&lt;/p>
+                &lt;div className="quantity-container">
+                  &lt;div className="centered-text">Quantity:&lt;/div>
+                  &lt;input
+                    type="number"
+                    value={itemQuantities[index]}
+                    onChange={(e) => handleQuantityChange(index, e.target.value)}
+                    min="0"
+                  />
+                &lt;/div>
+                &lt;div className="add-button-container">
+                  &lt;button onClick={() => handleAddToCart(index)}>
+                    Add Item to Cart
+                  &lt;/button>
+                &lt;/div>
+              &lt;/div>
+            ))}
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/Layout>
+  );
+};
+
+export default Order;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Order.html">Order</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Dec 06 2023 15:41:37 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

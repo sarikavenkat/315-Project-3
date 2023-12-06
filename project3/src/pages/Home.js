@@ -3,6 +3,10 @@ import React from 'react';
 import Layout from '../Layout';
 import './homestyle.css';
 
+/** A module representing the HTML for Sweet Paris' home page.
+ *  @module Home
+ * @returns HTML for Home page
+ */
 const Home = () => {
     return (
       <Layout>
