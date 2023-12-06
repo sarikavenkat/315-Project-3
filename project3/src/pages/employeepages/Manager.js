@@ -23,7 +23,7 @@ const Manager = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch("http://3.22.171.17:5000/api/orders");
+      const response = await fetch("http://3.17.222.225:5000/api/orders");
       if (response.ok) {
         console.log("fetchorders");
         const data = await response.json();
@@ -38,7 +38,7 @@ const Manager = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await fetch("http://3.22.171.17:5000/api/employees");
+      const response = await fetch("http://3.17.222.225:5000/api/employees");
       if (response.ok) {
         console.log("fetchemployees");
         const data = await response.json();
@@ -97,7 +97,7 @@ const Manager = () => {
   const handleDeleteOrderItems = async (orderId) => {
     
     try {
-      const response = await fetch(`http://3.22.171.17:5000/api/removeorder/${orderId}`, {
+      const response = await fetch(`http://3.17.222.225:5000/api/removeorder/${orderId}`, {
         method: 'DELETE',
       });
       console.log("try");

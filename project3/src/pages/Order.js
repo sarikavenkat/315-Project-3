@@ -43,7 +43,7 @@ const Order = () => {
 
   const fetchMenuItems = async () => {
     try {
-      const response = await fetch("http://3.22.171.17:5000/api/items");
+      const response = await fetch("http://3.17.222.225:5000/api/items");
       console.log(response);
 
       if (response.ok) {
@@ -118,7 +118,7 @@ const Order = () => {
       alert("Please enter your name before submitting the order.");
     } else {
   
-      await fetch("http://3.22.171.17:5000/api/order", {
+      await fetch("http://3.17.222.225:5000/api/order", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
