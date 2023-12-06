@@ -2,13 +2,16 @@ const express = require("express");
 const authRoutes = require("./auth-routes");
 const passportSetup = require('./passport');
 const passport = require('passport');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const keys = require('./keys');
 const cookieSession = require('cookie-session');
 const { Pool } = require("pg");
 
 const app = express();
 const cors = require("cors");
+
+app.use(cors());
+app.use(express.json());
 
 ////const app = express();
 
@@ -20,9 +23,9 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect(keys.mongodb.dbURI, ()=>{
-  console.log("connected to mongodb");
-});
+// mongoose.connect(keys.mongodb.dbURI, ()=>{
+//   console.log("connected to mongodb");
+// });
 app.use("/auth",authRoutes);
 
 const pool = new Pool({
@@ -55,7 +58,6 @@ app.get("/api/items", async (req, res) => {
 });
 
 
-
 app.get("/api/employees", async (req, res) => {
   try {
     const client = await pool.connect();
@@ -67,6 +69,37 @@ app.get("/api/employees", async (req, res) => {
   } catch (error) {
     console.error("Error fetching employees", error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.put('/api/employees/:employeeId', async (req, res) => {
+  const { employeeId } = req.params;
+  const { position, password } = req.body;
+
+  try {
+    if (position) {
+      // Convert position to lowercase before updating
+      console.log('Employee ID:', employeeId);
+      console.log('New Position:', position);
+
+      const query = 'UPDATE employees SET position = LOWER($1) WHERE id = $2';
+      console.log('SQL Query:', query);
+
+      const result = await pool.query(query, [position, employeeId]);
+      console.log('Employee position updated successfully');
+    }
+
+    if (password) {
+      // Update the password if provided
+      const passwordQuery = 'UPDATE employees SET password = $1 WHERE id = $2';
+      await pool.query(passwordQuery, [password, employeeId]);
+      console.log('Employee password updated successfully');
+    }
+
+    res.json({ message: 'Employee details updated successfully' });
+  } catch (error) {
+    console.error('Error updating employee details:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -377,4 +410,21 @@ app.get("/api/emplogin", async (req, res) => {
 
 app.listen(5000, () => {
   console.log("Server started on port 5000");
+});
+
+app.delete('/api/employees/:employeeId', async (req, res) => {
+  const { employeeId } = req.params;
+
+  try {
+    // Use a SQL DELETE query to delete the employee
+    const query = 'DELETE FROM employees WHERE id = $1';
+    const result = await pool.query(query, [employeeId]);
+
+    console.log('Employee deleted successfully');
+
+    res.json({ message: 'Employee deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting employee:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });

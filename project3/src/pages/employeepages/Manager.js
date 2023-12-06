@@ -8,8 +8,8 @@ const Manager = () => {
   const [orders, setOrders] = useState([]);
   const [filteredEmployeeData, setFilteredData] = useState([]);
   const [orderList, setOrderList] = useState([]);
-  // const [deleteOrderNumber, setDeleteOrderNumber] = useState(0);
   const [index, setIndex] = useState(0);
+  const [selectedSwitchPosition, setSelectedSwitchPosition] = useState('');
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,14 +58,89 @@ const Manager = () => {
       filteredEmployee.push({
         name: element.name,
         id: element.id,
+        position: element.position,
         next_work_day: element.next_work_day.slice(0, -14),
         start_time: element.start_time,
         end_time: element.end_time,
       });
     });
+
     setFilteredData(filteredEmployee);
     console.log(filteredEmployee.length);
     console.log("Tracking employee work schedule");
+  };
+
+  const handlePositionSwitch = async (employeeId, newPosition) => {
+    console.log('handlePositionSwitch called with:', employeeId, newPosition);
+    try {
+      // Update the employee's position
+      const response = await fetch(`http://localhost:5000/api/employees/${employeeId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ position: newPosition }),
+      });
+
+      console.log('Position Update Response:', response.status, response.statusText);
+
+      if (!response.ok) {
+        throw new Error('Failed to update employee position');
+      }
+
+      // Update the employee's password based on the new position
+      const newPassword = newPosition === 'manager' ? '66666' : '11111';
+      const passwordResponse = await fetch(`http://localhost:5000/api/employees/${employeeId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password: newPassword }),
+      });
+
+      console.log('Password Update Response:', passwordResponse.status, passwordResponse.statusText);
+
+      if (!passwordResponse.ok) {
+        throw new Error('Failed to update employee password');
+      }
+
+      // Refresh the employee data after updating
+      fetchEmployees();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handlePositionChange = async (employeeId, newPosition) => {
+    console.log('handlePositionChange called with:', employeeId, newPosition);
+    const updatedEmployeeData = filteredEmployeeData.map((employee) => {
+      if (employee.id === employeeId) {
+        return { ...employee, position: newPosition };
+      }
+      return employee;
+    });
+
+    setFilteredData(updatedEmployeeData);
+
+    // Call the API to update the position in the database
+    handlePositionSwitch(employeeId, newPosition.toLowerCase());
+  };
+
+  const handleDeleteEmployee = async (employeeId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/employees/${employeeId}`, {
+        method: 'DELETE',
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to delete employee');
+      }
+  
+      // Refresh the employee data after deletion
+      fetchEmployees();
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const handleViewOrderHistory = () => {
@@ -413,6 +488,7 @@ const Manager = () => {
     }
   };
 
+
   const handlePopularityAnalysis = () => {
     setshowPop(!showPop)
     setshowTrend(false)
@@ -572,24 +648,42 @@ const Manager = () => {
             {showEmployeeTable && !showOrderHistory && (
               <div className="">
                 <h2>Employee Schedules</h2>
+                {console.log(filteredEmployeeData)}
                 <table>
                   <thead>
                     <tr>
                       <th>Name</th>
                       <th>ID</th>
+                      <th>Position</th>
                       <th>Next Work Day</th>
                       <th>Start Time</th>
                       <th>End Time</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredEmployeeData.map((employee, index) => (
+                  {filteredEmployeeData.map((employee, index) => (
                       <tr key={index}>
                         <td>{employee.name}</td>
                         <td>{employee.id}</td>
+                        <td>
+                          <select
+                            id={`switchPositionDropdown-${employee.id}`}
+                            onChange={(e) => handlePositionChange(employee.id, e.target.value)}
+                            value={employee.position} // Prepopulate with the current position
+                          >
+                            <option value="cashier">Cashier</option>
+                            <option value="manager">Manager</option>
+                            <option value="server">Server</option>
+                            <option value="busser">Busser</option>
+                            <option value="cook">Cook</option>
+                            <option value="barista">Barista</option>
+                            {/* Add other position options as needed */}
+                          </select>
+                        </td>
                         <td>{employee.next_work_day}</td>
                         <td>{employee.start_time}</td>
                         <td>{employee.end_time}</td>
+                        <button onClick={() => handleDeleteEmployee(employee.id)}>Delete</button>
                       </tr>
                     ))}
                   </tbody>
