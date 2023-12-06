@@ -45,6 +45,10 @@ div > table {
 
 }
 
+input[type="date"] {
+    margin-right: 10px;
+}
+
 table {
     margin-top: 20px;
     padding-left: 85px;

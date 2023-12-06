@@ -8,7 +8,7 @@ const Manager = () => {
   const [orders, setOrders] = useState([]);
   const [filteredEmployeeData, setFilteredData] = useState([]);
   const [orderList, setOrderList] = useState([]);
-  const [deleteOrderNumber, setDeleteOrderNumber] = useState(0);
+  // const [deleteOrderNumber, setDeleteOrderNumber] = useState(0);
   const [index, setIndex] = useState(0);
 
   const navigate = useNavigate();
@@ -94,36 +94,47 @@ const Manager = () => {
     console.log("Viewing order history");
   };
 
+  const handleDeleteOrder = (orderid) => {
+    fetch(`http://localhost:5000/api/orders/${orderid}`, {
+      method: 'DELETE',
+    })
+      .then(response => response.json())
+      .then(() => {
+        fetchItems(); // Refresh the items after deleting one
+      })
+      .catch(error => console.error('Error:', error));
+  };
 
-  const handleDeleteOrderItems = async (orderId) => {
+
+  // const handleDeleteOrderItems = async (orderId) => {
     
-    try {
-      const response = await fetch(`http://localhost:5000/api/removeorder/${orderId}`, {
-        method: 'DELETE',
-      });
-      console.log("try");
+  //   try {
+  //     const response = await fetch(`http://localhost:5000/api/removeorder/${orderId}`, {
+  //       method: 'DELETE',
+  //     });
+  //     console.log("try");
 
-      if (response.ok) {
-        console.log("if");
-        console.log('Order removed successfully');
-        fetchOrders();
-      } else if (response.status === 404) {
-        console.log("else if");
-        console.log('Order not found');
-      } else {
-        console.log("else");
-        throw new Error('Failed to remove order');
-      }
-    } catch (error) {
-        console.log("error");
-        console.error('Error removing order', error);
-    }
-  };
+  //     if (response.ok) {
+  //       console.log("if");
+  //       console.log('Order removed successfully');
+  //       fetchOrders();
+  //     } else if (response.status === 404) {
+  //       console.log("else if");
+  //       console.log('Order not found');
+  //     } else {
+  //       console.log("else");
+  //       throw new Error('Failed to remove order');
+  //     }
+  //   } catch (error) {
+  //       console.log("error");
+  //       console.error('Error removing order', error);
+  //   }
+  // };
 
-  const handleAppendToOrderHistory = () => {
+  // const handleAppendToOrderHistory = () => {
 
-    console.log("Appending order specifics to order history");
-  };
+  //   console.log("Appending order specifics to order history");
+  // };
 
   const [productUsageData, setProductUsageData] = useState([]);
   const [PRODstartDate, setPRODStartDate] = useState('');
@@ -141,6 +152,15 @@ const Manager = () => {
 
   const handleProductUsageChart = () => {
     setshowProd(!showProd)
+    setShowInventory(false)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setshowPop(false)
+    setshowTrend(false)
+    setshowExcessReport(false)
+    setshowRestock(false)
+    setshowSalessRep(false)
+    setshowItems(false)
   };
     
 
@@ -166,6 +186,13 @@ const Manager = () => {
     setShowInventory(!showInventory)
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
+    setshowPop(false)
+    setshowTrend(false)
+    setshowExcessReport(false)
+    setshowRestock(false)
+    setshowSalessRep(false)
+    setshowProd(false)
+    setshowItems(false)
   }
 
   const handleQuantityUpdate = () => {
@@ -198,6 +225,15 @@ const Manager = () => {
 
   const handleSalesReport = () => {
     setshowSalessRep(!showSalesRep)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setShowInventory(false)
+    setshowPop(false)
+    setshowTrend(false)
+    setshowExcessReport(false)
+    setshowRestock(false)
+    setshowProd(false)
+    setshowItems(false)
   }
 
   const processSalesReport = () => {
@@ -218,6 +254,15 @@ const Manager = () => {
 
   const handleExcessReport = () => {
     setshowExcessReport(!showExcessReport)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setShowInventory(false)
+    setshowPop(false)
+    setshowTrend(false)
+    setshowRestock(false)
+    setshowSalessRep(false)
+    setshowProd(false)
+    setshowItems(false)
   }
 
   const processExcessReport = () => {
@@ -234,6 +279,15 @@ const Manager = () => {
   // TODO
   const handleRestockReport = () => {
     setshowRestock(!showRestock)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setShowInventory(false)
+    setshowPop(false)
+    setshowTrend(false)
+    setshowExcessReport(false)
+    setshowSalessRep(false)
+    setshowProd(false)
+    setshowItems(false)
   }
 
   const processRestockReport = () => {
@@ -243,19 +297,133 @@ const Manager = () => {
       .catch(error => console.error('Error:', error));
   };
 
-  // TODO
+  const [items, setItems] = useState([]);
+  const [showItems, setshowItems] = useState(false)
+  const [newItem, setNewItem] = useState({
+    name: '',
+    containsWheat: false,
+    containsMilk: false,
+    containsEggs: false,
+    containsAlcohol: false,
+    price: 0,
+    calories: 0,
+    drink: false,
+    food: false,
+  });
+
+  const fetchItems = () => {
+    fetch('http://localhost:5000/api/items')
+      .then(response => response.json())
+      .then(data => setItems(data))
+      .catch(error => console.error('Error:', error));
+  };
+
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
   const handleUpdateItems = () => {
-    
-  }
+    // Implement functionality to update items
+    setshowItems(!showItems)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setShowInventory(false)
+    setshowPop(false)
+    setshowTrend(false)
+    setshowExcessReport(false)
+    setshowRestock(false)
+    setshowSalessRep(false)
+    setshowProd(false)
+  };
 
-  // TODO
+  const handleAddItem = () => {
+    fetch('http://localhost:5000/api/items', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newItem),
+    })
+      .then(response => response.json())
+      .then(() => {
+        fetchItems(); // Refresh the items after adding a new one
+        setNewItem({
+          name: '',
+          containsWheat: false,
+          containsMilk: false,
+          containsEggs: false,
+          containsAlcohol: false,
+          price: 0,
+          calories: 0,
+          drink: false,
+          food: false,
+        });
+      })
+      .catch(error => console.error('Error:', error));
+  };
+
+  const handleDeleteItem = (name) => {
+    fetch(`http://localhost:5000/api/items/${name}`, {
+      method: 'DELETE',
+    })
+      .then(response => response.json())
+      .then(() => {
+        fetchItems(); // Refresh the items after deleting one
+      })
+      .catch(error => console.error('Error:', error));
+  };
+  const [trendReportData, setTrendReportData] = useState([]);
+  const [PAIRstartDate, setPAIRStartDate] = useState('');
+  const [PAIRendDate, setPAIREndDate] = useState('');
+  const [showTrend, setshowTrend] = useState(false)
+
   const handleTrendReport = () => {
-    
+    setshowTrend(!showTrend)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setShowInventory(false)
+    setshowPop(false)
+    setshowExcessReport(false)
+    setshowRestock(false)
+    setshowSalessRep(false)
+    setshowProd(false)
+    setshowItems(false)
   }
 
-  // TODO
+  const processTrendReport = () => {
+    if (PAIRstartDate && PAIRendDate) {
+      fetch(`http://localhost:5000/api/trend-report?start=${PAIRstartDate}&end=${PAIRendDate}`)
+        .then(response => response.json())
+        .then(data => setTrendReportData(data))
+        .catch(error => console.error('Error:', error));
+    }
+  };
+
+  const [popularityData, setPopularityData] = useState([]);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [showPop, setshowPop] = useState(false)
+
+  const processPopularityAnalysis = () => {
+    if (startDate && endDate) {
+      fetch(`http://localhost:5000/api/popularity-analysis?start=${startDate}&end=${endDate}`)
+        .then(response => response.json())
+        .then(data => setPopularityData(data))
+        .catch(error => console.error('Error:', error));
+    }
+  };
+
   const handlePopularityAnalysis = () => {
-    
+    setshowPop(!showPop)
+    setshowTrend(false)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setShowInventory(false)
+    setshowExcessReport(false)
+    setshowRestock(false)
+    setshowSalessRep(false)
+    setshowProd(false)
+    setshowItems(false)
   }
 
   const [showEmployeeTable, setShowEmployeeTable] = useState(false);
@@ -275,8 +443,12 @@ const Manager = () => {
                 handleCheckEmployeeSchedules();
                 setShowEmployeeTable(!showEmployeeTable);
                 setShowOrderHistory(false);
+                setshowPop(false)
                 setShowInventory(false)
-
+                setshowExcessReport(false)
+                setshowRestock(false)
+                setshowSalessRep(false)
+                setshowProd(false)
               }}
             >
               Check Employee Schedules
@@ -287,7 +459,13 @@ const Manager = () => {
               onClick={() => {
                 handleViewOrderHistory();
                 setShowEmployeeTable(false);
+                setshowPop(false)
+                setShowInventory(false)
                 setShowOrderHistory(!showOrderHistory);
+                setshowExcessReport(false)
+                setshowRestock(false)
+                setshowSalessRep(false)
+                setshowProd(false)
               }}
             >
               View Order History
@@ -360,7 +538,7 @@ const Manager = () => {
                 handleTrendReport();
               }}
             >
-              Ordering Trend Report
+              What Sells Together
             </button>
           </div>
 
@@ -370,27 +548,16 @@ const Manager = () => {
                 handlePopularityAnalysis();
               }}
             >
-              Popularity Analysis
+              Menu Items Popularity Analysis
             </button>
           </div>
           
-          {/* <div className="DeleteOrder">
-            <label>
-              Delete Orders by Number:
-              <input
-                type="number"
-                value={deleteOrderNumber}
-                id = "myInput"
-                onChange={(e) => setDeleteOrderNumber(e.target.value)}
-              />
-              <button onClick={() =>handleDeleteOrderItems(1)}>Delete Orders</button>
-            </label>
-          </div> */}
         </div>
 
         {showOrderHistory && (
         <div>
-          <button onClick={() => setIndex((prevIndex) => prevIndex - 20)}>
+          <h2>Order History</h2>
+          {/* <button onClick={() => setIndex((prevIndex) => prevIndex - 20)}>
             Previous Orders
           </button>
           <button
@@ -398,12 +565,13 @@ const Manager = () => {
               setIndex((prevIndex) => prevIndex + 20);
             }}>
             Next Orders
-          </button>
+          </button> */}
         </div>
       )}
 
             {showEmployeeTable && !showOrderHistory && (
               <div className="">
+                <h2>Employee Schedules</h2>
                 <table>
                   <thead>
                     <tr>
@@ -438,6 +606,7 @@ const Manager = () => {
                     <th>Date/Time</th>
                     <th>Price</th>
                     <th>Calories</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -448,6 +617,9 @@ const Manager = () => {
                       <td>{orders.orderdatetime}</td>
                       <td>{orders.price}</td>
                       <td>{orders.calories}</td>
+                      <td>
+                        <button onClick={() => handleDeleteOrder(orders.orderid)}>Delete</button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -456,6 +628,7 @@ const Manager = () => {
 
       {showInventory && (
         <div>
+          <h2>Inventory: </h2>
           <label htmlFor="itemDropdown">Select Item:</label>
           <select id="itemDropdown" onChange={(e) => setSelectedItem(e.target.value)}>
             {inventory.map(item => (
@@ -648,8 +821,215 @@ const Manager = () => {
           </div>
         )}
       </div>
-      )}  
+      )} 
 
+      {showTrend && (
+        <div>
+        <h2>What Sells Together</h2>
+  
+        <label htmlFor="startDateInput">Start Date:</label>
+        <input
+          type="date"
+          id="startDateInput"
+          value={PAIRstartDate}
+          onChange={(e) => setPAIRStartDate(e.target.value)}
+        />
+  
+        <label htmlFor="endDateInput">End Date:</label>
+        <input
+          type="date"
+          id="endDateInput"
+          value={PAIRendDate}
+          onChange={(e) => setPAIREndDate(e.target.value)}
+        />
+  
+        <button onClick={processTrendReport}>Generate Report</button>
+  
+        {trendReportData.length > 0 && (
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item 1</th>
+                  <th>Item 2</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                {trendReportData.map(item => (
+                  <tr key={`${item.item1}-${item.item2}`}>
+                    <td>{item.item1}</td>
+                    <td>{item.item2}</td>
+                    <td>{item.pair_count}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+      )} 
+
+      {showPop && (
+        <div>
+        <h2>Menu Items Popularity Analysis</h2>
+  
+        <label htmlFor="startDateInput">Start Date:</label>
+        <input
+          type="date"
+          id="startDateInput"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+  
+        <label htmlFor="endDateInput">End Date:</label>
+        <input
+          type="date"
+          id="endDateInput"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
+  
+        <button onClick={processPopularityAnalysis}>Generate Analysis</button>
+  
+        {popularityData.length > 0 && (
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item Name</th>
+                  <th>Total Sold</th>
+                </tr>
+              </thead>
+              <tbody>
+                {popularityData.map(item => (
+                  <tr key={item.item_name}>
+                    <td>{item.item_name}</td>
+                    <td>{item.total_sold}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+      )}
+
+      {showItems && (
+        <div>
+        <h2>Update Items</h2>
+  
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Contains Wheat</th>
+              <th>Contains Milk</th>
+              <th>Contains Eggs</th>
+              <th>Contains Alcohol</th>
+              <th>Price</th>
+              <th>Calories</th>
+              <th>Drink</th>
+              <th>Food</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map(item => (
+              <tr key={item.itemid}>
+                <td>{item.name}</td>
+                <td>{item.containsWheat ? 'Yes' : 'No'}</td>
+                <td>{item.containsMilk ? 'Yes' : 'No'}</td>
+                <td>{item.containsEggs ? 'Yes' : 'No'}</td>
+                <td>{item.containsAlcohol ? 'Yes' : 'No'}</td>
+                <td>{item.price}</td>
+                <td>{item.calories}</td>
+                <td>{item.drink ? 'Yes' : 'No'}</td>
+                <td>{item.food ? 'Yes' : 'No'}</td>
+                <td>
+                  <button onClick={() => handleDeleteItem(item.name)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+  
+        <h2>Add New Item</h2>
+        <label htmlFor="nameInput">Name:</label>
+        <input
+          type="text"
+          id="nameInput"
+          value={newItem.name}
+          onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+        />
+  
+        <label htmlFor="containsWheatInput">Contains Wheat:</label>
+        <input
+          type="checkbox"
+          id="containsWheatInput"
+          checked={newItem.containsWheat}
+          onChange={() => setNewItem({ ...newItem, containsWheat: !newItem.containsWheat })}
+        />
+  
+        <label htmlFor="containsMilkInput">Contains Milk:</label>
+        <input
+          type="checkbox"
+          id="containsMilkInput"
+          checked={newItem.containsMilk}
+          onChange={() => setNewItem({ ...newItem, containsMilk: !newItem.containsMilk })}
+        />
+  
+        <label htmlFor="containsEggsInput">Contains Eggs:</label>
+        <input
+          type="checkbox"
+          id="containsEggsInput"
+          checked={newItem.containsEggs}
+          onChange={() => setNewItem({ ...newItem, containsEggs: !newItem.containsEggs })}
+        />
+  
+        <label htmlFor="containsAlcoholInput">Contains Alcohol:</label>
+        <input
+          type="checkbox"
+          id="containsAlcoholInput"
+          checked={newItem.containsAlcohol}
+          onChange={() => setNewItem({ ...newItem, containsAlcohol: !newItem.containsAlcohol })}
+        />
+  
+        <label htmlFor="priceInput">Price:</label>
+        <input
+          type="number"
+          id="priceInput"
+          value={newItem.price}
+          onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
+        />
+  
+        <label htmlFor="caloriesInput">Calories:</label>
+        <input
+          type="number"
+          id="caloriesInput"
+          value={newItem.calories}
+          onChange={(e) => setNewItem({ ...newItem, calories: e.target.value })}
+        />
+  
+        <label htmlFor="drinkInput">Drink:</label>
+        <input
+          type="checkbox"
+          id="drinkInput"
+          checked={newItem.drink}
+          onChange={() => setNewItem({ ...newItem, drink: !newItem.drink })}
+        />
+  
+        <label htmlFor="foodInput">Food:</label>
+        <input
+          type="checkbox"
+          id="foodInput"
+          checked={newItem.food}
+          onChange={() => setNewItem({ ...newItem, food: !newItem.food })}
+        />
+  
+        <button onClick={handleAddItem}>Add Item</button>
+      </div>
+      )}
             
           {/* </div> */}
     </Layout>

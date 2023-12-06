@@ -55,7 +55,7 @@ app.get("/api/employees", async (req, res) => {
 app.get("/api/orders", async (req, res) => {
   try {
     const client = await pool.connect();
-    const query = "SELECT * FROM orders";
+    const query = "SELECT * FROM orders order by orderid desc";
     const result = await client.query(query);
     client.release();
 
@@ -66,33 +66,18 @@ app.get("/api/orders", async (req, res) => {
   }
 });
 
-
-app.delete("/api/removeorder/:orderId", async (req, res) => {
-  const orderId = req.params.orderId;
-
+app.delete('/api/orders/:orderid', async (req, res) => {
+  const orderid = req.params.orderid;
   try {
     const client = await pool.connect();
-    
-    const checkQuery = "SELECT * FROM orders WHERE orderid = $1";
-    const checkResult = await client.query(checkQuery, [orderId]);
-
-    if (checkResult.rows.length === 0) {
-      res.status(404).json({ error: "Order not found" });
-      return;
-    }
-
-    const deleteQuery = "DELETE FROM orders WHERE orderid = $1";
-    await client.query(deleteQuery, [orderId]);
-
+    console.log(orderid)
+    await client.query(`DELETE FROM orders WHERE orderid = ${orderid}`);
+    res.send('Item deleted successfully');
     client.release();
-
-    res.json({ message: "Order removed successfully" });
-  } catch (error) {
-    console.error("Error removing order", error);
-    res.status(500).json({ error: "Internal Server Error" });
+  } catch (err) {
+    res.status(500).send({ error: err.message });
   }
 });
-
 
 
 app.post("/api/placeorder", async (req, res) => {
@@ -258,6 +243,98 @@ app.get('/api/product-usage-chart', async (req, res) => {
        ORDER BY orderitems.item_name`
     );
     res.send(result.rows);
+    client.release();
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+app.get('/api/trend-report', async (req, res) => {
+  const { start, end } = req.query;
+  try {
+    const client = await pool.connect();
+    const result = await client.query(
+      `SELECT t1.item_name AS item1, t2.item_name AS item2, COUNT(*) AS pair_count
+       FROM orderitems t1
+       JOIN orderitems t2 ON t1.order_id = t2.order_id AND t1.item_name < t2.item_name
+       JOIN orders o1 ON t1.order_id = o1.orderid
+       JOIN orders o2 ON t2.order_id = o2.orderid
+       WHERE o1.orderdatetime BETWEEN '${start} 00:00:00' AND '${end} 23:59:59'
+       AND o2.orderdatetime BETWEEN '2022-01-01 00:00:00' AND '2023-10-10 23:59:59'
+       GROUP BY t1.item_name, t2.item_name
+       ORDER BY pair_count DESC`
+    );
+    res.send(result.rows);
+    client.release();
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+app.get('/api/popularity-analysis', async (req, res) => {
+  const { start, end } = req.query;
+  try {
+    const client = await pool.connect();
+    const result = await client.query(
+      `SELECT orderitems.item_name, SUM(orderitems.quantity) AS total_sold
+       FROM orders
+       INNER JOIN orderitems ON orders.orderid = orderitems.order_id
+       WHERE orders.orderdatetime BETWEEN $1 AND $2
+       GROUP BY orderitems.item_name
+       ORDER BY total_sold DESC`,
+      [`${start} 00:00:00`, `${end} 23:59:59`]
+    );
+    res.send(result.rows);
+    client.release();
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+app.get('/api/items', async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM items');
+    res.send(result.rows);
+    client.release();
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+app.post('/api/items', async (req, res) => {
+  const newItem = req.body;
+  try {
+    const client = await pool.connect();
+    await client.query(
+      `INSERT INTO items (name, containsWheat, containsMilk, containsEggs, containsAlcohol, price, calories, drink, food)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      [
+        newItem.name,
+        newItem.containsWheat,
+        newItem.containsMilk,
+        newItem.containsEggs,
+        newItem.containsAlcohol,
+        newItem.price,
+        newItem.calories,
+        newItem.drink,
+        newItem.food,
+      ]
+    );
+    res.send('Item added successfully');
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+app.delete('/api/items/:name', async (req, res) => {
+  const name = req.params.name;
+  try {
+    const client = await pool.connect();
+    console.log(name)
+    await client.query(`DELETE FROM items WHERE name = '${name}'`);
+    res.send('Item deleted successfully');
+    client.release();
   } catch (err) {
     res.status(500).send({ error: err.message });
   }
