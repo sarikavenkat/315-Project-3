@@ -12,6 +12,7 @@ import { ThemeProvider, useTheme } from './ThemeContext';
 
 import './dark.css';
 import './style.css';
+import User from './pages/User';
 
 /** Returns header and footer that is present on all pages */
 function App() {
@@ -45,6 +46,7 @@ function App() {
           <Route path="/emplogin" element={<EmployeeLogin />} />
           <Route path="/cashlogin" element={<Cashier />} />
           <Route path="/manglogin" element={<Manager />} />
+          <Route path="/user" element={<User />} />
         </Routes>
 
         <div className="contactbar">

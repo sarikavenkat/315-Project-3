@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {jwtDecode} from 'jwt-decode';
 import Layout from '../Layout';
 import './loginstyle.css';
 
@@ -11,7 +12,38 @@ const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
+    const [googleUser, setGoogleUser] = useState({});
     const navigate = useNavigate();
+
+    /**Navigates to separate login page that authenticates through google
+     * @alias module:Login.handleGoogleClick
+    */
+    
+ 
+    function handleCallBackResponse(response){
+        console.log("Encoded JWT Token: " + response.credential);
+        const userObject = jwtDecode(response.credential);
+        console.log("Decoded User Object: ")
+        console.log(userObject);
+        setGoogleUser(userObject);
+        handleGoogleNaviClick();
+    }
+
+    useEffect(() => {
+        /* global google */
+        google.accounts.id.initialize({
+            client_id: "414457307543-apfomp4g03iur6u95r9dtf8n74ad4gtd.apps.googleusercontent.com",
+            callback: handleCallBackResponse
+        });
+
+        google.accounts.id.renderButton(
+            document.getElementById("signInDiv"),
+            {theme: "outline", size: "medium"}
+        );
+    }, []);
+
+
+
     
     /** Helper function to set username to user input
      * @alias module:Login.handleUserChange
@@ -33,30 +65,30 @@ const Login = () => {
      * @alias module:Login.handleLoginSubmission
      */
     const handleLoginSubmission = async () => {
-        if (username.trim() === "") {
-            alert("Username not provided, try again.");
-        } else if (password.trim() === "") {
-            alert("Password not provided, try again.");
-        } else {
-            try {
-                const response = await fetch(`http://localhost:5000/api/login?name=${username}&id=${password}`, {
-                    method: "GET",
-                    headers: {
-                    'Content-Type': 'application/json',
-                    // Include any other headers as needed
-                    },
-                });
-                if (response.ok) {
-                  const data = await response.json();
-                  console.log(data.rows[0].name);
-                  setName(data.rows[0].name);
-                } else {
-                  throw Error("Failed to authenticate user");
+            if (username.trim() === "") {
+                alert("Username not provided, try again.");
+            } else if (password.trim() === "") {
+                alert("Password not provided, try again.");
+            } else {
+                try {
+                    const response = await fetch(`http://localhost:5000/api/login?name=${username}&id=${password}`, {
+                        method: "GET",
+                        headers: {
+                        'Content-Type': 'application/json',
+                        // Include any other headers as needed
+                        },
+                    });
+                    if (response.ok) {
+                      const data = await response.json();
+                      console.log(data.rows[0].name);
+                      setName(data.rows[0].name);
+                    } else {
+                      throw Error("Failed to authenticate user");
+                    }
+                } catch (error) {
+                    console.error("Error during login:", error);
                 }
-            } catch (error) {
-                console.error("Error during login:", error);
             }
-        }
     };
 
     /**Navigates to separate employee login page 
@@ -67,12 +99,14 @@ const Login = () => {
         navigate('/emplogin');
     };
 
-    /**Navigates to separate login page that authenticates through google
-     * @alias module:Login.handleGoogleClick
-    */
-    const handleGoogleClick = () =>{
-        navigate('/auth/google');
-    }
+    const handleGoogleNaviClick = () => {
+        // Navigate to the Users page with the user information
+        navigate('/user', { state: { name: name, googleUser: googleUser } });
+    };
+    
+
+    
+    
 
     return (
         <Layout>
@@ -103,9 +137,9 @@ const Login = () => {
                     <button onClick={handleNaviClick}>
                         Employee Login
                     </button>
-                <button onClick={handleGoogleClick}>
-                    Google Login
-                </button>
+                </div> <div id = "signInDiv">
+                    
+                    
                 </div>
             </div>
         </Layout>
