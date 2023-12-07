@@ -12,8 +12,22 @@ const Manager = () => {
   const [orders, setOrders] = useState([]);
   const [filteredEmployeeData, setFilteredData] = useState([]);
   const [orderList, setOrderList] = useState([]);
-  // const [deleteOrderNumber, setDeleteOrderNumber] = useState(0);
   const [index, setIndex] = useState(0);
+  const [selectedSwitchPosition, setSelectedSwitchPosition] = useState('');
+  const [newUserName, setNewUserName] = useState('');
+  const [newUserID, setNewUserID] = useState('');
+  const [newUserPosition, setNewUserPosition] = useState('');
+  const [newUserNextWorkDay, setNewUserNextWorkDay] = useState('2023-10-07');
+  const [newUserStartTime, setNewUserStartTime] = useState('08:00:00');
+  const [newUserEndTime, setNewUserEndTime] = useState('12:00:00');
+  const [ingredients, setIngredients] = useState([]);
+  const [newIngredientName, setNewIngredientName] = useState("");
+  const [newIngredientQuantity, setNewIngredientQuantity] = useState(0);
+  const [showIngredients, setShowIngredients] = useState(false);
+  const [selectedIngredient, setSelectedIngredient] = useState('');
+  const [newName, setNewName] = useState('');
+  const [newIngQuantity, setNewIngQuantity] = useState('');
+
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -70,15 +84,223 @@ const Manager = () => {
       filteredEmployee.push({
         name: element.name,
         id: element.id,
+        position: element.position,
         next_work_day: element.next_work_day.slice(0, -14),
         start_time: element.start_time,
         end_time: element.end_time,
       });
     });
+
     setFilteredData(filteredEmployee);
     console.log(filteredEmployee.length);
     console.log("Tracking employee work schedule");
   };
+
+
+  const handlePositionSwitch = async (employeeId, newPosition) => {
+    console.log('handlePositionSwitch called with:', employeeId, newPosition);
+    try {
+      // Update the employee's position
+      const response = await fetch(`http://localhost:5000/api/employees/${employeeId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ position: newPosition }),
+      });
+
+      console.log('Position Update Response:', response.status, response.statusText);
+
+      if (!response.ok) {
+        throw new Error('Failed to update employee position');
+      }
+
+      // Update the employee's password based on the new position
+      const newPassword = newPosition === 'manager' ? '66666' : '11111';
+      const passwordResponse = await fetch(`http://localhost:5000/api/employees/${employeeId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password: newPassword }),
+      });
+
+      console.log('Password Update Response:', passwordResponse.status, passwordResponse.statusText);
+
+      if (!passwordResponse.ok) {
+        throw new Error('Failed to update employee password');
+      }
+
+      // Refresh the employee data after updating
+      fetchEmployees();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handlePositionChange = async (employeeId, newPosition) => {
+    console.log('handlePositionChange called with:', employeeId, newPosition);
+    const updatedEmployeeData = filteredEmployeeData.map((employee) => {
+      if (employee.id === employeeId) {
+        return { ...employee, position: newPosition };
+      }
+      return employee;
+    });
+
+    setFilteredData(updatedEmployeeData);
+
+    // Call the API to update the position in the database
+    handlePositionSwitch(employeeId, newPosition.toLowerCase());
+  };
+
+  const handleDeleteEmployee = async (employeeId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/employees/${employeeId}`, {
+        method: 'DELETE',
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to delete employee');
+      }
+  
+      // Refresh the employee data after deletion
+      fetchEmployees();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleAddUser = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/employees', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: newUserName,
+          id: newUserID,
+          position: newUserPosition,
+          next_work_day: newUserNextWorkDay,
+          start_time: newUserStartTime,
+          end_time: newUserEndTime,
+          // Add other properties as needed
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add new user');
+      }
+
+      // Refresh the employee data after adding a new user
+      fetchEmployees();
+      setNewUserName('');
+      setNewUserID('');
+      setNewUserPosition('');
+      setNewUserNextWorkDay('2023-10-07');
+      setNewUserStartTime('08:00:00');
+      setNewUserEndTime('12:00:00');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleFetchIngredients = async () => {
+    setShowIngredients(!showIngredients)
+    try {
+      const response = await fetch('/api/ingredients');
+      if (!response.ok) {
+        throw new Error(`Error fetching ingredients: ${response.status} ${response.statusText}`);
+      }
+  
+      // Read the response body as text
+      const rawResponse = await response.text();
+  
+      // Assuming the response is an array of ingredients
+      //const ingredients = await response.json();
+      setIngredients(ingredients);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+  
+  // const handleEditIngredient = async (name, quantity) => {
+  //   try {
+  //     const newQuantity = newQuantities[name];
+  
+  //     const response = await fetch(`http://localhost:5000/api/ingredients/${name}`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ quantity }),
+  //     });
+  
+  //     if (response.ok) {
+  //       // Refresh the ingredients list after editing
+  //       handleFetchIngredients();
+  //     } else {
+  //       console.error("Failed to edit ingredient:", response.statusText);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error editing ingredient:", error);
+  //   }
+  // };
+
+  const [newQuantities, setNewQuantities] = useState({});
+
+  const handleNewQuantityChange = (id, value) => {
+    setNewQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [id]: value,
+    }));
+  };
+  
+  const handleDeleteIngredient = async (id) => {
+    console.log("hello");
+    try {
+      const response = await fetch(`http://localhost:5000/api/ingredients/${id}`, {
+        method: 'DELETE',
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to delete ingredient');
+      }
+  
+      // Refresh the employee data after deletion
+      // handleFetchIngredients();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+  const handleAddIngredient = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/ingredients', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: newName,
+          quantity: newQuantity,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to add new ingredient');
+      }
+  
+      const newIngredient = await response.json();
+  
+      setIngredients([...ingredients, newIngredient]);
+  
+      setNewName('');
+      setNewIngQuantity('');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };  
 
   /** Views 20 of the orders from the orders database
    * @alias module:Manager.handleViewOrderHistory
@@ -161,6 +383,7 @@ const Manager = () => {
   const handleProductUsageChart = () => {
     setshowProd(!showProd)
     setShowInventory(false)
+    setShowIngredients(false)
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
     setshowPop(false)
@@ -186,6 +409,10 @@ const Manager = () => {
       .then(response => response.json())
       .then(data => setInventory(data))
       .catch(error => console.error('Error:', error));
+    fetch('http://localhost:5000/api/ingredients')
+      .then(response => response.json())
+      .then(data => setIngredients(data))
+      .catch(error => console.error('Error:', error));
   }, []);
 
   const [inventory, setInventory] = useState([]);
@@ -200,6 +427,7 @@ const Manager = () => {
     setShowInventory(!showInventory)
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
+    setShowIngredients(false)
     setshowPop(false)
     setshowTrend(false)
     setshowExcessReport(false)
@@ -248,6 +476,7 @@ const Manager = () => {
     setshowSalessRep(!showSalesRep)
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
+    setShowIngredients(false)
     setShowInventory(false)
     setshowPop(false)
     setshowTrend(false)
@@ -283,6 +512,7 @@ const Manager = () => {
     setshowExcessReport(!showExcessReport)
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
+    setShowIngredients(false)
     setShowInventory(false)
     setshowPop(false)
     setshowTrend(false)
@@ -315,6 +545,7 @@ const Manager = () => {
     setshowRestock(!showRestock)
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
+    setShowIngredients(false)
     setShowInventory(false)
     setshowPop(false)
     setshowTrend(false)
@@ -354,7 +585,11 @@ const Manager = () => {
   const fetchItems = () => {
     fetch('http://localhost:5000/api/items')
       .then(response => response.json())
-      .then(data => setItems(data))
+      .then(data => {
+          setItems(data);
+          // Add a call to fetchItems to refresh the data
+          fetchItems();
+      })
       .catch(error => console.error('Error:', error));
   };
 
@@ -371,6 +606,7 @@ const Manager = () => {
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
     setShowInventory(false)
+    setShowIngredients(false)
     setshowPop(false)
     setshowTrend(false)
     setshowExcessReport(false)
@@ -433,6 +669,7 @@ const Manager = () => {
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
     setShowInventory(false)
+    setShowIngredients(false)
     setshowPop(false)
     setshowExcessReport(false)
     setshowRestock(false)
@@ -470,6 +707,7 @@ const Manager = () => {
     }
   };
 
+
   /** Shows popularity analysis, or hides it if it's currently showing
    * @alias module:Manager.handlePopularityAnalysis
    */
@@ -479,6 +717,7 @@ const Manager = () => {
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
     setShowInventory(false)
+    setShowIngredients(false)
     setshowExcessReport(false)
     setshowRestock(false)
     setshowSalessRep(false)
@@ -505,6 +744,7 @@ const Manager = () => {
                 setShowOrderHistory(false);
                 setshowPop(false)
                 setShowInventory(false)
+                setShowIngredients(false)
                 setshowExcessReport(false)
                 setshowRestock(false)
                 setshowSalessRep(false)
@@ -521,6 +761,7 @@ const Manager = () => {
                 setShowEmployeeTable(false);
                 setshowPop(false)
                 setShowInventory(false)
+                setShowIngredients(false)
                 setShowOrderHistory(!showOrderHistory);
                 setshowExcessReport(false)
                 setshowRestock(false)
@@ -550,6 +791,10 @@ const Manager = () => {
             >
               Inventory
             </button>
+          </div>
+
+          <div className="Ingredients">
+            <button onClick={() => handleFetchIngredients()}>Ingredients</button>
           </div>
 
           <div className="SalesReport">
@@ -632,24 +877,95 @@ const Manager = () => {
             {showEmployeeTable && !showOrderHistory && (
               <div className="">
                 <h2>Employee Schedules</h2>
+                {/* Add New User Form */}
+                <div>
+                  <label htmlFor="newUserName">Name:</label>
+                  <input
+                    type="text"
+                    id="newUserName"
+                    value={newUserName}
+                    onChange={(e) => setNewUserName(e.target.value)}
+                  />
+                  <label htmlFor="newUserID">ID:</label>
+                  <input
+                    type="text"
+                    id="newUserID"
+                    value={newUserID}
+                    onChange={(e) => setNewUserID(e.target.value)}
+                  />
+                  <label htmlFor="newUserPosition">Position:</label>
+                  <select
+                    id="newUserPosition"
+                    value={newUserPosition}
+                    onChange={(e) => setNewUserPosition(e.target.value)}
+                  >
+                    <option value="cashier">Cashier</option>
+                    <option value="manager">Manager</option>
+                    <option value="server">Server</option>
+                    <option value="busser">Busser</option>
+                    <option value="cook">Cook</option>
+                    <option value="barista">Barista</option>
+                    {/* Add other position options as needed */}
+                  </select>
+                  <label htmlFor="newUserNextWorkDay">Next Work Day:</label>
+                  <input
+                    type="text"
+                    id="newUserNextWorkDay"
+                    value={newUserNextWorkDay}
+                    onChange={(e) => setNewUserNextWorkDay(e.target.value)}
+                  />
+                  <label htmlFor="newUserStartTime">Start Time:</label>
+                  <input
+                    type="text"
+                    id="newUserStartTime"
+                    value={newUserStartTime}
+                    onChange={(e) => setNewUserStartTime(e.target.value)}
+                  />
+                  <label htmlFor="newUserEndTime">End Time:</label>
+                  <input
+                    type="text"
+                    id="newUserEndTime"
+                    value={newUserEndTime}
+                    onChange={(e) => setNewUserEndTime(e.target.value)}
+                  />
+                  <button onClick={handleAddUser}>Add New User</button>
+                </div>
+                {console.log(filteredEmployeeData)}
                 <table>
                   <thead>
                     <tr>
                       <th>Name</th>
                       <th>ID</th>
+                      <th>Position</th>
                       <th>Next Work Day</th>
                       <th>Start Time</th>
                       <th>End Time</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredEmployeeData.map((employee, index) => (
+                  {filteredEmployeeData.map((employee, index) => (
                       <tr key={index}>
                         <td>{employee.name}</td>
                         <td>{employee.id}</td>
+                        <td>
+                          <select
+                            id={`switchPositionDropdown-${employee.id}`}
+                            onChange={(e) => handlePositionChange(employee.id, e.target.value)}
+                            value={employee.position} // Prepopulate with the current position
+                          >
+                            <option value="cashier">Cashier</option>
+                            <option value="manager">Manager</option>
+                            <option value="server">Server</option>
+                            <option value="busser">Busser</option>
+                            <option value="cook">Cook</option>
+                            <option value="barista">Barista</option>
+                            {/* Add other position options as needed */}
+                          </select>
+                        </td>
                         <td>{employee.next_work_day}</td>
                         <td>{employee.start_time}</td>
                         <td>{employee.end_time}</td>
+                        <button onClick={() => handleDeleteEmployee(employee.id)}>Delete</button>
                       </tr>
                     ))}
                   </tbody>
@@ -729,6 +1045,58 @@ const Manager = () => {
           
         </div>
       )}
+
+      {showIngredients && (
+        <div>
+          <h2>Ingredients: </h2>
+          {/* Add New ingredient Form */}
+          <div>
+                  <label htmlFor="newName">Name:</label>
+                  <input
+                    type="text"
+                    id="newName"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                  />
+                  <label htmlFor="newQuantity">Quantity:</label>
+                  <input
+                    type="text"
+                    id="newQuantity"
+                    value={newIngQuantity}
+                    onChange={(e) => setNewIngQuantity(e.target.value)}
+                  />
+                  <button onClick={handleAddIngredient}>Add Inventory Item</button>
+                </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ingredients.map(ingredient => (
+                <tr key={ingredient.id}>
+                  <td>{ingredient.name}</td>
+                  <td>{ingredient.quantity}</td>
+                  <td>
+                    {/* <input
+                      type="text"
+                      placeholder="New Quantity"
+                      value={newQuantities[ingredient.id] || ''}
+                      onChange={(e) => handleNewQuantityChange(ingredient.id, e.target.value)}
+                    /> */}
+                    {/* <button onClick={() => handleEditIngredient(ingredient.name, newQuantities[ingredient.name])}>Edit</button> */}
+                    <button onClick={() => handleDeleteIngredient(ingredient.name)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          
+        </div>
+      )}
+      
 
       {showSalesRep && (
         <div>
