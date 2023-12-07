@@ -10,5 +10,10 @@ module.exports = {
     },
     session: {
         cookieKey: "pleaseIJustWantToFinishthisProject"
+    },
+    auth0: {
+        baseURL: 'https://dev-0arzk14ipfmqzedb.us.auth0.com',
+        clientID: 'JPR9iBB50AJDkoPfATLUb9S4fBLY9bOg',
+        clientSecret: '38d5184ee4ef06651caf5bdcc79d81c4'
     }
 }

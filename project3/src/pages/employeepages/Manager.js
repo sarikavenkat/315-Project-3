@@ -3,6 +3,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "./managerstyle.css";
 import Layout from '../../Layout';
 
+/**A module representing the HTML for Sweet Paris' home page.
+ * @module Manager
+ * @returns HTML for Manager page
+*/
 const Manager = () => {
   const [employee, setEmployee] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -35,6 +39,9 @@ const Manager = () => {
     fetchOrders();
   }, []);
 
+  /**Fetches record of orders from Postgres database
+   * @alias module:Manager.fetchOrders
+   */
   const fetchOrders = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/orders");
@@ -50,6 +57,9 @@ const Manager = () => {
     }
   };
 
+  /** Fetches list of employees from Postgres database
+   * @alias module:Manager.fetchEmployees
+   */
   const fetchEmployees = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/employees");
@@ -58,13 +68,15 @@ const Manager = () => {
         const data = await response.json();
         setEmployee(data);
       } else {
-        throw new Error("Failed to fetch menu items");
+        throw new Error("Failed to fetch employees");
       }
     } catch (error) {
-      console.error("Error fetching menu items", error);
+      console.error("Error fetching employees", error);
     }
   };
-
+  /** Fetches details for each employee's next work day from the Postgres database
+   * @alias module:Manager.handleCheckEmployeeSchedules
+  */
   const handleCheckEmployeeSchedules = () => {
     console.log(employee);
     const filteredEmployee = [];
@@ -83,6 +95,7 @@ const Manager = () => {
     console.log(filteredEmployee.length);
     console.log("Tracking employee work schedule");
   };
+
 
   const handlePositionSwitch = async (employeeId, newPosition) => {
     console.log('handlePositionSwitch called with:', employeeId, newPosition);
@@ -289,6 +302,9 @@ const Manager = () => {
     }
   };  
 
+  /** Views 20 of the orders from the orders database
+   * @alias module:Manager.handleViewOrderHistory
+   */
   const handleViewOrderHistory = () => {
     const subsetStartIndex = index;
     const subsetEndIndex = index + 20;
@@ -314,20 +330,7 @@ const Manager = () => {
     console.log(orders.length);
     console.log("Viewing order history");
   };
-
-  const handleDeleteOrder = (orderid) => {
-    fetch(`http://localhost:5000/api/orders/${orderid}`, {
-      method: 'DELETE',
-    })
-      .then(response => response.json())
-      .then(() => {
-        fetchItems(); // Refresh the items after deleting one
-      })
-      .catch(error => console.error('Error:', error));
-  };
-
-
-  // const handleDeleteOrderItems = async (orderId) => {
+  //const handleDeleteOrderItems = async (orderId) => {
     
   //   try {
   //     const response = await fetch(`http://localhost:5000/api/removeorder/${orderId}`, {
@@ -362,6 +365,9 @@ const Manager = () => {
   const [PRODendDate, setPRODEndDate] = useState('');
   const [showProd, setshowProd] = useState(false)
 
+  /** Fetches product usage chart from PostGres database
+   * @alias module:Manager.processProductUsageChart
+   */
   const processProductUsageChart = () => {
     if (PRODstartDate && setPRODStartDate) {
       fetch(`http://localhost:5000/api/product-usage-chart?start=${PRODstartDate}&end=${PRODendDate}`)
@@ -371,6 +377,9 @@ const Manager = () => {
     }
   };
 
+  /** Shows product usage chart, or hides it if it's currently showing
+   * @alias module:Manager.handleProductUsageChart
+   */
   const handleProductUsageChart = () => {
     setshowProd(!showProd)
     setShowInventory(false)
@@ -386,6 +395,9 @@ const Manager = () => {
   };
     
 
+  /** Navigates back to employeelogin, thus "logging out"
+   *  @alias module:Manager.handleLogout
+   */
   const handleLogout = () => {
     navigate("/emplogin");
   };
@@ -408,6 +420,9 @@ const Manager = () => {
   const [newQuantity, setNewQuantity] = useState(0);
   const [showInventory, setShowInventory] = useState(false)
   
+  /** Shows inventory chart, or hides it if it's currently showing
+   * @alias module:Manager.handleInventory
+   */
   const handleInventory = () => {
     setShowInventory(!showInventory)
     setShowOrderHistory(false)
@@ -421,6 +436,10 @@ const Manager = () => {
     setshowProd(false)
     setshowItems(false)
   }
+
+  /** Updates number of items in inventory
+   * @alias module:Manager.handleQuantityUpdate
+   */
 
   const handleQuantityUpdate = () => {
     // Update quantity when the button is clicked
@@ -450,6 +469,9 @@ const Manager = () => {
   const [SALEendDate, setSALEEndDate] = useState('');
   const [showSalesRep, setshowSalessRep] = useState(false)
 
+  /** Shows sales report, or hides it if it's currently showing
+   * @alias module:Manager.handleSalesReport
+   */
   const handleSalesReport = () => {
     setshowSalessRep(!showSalesRep)
     setShowOrderHistory(false)
@@ -464,6 +486,9 @@ const Manager = () => {
     setshowItems(false)
   }
 
+  /** Fetches sales report from postgres database
+   * @alias module:Manager.processSalesReport
+   */
   const processSalesReport = () => {
     console.log(SALEstartDate, SALEendDate)
     if (SALEstartDate && SALEendDate) {
@@ -480,6 +505,9 @@ const Manager = () => {
   const [thresholdDate, setThresholdDate] = useState('');
   const [showExcessReport, setshowExcessReport] = useState(false)
 
+  /** Shows excess report, or hides it if it's currently showing
+   * @alias module:Manager.handleExcessReport
+   */
   const handleExcessReport = () => {
     setshowExcessReport(!showExcessReport)
     setShowOrderHistory(false)
@@ -494,6 +522,9 @@ const Manager = () => {
     setshowItems(false)
   }
 
+  /** Shows inventory usage chart, or hides it if it's currently showing
+   * @alias module:Manager.processExcessReport
+   */
   const processExcessReport = () => {
     if (thresholdDate) {
       fetch(`http://localhost:5000/api/excess-report?thresholdDate=${thresholdDate}`)
@@ -506,6 +537,10 @@ const Manager = () => {
   const [restockData, setRestockData] = useState([]);
   const [showRestock, setshowRestock] = useState(false)
   // TODO
+
+  /** Shows restock report, or hides it if it's currently showing
+   * @alias module:Manager.handleRestockReport
+   */
   const handleRestockReport = () => {
     setshowRestock(!showRestock)
     setShowOrderHistory(false)
@@ -520,6 +555,9 @@ const Manager = () => {
     setshowItems(false)
   }
 
+  /** Fetches restock report from postGres database
+   * @alias module:Manager.processRestockReport
+   */
   const processRestockReport = () => {
     fetch('http://localhost:5000/api/restock-report')
       .then(response => response.json())
@@ -541,6 +579,9 @@ const Manager = () => {
     food: false,
   });
 
+  /** Fetches list of menu items from postgres database
+   * @alias module:Manager.fetchItems
+   */
   const fetchItems = () => {
     fetch('http://localhost:5000/api/items')
       .then(response => response.json())
@@ -556,6 +597,9 @@ const Manager = () => {
     fetchItems();
   }, []);
 
+  /** Shows menu, or hides it if it's currently showing
+   * @alias module:Manager.handleUpdateItems
+   */
   const handleUpdateItems = () => {
     // Implement functionality to update items
     setshowItems(!showItems)
@@ -570,7 +614,9 @@ const Manager = () => {
     setshowSalessRep(false)
     setshowProd(false)
   };
-
+  /** Adds menu items to the list in the postgres database
+   * @alias module:Manager.handleAddItem
+   */
   const handleAddItem = () => {
     fetch('http://localhost:5000/api/items', {
       method: 'POST',
@@ -597,6 +643,9 @@ const Manager = () => {
       .catch(error => console.error('Error:', error));
   };
 
+  /** Deletes menu items from the list in the postgres database
+   * @alias module:Manager.handleDeleteItem
+   */
   const handleDeleteItem = (name) => {
     fetch(`http://localhost:5000/api/items/${name}`, {
       method: 'DELETE',
@@ -612,6 +661,9 @@ const Manager = () => {
   const [PAIRendDate, setPAIREndDate] = useState('');
   const [showTrend, setshowTrend] = useState(false)
 
+  /** Shows trend report, or hides it if it's currently showing
+   * @alias module:Manager.handleTrendReport
+   */
   const handleTrendReport = () => {
     setshowTrend(!showTrend)
     setShowOrderHistory(false)
@@ -626,6 +678,9 @@ const Manager = () => {
     setshowItems(false)
   }
 
+  /** Fetches trend report from postgres database
+   * @alias module:Manager.processTrendReport
+   */
   const processTrendReport = () => {
     if (PAIRstartDate && PAIRendDate) {
       fetch(`http://localhost:5000/api/trend-report?start=${PAIRstartDate}&end=${PAIRendDate}`)
@@ -640,6 +695,9 @@ const Manager = () => {
   const [endDate, setEndDate] = useState('');
   const [showPop, setshowPop] = useState(false)
 
+  /** Fetches popularity analysis from postgres database
+   * @alias module:Manager.processPopularityAnalysis
+   */
   const processPopularityAnalysis = () => {
     if (startDate && endDate) {
       fetch(`http://localhost:5000/api/popularity-analysis?start=${startDate}&end=${endDate}`)
@@ -650,6 +708,9 @@ const Manager = () => {
   };
 
 
+  /** Shows popularity analysis, or hides it if it's currently showing
+   * @alias module:Manager.handlePopularityAnalysis
+   */
   const handlePopularityAnalysis = () => {
     setshowPop(!showPop)
     setshowTrend(false)
@@ -932,9 +993,14 @@ const Manager = () => {
                       <td>{orders.orderdatetime}</td>
                       <td>{orders.price}</td>
                       <td>{orders.calories}</td>
+                      
                       <td>
-                        <button onClick={() => handleDeleteOrder(orders.orderid)}>Delete</button>
+                      
+
+                      {/*  <button onClick={() => handleDeleteOrder(orders.orderid)}>Delete</button> TEMPORARILY COMMENTED FOR TESTING*/ }
+                      
                       </td>
+                    
                     </tr>
                   ))}
                 </tbody>
