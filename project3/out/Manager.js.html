@@ -40,7 +40,7 @@ const Manager = () => {
   const [orders, setOrders] = useState([]);
   const [filteredEmployeeData, setFilteredData] = useState([]);
   const [orderList, setOrderList] = useState([]);
-  const [deleteOrderNumber, setDeleteOrderNumber] = useState(0);
+  // const [deleteOrderNumber, setDeleteOrderNumber] = useState(0);
   const [index, setIndex] = useState(0);
 
   const navigate = useNavigate();
@@ -136,42 +136,69 @@ const Manager = () => {
     console.log(orders.length);
     console.log("Viewing order history");
   };
-  /** Removes an order from the postgres database
-   * @alias module:Manager.handleDeleteOrderItems
-   * @param {int} orderId - Specifies which order to remove
-   */
-  const handleDeleteOrderItems = async (orderId) => {
+  //const handleDeleteOrderItems = async (orderId) => {
     
-    try {
-      const response = await fetch(`http://localhost:5000/api/removeorder/${orderId}`, {
-        method: 'DELETE',
-      });
-      console.log("try");
+  //   try {
+  //     const response = await fetch(`http://localhost:5000/api/removeorder/${orderId}`, {
+  //       method: 'DELETE',
+  //     });
+  //     console.log("try");
 
-      if (response.ok) {
-        console.log("if");
-        console.log('Order removed successfully');
-        fetchOrders();
-      } else if (response.status === 404) {
-        console.log("else if");
-        console.log('Order not found');
-      } else {
-        console.log("else");
-        throw new Error('Failed to remove order');
-      }
-    } catch (error) {
-        console.log("error");
-        console.error('Error removing order', error);
+  //     if (response.ok) {
+  //       console.log("if");
+  //       console.log('Order removed successfully');
+  //       fetchOrders();
+  //     } else if (response.status === 404) {
+  //       console.log("else if");
+  //       console.log('Order not found');
+  //     } else {
+  //       console.log("else");
+  //       throw new Error('Failed to remove order');
+  //     }
+  //   } catch (error) {
+  //       console.log("error");
+  //       console.error('Error removing order', error);
+  //   }
+  // };
+
+  // const handleAppendToOrderHistory = () => {
+
+  //   console.log("Appending order specifics to order history");
+  // };
+
+  const [productUsageData, setProductUsageData] = useState([]);
+  const [PRODstartDate, setPRODStartDate] = useState('');
+  const [PRODendDate, setPRODEndDate] = useState('');
+  const [showProd, setshowProd] = useState(false)
+
+  /** Fetches product usage chart from PostGres database
+   * @alias module:Manager.processProductUsageChart
+   */
+  const processProductUsageChart = () => {
+    if (PRODstartDate &amp;&amp; setPRODStartDate) {
+      fetch(`http://localhost:5000/api/product-usage-chart?start=${PRODstartDate}&amp;end=${PRODendDate}`)
+        .then(response => response.json())
+        .then(data => setProductUsageData(data))
+        .catch(error => console.error('Error:', error));
     }
   };
 
-  /** Currently "appends order specifics to order history"-update this later
-   *  @alias module:Manager.handleAppendToOrderHistory
+  /** Shows product usage chart, or hides it if it's currently showing
+   * @alias module:Manager.handleProductUsageChart
    */
-  const handleAppendToOrderHistory = () => {
-
-    console.log("Appending order specifics to order history");
+  const handleProductUsageChart = () => {
+    setshowProd(!showProd)
+    setShowInventory(false)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setshowPop(false)
+    setshowTrend(false)
+    setshowExcessReport(false)
+    setshowRestock(false)
+    setshowSalessRep(false)
+    setshowItems(false)
   };
+    
 
   /** Navigates back to employeelogin, thus "logging out"
    *  @alias module:Manager.handleLogout
@@ -180,88 +207,482 @@ const Manager = () => {
     navigate("/emplogin");
   };
 
+  // TODO
+  useEffect(() => {
+    // Fetch inventory data on component mount
+    fetch('http://localhost:5000/api/inventory')
+      .then(response => response.json())
+      .then(data => setInventory(data))
+      .catch(error => console.error('Error:', error));
+  }, []);
+
+  const [inventory, setInventory] = useState([]);
+  const [selectedItem, setSelectedItem] = useState('');
+  const [newQuantity, setNewQuantity] = useState(0);
+  const [showInventory, setShowInventory] = useState(false)
+  
+  /** Shows inventory chart, or hides it if it's currently showing
+   * @alias module:Manager.handleInventory
+   */
+  const handleInventory = () => {
+    setShowInventory(!showInventory)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setshowPop(false)
+    setshowTrend(false)
+    setshowExcessReport(false)
+    setshowRestock(false)
+    setshowSalessRep(false)
+    setshowProd(false)
+    setshowItems(false)
+  }
+
+  /** Updates number of items in inventory
+   * @alias module:Manager.handleQuantityUpdate
+   */
+
+  const handleQuantityUpdate = () => {
+    // Update quantity when the button is clicked
+    if (selectedItem &amp;&amp; newQuantity !== '') {
+      fetch(`http://localhost:5000/api/inventory/${selectedItem}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ quantity: newQuantity }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.message);
+          // Refresh the inventory data after updating quantity
+          fetch('http://localhost:5000/api/inventory')
+            .then(response => response.json())
+            .then(data => setInventory(data))
+            .catch(error => console.error('Error:', error));
+        })
+        .catch(error => console.error('Error:', error));
+    }
+  };
+
+  const [salesData, setSalesData] = useState([]);
+  const [SALEstartDate, setSALEStartDate] = useState('');
+  const [SALEendDate, setSALEEndDate] = useState('');
+  const [showSalesRep, setshowSalessRep] = useState(false)
+
+  /** Shows sales report, or hides it if it's currently showing
+   * @alias module:Manager.handleSalesReport
+   */
+  const handleSalesReport = () => {
+    setshowSalessRep(!showSalesRep)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setShowInventory(false)
+    setshowPop(false)
+    setshowTrend(false)
+    setshowExcessReport(false)
+    setshowRestock(false)
+    setshowProd(false)
+    setshowItems(false)
+  }
+
+  /** Fetches sales report from postgres database
+   * @alias module:Manager.processSalesReport
+   */
+  const processSalesReport = () => {
+    console.log(SALEstartDate, SALEendDate)
+    if (SALEstartDate &amp;&amp; SALEendDate) {
+      fetch(`http://localhost:5000/api/sales-report?start=${SALEstartDate}&amp;end=${SALEendDate}`)
+        .then(response => response.json())
+        .then(data => setSalesData(data))
+        .catch(error => console.error('Error:', error));
+    } 
+  }
+
+
+
+  const [excessData, setExcessData] = useState([]);
+  const [thresholdDate, setThresholdDate] = useState('');
+  const [showExcessReport, setshowExcessReport] = useState(false)
+
+  /** Shows excess report, or hides it if it's currently showing
+   * @alias module:Manager.handleExcessReport
+   */
+  const handleExcessReport = () => {
+    setshowExcessReport(!showExcessReport)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setShowInventory(false)
+    setshowPop(false)
+    setshowTrend(false)
+    setshowRestock(false)
+    setshowSalessRep(false)
+    setshowProd(false)
+    setshowItems(false)
+  }
+
+  /** Shows inventory usage chart, or hides it if it's currently showing
+   * @alias module:Manager.processExcessReport
+   */
+  const processExcessReport = () => {
+    if (thresholdDate) {
+      fetch(`http://localhost:5000/api/excess-report?thresholdDate=${thresholdDate}`)
+        .then(response => response.json())
+        .then(data => setExcessData(data))
+        .catch(error => console.error('Error:', error));
+    }
+  };
+
+  const [restockData, setRestockData] = useState([]);
+  const [showRestock, setshowRestock] = useState(false)
+  // TODO
+
+  /** Shows restock report, or hides it if it's currently showing
+   * @alias module:Manager.handleRestockReport
+   */
+  const handleRestockReport = () => {
+    setshowRestock(!showRestock)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setShowInventory(false)
+    setshowPop(false)
+    setshowTrend(false)
+    setshowExcessReport(false)
+    setshowSalessRep(false)
+    setshowProd(false)
+    setshowItems(false)
+  }
+
+  /** Fetches restock report from postGres database
+   * @alias module:Manager.processRestockReport
+   */
+  const processRestockReport = () => {
+    fetch('http://localhost:5000/api/restock-report')
+      .then(response => response.json())
+      .then(data => setRestockData(data))
+      .catch(error => console.error('Error:', error));
+  };
+
+  const [items, setItems] = useState([]);
+  const [showItems, setshowItems] = useState(false)
+  const [newItem, setNewItem] = useState({
+    name: '',
+    containsWheat: false,
+    containsMilk: false,
+    containsEggs: false,
+    containsAlcohol: false,
+    price: 0,
+    calories: 0,
+    drink: false,
+    food: false,
+  });
+
+  /** Fetches list of menu items from postgres database
+   * @alias module:Manager.fetchItems
+   */
+  const fetchItems = () => {
+    fetch('http://localhost:5000/api/items')
+      .then(response => response.json())
+      .then(data => setItems(data))
+      .catch(error => console.error('Error:', error));
+  };
+
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  /** Shows menu, or hides it if it's currently showing
+   * @alias module:Manager.handleUpdateItems
+   */
+  const handleUpdateItems = () => {
+    // Implement functionality to update items
+    setshowItems(!showItems)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setShowInventory(false)
+    setshowPop(false)
+    setshowTrend(false)
+    setshowExcessReport(false)
+    setshowRestock(false)
+    setshowSalessRep(false)
+    setshowProd(false)
+  };
+  /** Adds menu items to the list in the postgres database
+   * @alias module:Manager.handleAddItem
+   */
+  const handleAddItem = () => {
+    fetch('http://localhost:5000/api/items', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newItem),
+    })
+      .then(response => response.json())
+      .then(() => {
+        fetchItems(); // Refresh the items after adding a new one
+        setNewItem({
+          name: '',
+          containsWheat: false,
+          containsMilk: false,
+          containsEggs: false,
+          containsAlcohol: false,
+          price: 0,
+          calories: 0,
+          drink: false,
+          food: false,
+        });
+      })
+      .catch(error => console.error('Error:', error));
+  };
+
+  /** Deletes menu items from the list in the postgres database
+   * @alias module:Manager.handleDeleteItem
+   */
+  const handleDeleteItem = (name) => {
+    fetch(`http://localhost:5000/api/items/${name}`, {
+      method: 'DELETE',
+    })
+      .then(response => response.json())
+      .then(() => {
+        fetchItems(); // Refresh the items after deleting one
+      })
+      .catch(error => console.error('Error:', error));
+  };
+  const [trendReportData, setTrendReportData] = useState([]);
+  const [PAIRstartDate, setPAIRStartDate] = useState('');
+  const [PAIRendDate, setPAIREndDate] = useState('');
+  const [showTrend, setshowTrend] = useState(false)
+
+  /** Shows trend report, or hides it if it's currently showing
+   * @alias module:Manager.handleTrendReport
+   */
+  const handleTrendReport = () => {
+    setshowTrend(!showTrend)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setShowInventory(false)
+    setshowPop(false)
+    setshowExcessReport(false)
+    setshowRestock(false)
+    setshowSalessRep(false)
+    setshowProd(false)
+    setshowItems(false)
+  }
+
+  /** Fetches trend report from postgres database
+   * @alias module:Manager.processTrendReport
+   */
+  const processTrendReport = () => {
+    if (PAIRstartDate &amp;&amp; PAIRendDate) {
+      fetch(`http://localhost:5000/api/trend-report?start=${PAIRstartDate}&amp;end=${PAIRendDate}`)
+        .then(response => response.json())
+        .then(data => setTrendReportData(data))
+        .catch(error => console.error('Error:', error));
+    }
+  };
+
+  const [popularityData, setPopularityData] = useState([]);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [showPop, setshowPop] = useState(false)
+
+  /** Fetches popularity analysis from postgres database
+   * @alias module:Manager.processPopularityAnalysis
+   */
+  const processPopularityAnalysis = () => {
+    if (startDate &amp;&amp; endDate) {
+      fetch(`http://localhost:5000/api/popularity-analysis?start=${startDate}&amp;end=${endDate}`)
+        .then(response => response.json())
+        .then(data => setPopularityData(data))
+        .catch(error => console.error('Error:', error));
+    }
+  };
+
+  /** Shows popularity analysis, or hides it if it's currently showing
+   * @alias module:Manager.handlePopularityAnalysis
+   */
+  const handlePopularityAnalysis = () => {
+    setshowPop(!showPop)
+    setshowTrend(false)
+    setShowOrderHistory(false)
+    setShowEmployeeTable(false)
+    setShowInventory(false)
+    setshowExcessReport(false)
+    setshowRestock(false)
+    setshowSalessRep(false)
+    setshowProd(false)
+    setshowItems(false)
+  }
+
   const [showEmployeeTable, setShowEmployeeTable] = useState(false);
   const [showOrderHistory, setShowOrderHistory] = useState(false);
+  // const [showProductUsageChart, setshowProductUsageChart] = useState(false);
 
   return (
     &lt;Layout>
-      &lt;div>
+      {/* &lt;div className="components"> */}
+        
         &lt;h1>Welcome, Manager: {managerName}&lt;/h1>
         &lt;button onClick={handleLogout}>Logout&lt;/button>
+        &lt;div className="options"> 
+          &lt;div className="employee-times">
+            &lt;button
+              onClick={() => {
+                handleCheckEmployeeSchedules();
+                setShowEmployeeTable(!showEmployeeTable);
+                setShowOrderHistory(false);
+                setshowPop(false)
+                setShowInventory(false)
+                setshowExcessReport(false)
+                setshowRestock(false)
+                setshowSalessRep(false)
+                setshowProd(false)
+              }}
+            >
+              Check Employee Schedules
+            &lt;/button>
+          &lt;/div>
+          &lt;div className="OrderHistory">
+            &lt;button
+              onClick={() => {
+                handleViewOrderHistory();
+                setShowEmployeeTable(false);
+                setshowPop(false)
+                setShowInventory(false)
+                setShowOrderHistory(!showOrderHistory);
+                setshowExcessReport(false)
+                setshowRestock(false)
+                setshowSalessRep(false)
+                setshowProd(false)
+              }}
+            >
+              View Order History
+            &lt;/button>
+          &lt;/div>
 
-        &lt;div className="employee-times">
-          &lt;button
-            onClick={() => {
-              handleCheckEmployeeSchedules();
-              setShowEmployeeTable(!showEmployeeTable);
-              setShowOrderHistory(false);
+          &lt;div className="ProductUsageChart">
+            &lt;button
+              onClick={() => {
+                handleProductUsageChart();
+              }}
+            >
+              Product Usage Chart
+            &lt;/button>
+          &lt;/div>
 
-            }}
-          >
-            Check Employee Schedules
-          &lt;/button>
+          &lt;div className="Inventory">
+            &lt;button
+              onClick={() => {
+                handleInventory();
+              }}
+            >
+              Inventory
+            &lt;/button>
+          &lt;/div>
+
+          &lt;div className="SalesReport">
+            &lt;button
+              onClick={() => {
+                handleSalesReport();
+              }}
+            >
+              Sales Report
+            &lt;/button>
+          &lt;/div>
+
+          &lt;div className="ExcessReport">
+            &lt;button
+              onClick={() => {
+                handleExcessReport();
+              }}
+            >
+              Excess Report
+            &lt;/button>
+          &lt;/div>
+
+          &lt;div className="RestockReport">
+            &lt;button
+              onClick={() => {
+                handleRestockReport();
+              }}
+            >
+              Restock Report
+            &lt;/button>
+          &lt;/div>
+
+          &lt;div className="UpdateItems">
+            &lt;button
+              onClick={() => {
+                handleUpdateItems();
+              }}
+            >
+              Update Items
+            &lt;/button>
+          &lt;/div>
+
+          &lt;div className="TrendReport">
+            &lt;button
+              onClick={() => {
+                handleTrendReport();
+              }}
+            >
+              What Sells Together
+            &lt;/button>
+          &lt;/div>
+
+          &lt;div className="PopularityAnalysis">
+            &lt;button
+              onClick={() => {
+                handlePopularityAnalysis();
+              }}
+            >
+              Menu Items Popularity Analysis
+            &lt;/button>
+          &lt;/div>
+          
         &lt;/div>
-        &lt;div className="OrderHistory">
-          &lt;button
-            onClick={() => {
-              handleViewOrderHistory();
-              setShowEmployeeTable(false);
-              setShowOrderHistory(!showOrderHistory);
-            }}
-          >
-            View Order History
-          &lt;/button>
-        &lt;/div>
-
-        &lt;label>
-          Delete Orders by Number:
-          &lt;input
-            type="number"
-            value={deleteOrderNumber}
-            id = "myInput"
-            onChange={(e) => setDeleteOrderNumber(e.target.value)}
-          />
-          &lt;button onClick={() =>handleDeleteOrderItems(1)}>Delete Orders&lt;/button>
-        &lt;/label>
 
         {showOrderHistory &amp;&amp; (
         &lt;div>
-          &lt;button onClick={() => setIndex((prevIndex) => prevIndex - 20)}>
+          &lt;h2>Order History&lt;/h2>
+          {/* &lt;button onClick={() => setIndex((prevIndex) => prevIndex - 20)}>
             Previous Orders
           &lt;/button>
           &lt;button
             onClick={() => {
               setIndex((prevIndex) => prevIndex + 20);
-            }}
-          >
+            }}>
             Next Orders
-          &lt;/button>
+          &lt;/button> */}
         &lt;/div>
       )}
 
             {showEmployeeTable &amp;&amp; !showOrderHistory &amp;&amp; (
-              &lt;table>
-                &lt;thead>
-                  &lt;tr>
-                    &lt;th>Name&lt;/th>
-                    &lt;th>ID&lt;/th>
-                    &lt;th>Next Work Day&lt;/th>
-                    &lt;th>Start Time&lt;/th>
-                    &lt;th>End Time&lt;/th>
-                  &lt;/tr>
-                &lt;/thead>
-                &lt;tbody>
-                  {filteredEmployeeData.map((employee, index) => (
-                    &lt;tr key={index}>
-                      &lt;td>{employee.name}&lt;/td>
-                      &lt;td>{employee.id}&lt;/td>
-                      &lt;td>{employee.next_work_day}&lt;/td>
-                      &lt;td>{employee.start_time}&lt;/td>
-                      &lt;td>{employee.end_time}&lt;/td>
+              &lt;div className="">
+                &lt;h2>Employee Schedules&lt;/h2>
+                &lt;table>
+                  &lt;thead>
+                    &lt;tr>
+                      &lt;th>Name&lt;/th>
+                      &lt;th>ID&lt;/th>
+                      &lt;th>Next Work Day&lt;/th>
+                      &lt;th>Start Time&lt;/th>
+                      &lt;th>End Time&lt;/th>
                     &lt;/tr>
-                  ))}
-                &lt;/tbody>
-              &lt;/table>
+                  &lt;/thead>
+                  &lt;tbody>
+                    {filteredEmployeeData.map((employee, index) => (
+                      &lt;tr key={index}>
+                        &lt;td>{employee.name}&lt;/td>
+                        &lt;td>{employee.id}&lt;/td>
+                        &lt;td>{employee.next_work_day}&lt;/td>
+                        &lt;td>{employee.start_time}&lt;/td>
+                        &lt;td>{employee.end_time}&lt;/td>
+                      &lt;/tr>
+                    ))}
+                  &lt;/tbody>
+                &lt;/table>
+              &lt;/div>
             )}
 
             {showOrderHistory &amp;&amp; !showEmployeeTable &amp;&amp; (
@@ -273,6 +694,7 @@ const Manager = () => {
                     &lt;th>Date/Time&lt;/th>
                     &lt;th>Price&lt;/th>
                     &lt;th>Calories&lt;/th>
+                    &lt;th>Action&lt;/th>
                   &lt;/tr>
                 &lt;/thead>
                 &lt;tbody>
@@ -283,12 +705,421 @@ const Manager = () => {
                       &lt;td>{orders.orderdatetime}&lt;/td>
                       &lt;td>{orders.price}&lt;/td>
                       &lt;td>{orders.calories}&lt;/td>
+                      &lt;td>
+                        &lt;button onClick={() => handleDeleteOrder(orders.orderid)}>Delete&lt;/button>
+                      &lt;/td>
                     &lt;/tr>
                   ))}
                 &lt;/tbody>
               &lt;/table>
             )}
+
+      {showInventory &amp;&amp; (
+        &lt;div>
+          &lt;h2>Inventory: &lt;/h2>
+          &lt;label htmlFor="itemDropdown">Select Item:&lt;/label>
+          &lt;select id="itemDropdown" onChange={(e) => setSelectedItem(e.target.value)}>
+            {inventory.map(item => (
+              &lt;option key={item.id} value={item.id}>{item.name}&lt;/option>
+            ))}
+          &lt;/select>
+
+          &lt;label htmlFor="quantityInput">Enter Quantity:&lt;/label>
+          &lt;input type="number" id="quantityInput" value={newQuantity} onChange={(e) => setNewQuantity(e.target.value)} min="0" />
+
+          &lt;button onClick={handleQuantityUpdate}>Update Quantity&lt;/button>
+
+
+          &lt;table>
+            &lt;thead>
+              &lt;tr>
+                &lt;th>Name&lt;/th>
+                &lt;th>Quantity&lt;/th>
+                &lt;th>Price&lt;/th>
+              &lt;/tr>
+            &lt;/thead>
+            &lt;tbody>
+              {inventory.map(item => (
+                &lt;tr key={item.id}>
+                  &lt;td>{item.name}&lt;/td>
+                  &lt;td>{item.quantity}&lt;/td>
+                  &lt;td>{item.price}&lt;/td>
+                &lt;/tr>
+              ))}
+            &lt;/tbody>
+          &lt;/table>
+
+          
+        &lt;/div>
+      )}
+
+      {showSalesRep &amp;&amp; (
+        &lt;div>
+        &lt;h2>Sales Report&lt;/h2>
+  
+        &lt;label htmlFor="startDateInput">Start Date:&lt;/label>
+        &lt;input
+          type="date"
+          id="startDateInput"
+          value={SALEstartDate}
+          onChange={(e) => setSALEStartDate(e.target.value)}
+        />
+  
+        &lt;label htmlFor="endDateInput">End Date:&lt;/label>
+        &lt;input
+          type="date"
+          id="endDateInput"
+          value={SALEendDate}
+          onChange={(e) => setSALEEndDate(e.target.value)}
+        />
+  
+        &lt;button onClick={processSalesReport}>Generate Report&lt;/button>
+  
+        {salesData.length > 0 &amp;&amp; (
+          &lt;div className="table-container">
+            &lt;table>
+              &lt;thead>
+                &lt;tr>
+                  &lt;th>Order ID&lt;/th>
+                  &lt;th>Item Name&lt;/th>
+                  &lt;th>Quantity&lt;/th>
+                &lt;/tr>
+              &lt;/thead>
+              &lt;tbody>
+                {salesData.map(item => (
+                  &lt;tr key={item.order_id}>
+                    &lt;td>{item.order_id}&lt;/td>
+                    &lt;td>{item.item_name}&lt;/td>
+                    &lt;td>{item.quantity}&lt;/td>
+                  &lt;/tr>
+                ))}
+              &lt;/tbody>
+            &lt;/table>
           &lt;/div>
+        )}
+      &lt;/div>
+      )}
+
+      {showExcessReport &amp;&amp; (
+        &lt;div>
+        &lt;h2>Excess Report&lt;/h2>
+  
+        &lt;label htmlFor="thresholdDateInput">Threshold Date:&lt;/label>
+        &lt;input
+          type="date"
+          id="thresholdDateInput"
+          value={thresholdDate}
+          onChange={(e) => setThresholdDate(e.target.value)}
+        />
+  
+        &lt;button onClick={processExcessReport}>Generate Report&lt;/button>
+  
+        {excessData.length > 0 &amp;&amp; (
+          &lt;div className="table-container">
+            &lt;table>
+              &lt;thead>
+                &lt;tr>
+                  &lt;th>Product Name&lt;/th>
+                  &lt;th>Quantity Sold&lt;/th>
+                &lt;/tr>
+              &lt;/thead>
+              &lt;tbody>
+                {excessData.map(item => (
+                  &lt;tr key={item.item_name}>
+                    &lt;td>{item.item_name}&lt;/td>
+                    &lt;td>{item.total_sold}&lt;/td>
+                  &lt;/tr>
+                ))}
+              &lt;/tbody>
+            &lt;/table>
+          &lt;/div>
+        )}
+      &lt;/div>
+      )}
+
+      {showRestock &amp;&amp; (
+        &lt;div>
+        &lt;h2>Restock Report&lt;/h2>
+  
+        &lt;button onClick={processRestockReport}>Generate Report&lt;/button>
+  
+        {restockData.length > 0 &amp;&amp; (
+          &lt;div className="table-container">
+            &lt;table>
+              &lt;thead>
+                &lt;tr>
+                  &lt;th>Product Name&lt;/th>
+                  &lt;th>Quantity&lt;/th>
+                &lt;/tr>
+              &lt;/thead>
+              &lt;tbody>
+                {restockData.map(item => (
+                  &lt;tr key={item.name}>
+                    &lt;td>{item.name}&lt;/td>
+                    &lt;td>{item.quantity}&lt;/td>
+                  &lt;/tr>
+                ))}
+              &lt;/tbody>
+            &lt;/table>
+          &lt;/div>
+        )}
+      &lt;/div>
+      )} 
+
+      {showProd &amp;&amp; (
+        &lt;div>
+        &lt;h2>Product Usage Chart&lt;/h2>
+  
+        &lt;label htmlFor="startDateInput">Start Date:&lt;/label>
+        &lt;input
+          type="date"
+          id="startDateInput"
+          value={PRODstartDate}
+          onChange={(e) => setPRODStartDate(e.target.value)}
+        />
+  
+        &lt;label htmlFor="endDateInput">End Date:&lt;/label>
+        &lt;input
+          type="date"
+          id="endDateInput"
+          value={PRODendDate}
+          onChange={(e) => setPRODEndDate(e.target.value)}
+        />
+  
+        &lt;button onClick={processProductUsageChart}>Generate Chart&lt;/button>
+  
+        {productUsageData.length > 0 &amp;&amp; (
+          &lt;div className="table-container">
+            &lt;table>
+              &lt;thead>
+                &lt;tr>
+                  &lt;th>Product Name&lt;/th>
+                  &lt;th>Total Sold&lt;/th>
+                &lt;/tr>
+              &lt;/thead>
+              &lt;tbody>
+                {productUsageData.map(item => (
+                  &lt;tr key={item.item_name}>
+                    &lt;td>{item.item_name}&lt;/td>
+                    &lt;td>{item.total_sold}&lt;/td>
+                  &lt;/tr>
+                ))}
+              &lt;/tbody>
+            &lt;/table>
+          &lt;/div>
+        )}
+      &lt;/div>
+      )} 
+
+      {showTrend &amp;&amp; (
+        &lt;div>
+        &lt;h2>What Sells Together&lt;/h2>
+  
+        &lt;label htmlFor="startDateInput">Start Date:&lt;/label>
+        &lt;input
+          type="date"
+          id="startDateInput"
+          value={PAIRstartDate}
+          onChange={(e) => setPAIRStartDate(e.target.value)}
+        />
+  
+        &lt;label htmlFor="endDateInput">End Date:&lt;/label>
+        &lt;input
+          type="date"
+          id="endDateInput"
+          value={PAIRendDate}
+          onChange={(e) => setPAIREndDate(e.target.value)}
+        />
+  
+        &lt;button onClick={processTrendReport}>Generate Report&lt;/button>
+  
+        {trendReportData.length > 0 &amp;&amp; (
+          &lt;div className="table-container">
+            &lt;table>
+              &lt;thead>
+                &lt;tr>
+                  &lt;th>Item 1&lt;/th>
+                  &lt;th>Item 2&lt;/th>
+                  &lt;th>Quantity&lt;/th>
+                &lt;/tr>
+              &lt;/thead>
+              &lt;tbody>
+                {trendReportData.map(item => (
+                  &lt;tr key={`${item.item1}-${item.item2}`}>
+                    &lt;td>{item.item1}&lt;/td>
+                    &lt;td>{item.item2}&lt;/td>
+                    &lt;td>{item.pair_count}&lt;/td>
+                  &lt;/tr>
+                ))}
+              &lt;/tbody>
+            &lt;/table>
+          &lt;/div>
+        )}
+      &lt;/div>
+      )} 
+
+      {showPop &amp;&amp; (
+        &lt;div>
+        &lt;h2>Menu Items Popularity Analysis&lt;/h2>
+  
+        &lt;label htmlFor="startDateInput">Start Date:&lt;/label>
+        &lt;input
+          type="date"
+          id="startDateInput"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+  
+        &lt;label htmlFor="endDateInput">End Date:&lt;/label>
+        &lt;input
+          type="date"
+          id="endDateInput"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
+  
+        &lt;button onClick={processPopularityAnalysis}>Generate Analysis&lt;/button>
+  
+        {popularityData.length > 0 &amp;&amp; (
+          &lt;div className="table-container">
+            &lt;table>
+              &lt;thead>
+                &lt;tr>
+                  &lt;th>Item Name&lt;/th>
+                  &lt;th>Total Sold&lt;/th>
+                &lt;/tr>
+              &lt;/thead>
+              &lt;tbody>
+                {popularityData.map(item => (
+                  &lt;tr key={item.item_name}>
+                    &lt;td>{item.item_name}&lt;/td>
+                    &lt;td>{item.total_sold}&lt;/td>
+                  &lt;/tr>
+                ))}
+              &lt;/tbody>
+            &lt;/table>
+          &lt;/div>
+        )}
+      &lt;/div>
+      )}
+
+      {showItems &amp;&amp; (
+        &lt;div>
+        &lt;h2>Update Items&lt;/h2>
+  
+        &lt;table>
+          &lt;thead>
+            &lt;tr>
+              &lt;th>Name&lt;/th>
+              &lt;th>Contains Wheat&lt;/th>
+              &lt;th>Contains Milk&lt;/th>
+              &lt;th>Contains Eggs&lt;/th>
+              &lt;th>Contains Alcohol&lt;/th>
+              &lt;th>Price&lt;/th>
+              &lt;th>Calories&lt;/th>
+              &lt;th>Drink&lt;/th>
+              &lt;th>Food&lt;/th>
+              &lt;th>Action&lt;/th>
+            &lt;/tr>
+          &lt;/thead>
+          &lt;tbody>
+            {items.map(item => (
+              &lt;tr key={item.itemid}>
+                &lt;td>{item.name}&lt;/td>
+                &lt;td>{item.containsWheat ? 'Yes' : 'No'}&lt;/td>
+                &lt;td>{item.containsMilk ? 'Yes' : 'No'}&lt;/td>
+                &lt;td>{item.containsEggs ? 'Yes' : 'No'}&lt;/td>
+                &lt;td>{item.containsAlcohol ? 'Yes' : 'No'}&lt;/td>
+                &lt;td>{item.price}&lt;/td>
+                &lt;td>{item.calories}&lt;/td>
+                &lt;td>{item.drink ? 'Yes' : 'No'}&lt;/td>
+                &lt;td>{item.food ? 'Yes' : 'No'}&lt;/td>
+                &lt;td>
+                  &lt;button onClick={() => handleDeleteItem(item.name)}>Delete&lt;/button>
+                &lt;/td>
+              &lt;/tr>
+            ))}
+          &lt;/tbody>
+        &lt;/table>
+  
+        &lt;h2>Add New Item&lt;/h2>
+        &lt;label htmlFor="nameInput">Name:&lt;/label>
+        &lt;input
+          type="text"
+          id="nameInput"
+          value={newItem.name}
+          onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+        />
+  
+        &lt;label htmlFor="containsWheatInput">Contains Wheat:&lt;/label>
+        &lt;input
+          type="checkbox"
+          id="containsWheatInput"
+          checked={newItem.containsWheat}
+          onChange={() => setNewItem({ ...newItem, containsWheat: !newItem.containsWheat })}
+        />
+  
+        &lt;label htmlFor="containsMilkInput">Contains Milk:&lt;/label>
+        &lt;input
+          type="checkbox"
+          id="containsMilkInput"
+          checked={newItem.containsMilk}
+          onChange={() => setNewItem({ ...newItem, containsMilk: !newItem.containsMilk })}
+        />
+  
+        &lt;label htmlFor="containsEggsInput">Contains Eggs:&lt;/label>
+        &lt;input
+          type="checkbox"
+          id="containsEggsInput"
+          checked={newItem.containsEggs}
+          onChange={() => setNewItem({ ...newItem, containsEggs: !newItem.containsEggs })}
+        />
+  
+        &lt;label htmlFor="containsAlcoholInput">Contains Alcohol:&lt;/label>
+        &lt;input
+          type="checkbox"
+          id="containsAlcoholInput"
+          checked={newItem.containsAlcohol}
+          onChange={() => setNewItem({ ...newItem, containsAlcohol: !newItem.containsAlcohol })}
+        />
+  
+        &lt;label htmlFor="priceInput">Price:&lt;/label>
+        &lt;input
+          type="number"
+          id="priceInput"
+          value={newItem.price}
+          onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
+        />
+  
+        &lt;label htmlFor="caloriesInput">Calories:&lt;/label>
+        &lt;input
+          type="number"
+          id="caloriesInput"
+          value={newItem.calories}
+          onChange={(e) => setNewItem({ ...newItem, calories: e.target.value })}
+        />
+  
+        &lt;label htmlFor="drinkInput">Drink:&lt;/label>
+        &lt;input
+          type="checkbox"
+          id="drinkInput"
+          checked={newItem.drink}
+          onChange={() => setNewItem({ ...newItem, drink: !newItem.drink })}
+        />
+  
+        &lt;label htmlFor="foodInput">Food:&lt;/label>
+        &lt;input
+          type="checkbox"
+          id="foodInput"
+          checked={newItem.food}
+          onChange={() => setNewItem({ ...newItem, food: !newItem.food })}
+        />
+  
+        &lt;button onClick={handleAddItem}>Add Item&lt;/button>
+      &lt;/div>
+      )}
+            
+          {/* &lt;/div> */}
     &lt;/Layout>
   );
 };
@@ -309,7 +1140,7 @@ export default Manager;</code></pre>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Dec 06 2023 15:42:56 GMT-0600 (Central Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Dec 06 2023 18:17:52 GMT-0600 (Central Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
