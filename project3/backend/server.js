@@ -23,40 +23,24 @@ const config = {
 app.use(cors());
 app.use(express.json());
 
-////const app = express();
 
+app.get('/', (req, res) => res.json("API IS UP AND RUNNING :)"))
 app.use(cors());
-app.use(express.json());
-
-/*app.use(cookieSession({
-  maxAge: 24 * 60 * 60 * 1000,
-  keys: [keys.session.cookieKey]
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(express.json()); 
 
 
-mongoose.connect(keys.mongodb.dbURI, ()=>{
-  console.log("connected to mongodb");
-});
-app.use("/auth",authRoutes);*/
-
-
-
-// auth router attaches /login, /logout, and /callback routes to the baseURL
-app.use(auth(config));
-
-// req.isAuthenticated is provided from the auth router
-app.get('/', (req, res) => {
-  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://www.pauljwbae.com'); 
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
 });
 
 const pool = new Pool({
-  user: "csce315_970_03user",
-  host: "csce-315-db.engr.tamu.edu",
-  database: "csce315_970_03db",
-  password: "fourfsd",
+  user: "SuperCoolSquad",
+  host: "database-2.cxydtb3isptx.us-east-2.rds.amazonaws.com",
+  database: "initial_db",
+  password: "fourfsd!",
   port: 5432,
   ssl: { rejectUnauthorized: false },
 });

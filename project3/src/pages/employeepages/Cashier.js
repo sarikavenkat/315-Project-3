@@ -32,7 +32,7 @@ const Cashier = () => {
    */
   const fetchMenuItems = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/items");
+      const response = await fetch("http://3.17.222.225:5000/api/items");
       if (response.ok) {
         const data = await response.json();
         setMenuItems(data);
@@ -122,7 +122,7 @@ const Cashier = () => {
     if (customerName.trim() === "") {
       alert("Please enter Customer's name before submitting the order.");
     } else {
-      await fetch("http://localhost:5000/api/order", {
+      await fetch("http://3.17.222.225:5000/api/order", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
