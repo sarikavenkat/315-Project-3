@@ -15,7 +15,7 @@ const config = {
   authRequired: false,
   auth0Logout: true,
   secret: keys.auth0.clientSecret,
-  baseURL: 'http://localhost:3000',
+  baseURL: 'http://3.17.222.225:3000',
   clientID: keys.auth0.clientID,
   issuerBaseURL: keys.auth0.baseURL
 };
@@ -37,10 +37,10 @@ app.use((req, res, next) => {
 });
 
 const pool = new Pool({
-  user: "SuperCoolSquad",
-  host: "database-2.cxydtb3isptx.us-east-2.rds.amazonaws.com",
-  database: "initial_db",
-  password: "fourfsd!",
+  user: "csce315_970_03user",
+  host: "csce-315-db.engr.tamu.edu",
+  database: "csce315_970_03db",
+  password: "fourfsd",
   port: 5432,
   ssl: { rejectUnauthorized: false },
 });
