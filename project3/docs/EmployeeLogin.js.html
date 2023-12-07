@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: EmployeeLogin.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: EmployeeLogin.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../loginstyle.css';
+import Layout from '../../Layout';
+
+/** A module representing the HTML for Sweet Paris' employee login page.
+ *  @module EmployeeLogin
+ * @returns HTML for Employee page*/
+const EmployeeLogin = () => {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
+
+    /** Helper function to set username to user input
+     * @alias module:EmployeeLogin.handleUserChange
+     * @param {string} newName - The user input to set the username to
+    */
+    const handleUserChange = (newName) => {
+        setUsername(newName);
+    };
+    /** Helper function to set password to user input
+     * @alias module:EmployeeLogin.handlePasswordChange
+     * @param {string} newPass - The user input to set the password to
+    */
+    const handlePasswordChange = (newPass) => {
+        setPassword(newPass);
+    };
+
+    /**Sends username and password to postgres database,
+     * then determine if the login is valid
+     * @alias module:EmployeeLogin.handleLoginSubmission
+     */
+    const handleLoginSubmission = async () => {
+        if (username.trim() === "") {
+            alert("Username not provided, try again.");
+        } else if (password.trim() === "") {
+            alert("Password not provided, try again.");
+        } else {
+            try {
+                const response = await fetch(`http://3.17.222.225:5000/api/emplogin?id=${username}&amp;password=${password}`, {
+                    method: "GET",
+                    headers: {
+                    'Content-Type': 'application/json',
+                    // Include any other headers as needed
+                    },
+                });
+
+                // Check response status and handle accordingly
+                if (response.ok) {
+                    // Handle successful login
+                    const data = await response.json();
+                    let name = "";
+                    let job = "";
+                    
+                    name = data.rows[0].name;
+                    job = data.rows[0].position;
+
+                    console.log(name, job);
+
+                    if (job === 'manager') {
+                        navigate('/manglogin', { state: { managerName: name } });
+                      } else if (job === 'cashier') {
+                        navigate('/cashlogin', { state: { cashierName: name } });
+                      }
+
+                } else {
+                    // Handle login failure
+                    console.error("Login failed");
+                }
+            } catch (error) {
+                console.error("Error during login:", error);
+            }
+        }
+    };
+
+    return (
+        &lt;Layout>
+            &lt;div className="loginField">
+                &lt;h1 className='title'>Employee Login&lt;/h1>
+                &lt;div className="textFields">
+                    &lt;div className='textField'>
+                        &lt;p>Employee ID:&lt;/p>
+                        &lt;input
+                            type="text"
+                            value={username}
+                            onChange={(e) => handleUserChange(e.target.value)}
+                        />
+                    &lt;/div>
+                    &lt;div className='textField'>
+                        &lt;p>Password:&lt;/p>
+                        &lt;input
+                            type="password" 
+                            value={password}
+                            onChange={(e) => handlePasswordChange(e.target.value)}
+                        />
+                    &lt;/div>
+                &lt;/div>
+                &lt;div className="Buttons">
+                    &lt;button onClick={handleLoginSubmission}>
+                        Submit
+                    &lt;/button>
+                &lt;/div>
+            &lt;/div>
+        &lt;/Layout>
+    );
+};
+
+export default EmployeeLogin;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-EmployeeLogin.html">EmployeeLogin</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Dec 06 2023 15:42:50 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

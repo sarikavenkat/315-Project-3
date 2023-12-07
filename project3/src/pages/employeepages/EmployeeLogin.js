@@ -3,19 +3,33 @@ import { useNavigate } from 'react-router-dom';
 import '../loginstyle.css';
 import Layout from '../../Layout';
 
+/** A module representing the HTML for Sweet Paris' employee login page.
+ *  @module EmployeeLogin
+ * @returns HTML for Employee page*/
 const EmployeeLogin = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
+    /** Helper function to set username to user input
+     * @alias module:EmployeeLogin.handleUserChange
+     * @param {string} newName - The user input to set the username to
+    */
     const handleUserChange = (newName) => {
         setUsername(newName);
     };
-
+    /** Helper function to set password to user input
+     * @alias module:EmployeeLogin.handlePasswordChange
+     * @param {string} newPass - The user input to set the password to
+    */
     const handlePasswordChange = (newPass) => {
         setPassword(newPass);
     };
 
+    /**Sends username and password to postgres database,
+     * then determine if the login is valid
+     * @alias module:EmployeeLogin.handleLoginSubmission
+     */
     const handleLoginSubmission = async () => {
         if (username.trim() === "") {
             alert("Username not provided, try again.");

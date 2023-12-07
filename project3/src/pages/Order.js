@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./orderstyle.css";
 import Layout from "../Layout";
 
+/**A module to represent the HTML for the page where customers place orders.
+   * @module Order
+   * @returns HTML for Orders page
+   */
 const Order = () => {
   // const foodItems = [
   //   { name: "Item 1", price: 10.99 },
@@ -41,6 +45,9 @@ const Order = () => {
     fetchMenuItems();
   }, []);
 
+  /** Fetches menu items from postgres database, which the site then displays
+   * @alias module:Order.fetchMenuItems
+   */
   const fetchMenuItems = async () => {
     try {
       const response = await fetch("http://3.17.222.225:5000/api/items");
@@ -69,6 +76,11 @@ const Order = () => {
   const [customerName, setCustomerName] = useState("");
   const [cart, setCart] = useState([]);
 
+  /**Changes the quantity of each item ordered, at each menu item
+   * @alias module:Order.handleQuantityChange
+   * @param {num} index - The index of the item to change the amount of
+   * @param {num} newQuantity - The quantity of items to set
+   */
   const handleQuantityChange = (index, newQuantity) => {
     newQuantity = Math.max(0, newQuantity);
     const updatedQuantities = [...itemQuantities];
@@ -76,6 +88,10 @@ const Order = () => {
     setItemQuantities(updatedQuantities);
   };
 
+  /**Adds a menu item to the order
+   * @alias module:Order.handleAddToCart
+   * @param {num} index  - The index of the item to add
+  */
   const handleAddToCart = (index) => {
     const quantity = itemQuantities[index];
     if (quantity > 0) {
@@ -104,10 +120,17 @@ const Order = () => {
     }
   };
 
+
+  /** Returns the sum of the prices of every item ordered
+   * @alias module:Order.calculateTotalPrice
+  */
   const calculateTotalPrice = () => {
     return cart.reduce((total, item) => total + item.totalPrice, 0);
   };
 
+  /** Puts the completed order into the postgrees database
+   * @alias module:Order.handleSubmitOrder
+   */
   const handleSubmitOrder = async () => {
     const test = {
       "bruh": 1,
@@ -134,7 +157,10 @@ const Order = () => {
     }
   };
   
-
+  /** Removes a menu item from the order
+   * @alias module:Order.handleRemoveFromCart
+   * @param {num} index - The index of the item to remove
+   */
   const handleRemoveFromCart = (index) => {
     const updatedCart = [...cart];
   const itemToRemove = updatedCart[index];
