@@ -677,9 +677,14 @@ const Manager = () => {
                       <td>{orders.orderdatetime}</td>
                       <td>{orders.price}</td>
                       <td>{orders.calories}</td>
+                      
                       <td>
-                        <button onClick={() => handleDeleteOrder(orders.orderid)}>Delete</button>
+                      
+
+                      {/*  <button onClick={() => handleDeleteOrder(orders.orderid)}>Delete</button> TEMPORARILY COMMENTED FOR TESTING*/ }
+                      
                       </td>
+                    
                     </tr>
                   ))}
                 </tbody>
