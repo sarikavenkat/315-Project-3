@@ -236,16 +236,73 @@ app.get('/api/inventory', async (req, res) => {
   }
 });
 
-app.put('/api/inventory/:id', async (req, res) => {
-  const { id } = req.params;
-  const { quantity } = req.body;
+app.get('/api/ingredients', async (req, res) => {
   try {
     const client = await pool.connect();
-    await client.query('UPDATE inventory SET quantity = $1 WHERE name = $2', [quantity, id]);
-    res.send({ message: `Updated item ${id} quantity to ${quantity}` });
+    const query = 'SELECT * FROM ingredients;';  
+    const result = await client.query(query);
+    res.send(result.rows);
     client.release();
   } catch (err) {
     res.status(500).send({ error: err.message });
+  }
+});
+
+app.delete('/api/ingredients/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const client = await pool.connect();
+    await client.query('DELETE FROM ingredients WHERE name = $1', [id]);
+    res.send({ message: `Deleted ingredient with ID: ${id}` });
+    client.release();
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+app.post('/api/ingredients', async (req, res) => {
+  try {
+    const {
+      name,
+      quantity,
+      // Add other properties as needed
+    } = req.body;
+
+    const client = await pool.connect();
+    const query = `
+      INSERT INTO ingredients (name, quantity)
+      VALUES ($1, $2)
+    `;
+    await client.query(query, [name, quantity]);
+    client.release();
+
+    res.json({ message: 'ingredient added successfully' });
+  } catch (error) {
+    console.error('Error adding ingredient:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.put('/api/ingredients/:id', async (req, res) => {
+  const { name, quantity } = req.body;
+
+  try {
+    const ingredient = await ingredient.findByName(name);
+
+    if (!ingredient) {
+      return res.status(404).json({ error: 'Ingredient not found' });
+    }
+
+    // Update the properties
+    ingredient.quantity = quantity;
+
+    const query = 'UPDATE ingredients SET quantity = $1 WHERE name = $2';
+    const result = await pool.query(query, [quantity, name]);
+
+    res.json(ingredient);
+  } catch (error) {
+    console.error('Error editing ingredient:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

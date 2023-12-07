@@ -16,6 +16,14 @@ const Manager = () => {
   const [newUserNextWorkDay, setNewUserNextWorkDay] = useState('2023-10-07');
   const [newUserStartTime, setNewUserStartTime] = useState('08:00:00');
   const [newUserEndTime, setNewUserEndTime] = useState('12:00:00');
+  const [ingredients, setIngredients] = useState([]);
+  const [newIngredientName, setNewIngredientName] = useState("");
+  const [newIngredientQuantity, setNewIngredientQuantity] = useState(0);
+  const [showIngredients, setShowIngredients] = useState(false);
+  const [selectedIngredient, setSelectedIngredient] = useState('');
+  const [newName, setNewName] = useState('');
+  const [newIngQuantity, setNewIngQuantity] = useState('');
+
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -184,6 +192,103 @@ const Manager = () => {
     }
   };
 
+  const handleFetchIngredients = async () => {
+    setShowIngredients(!showIngredients)
+    try {
+      const response = await fetch('/api/ingredients');
+      if (!response.ok) {
+        throw new Error(`Error fetching ingredients: ${response.status} ${response.statusText}`);
+      }
+  
+      // Read the response body as text
+      const rawResponse = await response.text();
+  
+      // Assuming the response is an array of ingredients
+      //const ingredients = await response.json();
+      setIngredients(ingredients);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+  
+  // const handleEditIngredient = async (name, quantity) => {
+  //   try {
+  //     const newQuantity = newQuantities[name];
+  
+  //     const response = await fetch(`http://localhost:5000/api/ingredients/${name}`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ quantity }),
+  //     });
+  
+  //     if (response.ok) {
+  //       // Refresh the ingredients list after editing
+  //       handleFetchIngredients();
+  //     } else {
+  //       console.error("Failed to edit ingredient:", response.statusText);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error editing ingredient:", error);
+  //   }
+  // };
+
+  const [newQuantities, setNewQuantities] = useState({});
+
+  const handleNewQuantityChange = (id, value) => {
+    setNewQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [id]: value,
+    }));
+  };
+  
+  const handleDeleteIngredient = async (id) => {
+    console.log("hello");
+    try {
+      const response = await fetch(`http://localhost:5000/api/ingredients/${id}`, {
+        method: 'DELETE',
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to delete ingredient');
+      }
+  
+      // Refresh the employee data after deletion
+      // handleFetchIngredients();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+  const handleAddIngredient = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/ingredients', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: newName,
+          quantity: newQuantity,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to add new ingredient');
+      }
+  
+      const newIngredient = await response.json();
+  
+      setIngredients([...ingredients, newIngredient]);
+  
+      setNewName('');
+      setNewIngQuantity('');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };  
+
   const handleViewOrderHistory = () => {
     const subsetStartIndex = index;
     const subsetEndIndex = index + 20;
@@ -269,6 +374,7 @@ const Manager = () => {
   const handleProductUsageChart = () => {
     setshowProd(!showProd)
     setShowInventory(false)
+    setShowIngredients(false)
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
     setshowPop(false)
@@ -291,6 +397,10 @@ const Manager = () => {
       .then(response => response.json())
       .then(data => setInventory(data))
       .catch(error => console.error('Error:', error));
+    fetch('http://localhost:5000/api/ingredients')
+      .then(response => response.json())
+      .then(data => setIngredients(data))
+      .catch(error => console.error('Error:', error));
   }, []);
 
   const [inventory, setInventory] = useState([]);
@@ -302,6 +412,7 @@ const Manager = () => {
     setShowInventory(!showInventory)
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
+    setShowIngredients(false)
     setshowPop(false)
     setshowTrend(false)
     setshowExcessReport(false)
@@ -343,6 +454,7 @@ const Manager = () => {
     setshowSalessRep(!showSalesRep)
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
+    setShowIngredients(false)
     setShowInventory(false)
     setshowPop(false)
     setshowTrend(false)
@@ -372,6 +484,7 @@ const Manager = () => {
     setshowExcessReport(!showExcessReport)
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
+    setShowIngredients(false)
     setShowInventory(false)
     setshowPop(false)
     setshowTrend(false)
@@ -397,6 +510,7 @@ const Manager = () => {
     setshowRestock(!showRestock)
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
+    setShowIngredients(false)
     setShowInventory(false)
     setshowPop(false)
     setshowTrend(false)
@@ -430,7 +544,11 @@ const Manager = () => {
   const fetchItems = () => {
     fetch('http://localhost:5000/api/items')
       .then(response => response.json())
-      .then(data => setItems(data))
+      .then(data => {
+          setItems(data);
+          // Add a call to fetchItems to refresh the data
+          fetchItems();
+      })
       .catch(error => console.error('Error:', error));
   };
 
@@ -444,6 +562,7 @@ const Manager = () => {
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
     setShowInventory(false)
+    setShowIngredients(false)
     setshowPop(false)
     setshowTrend(false)
     setshowExcessReport(false)
@@ -498,6 +617,7 @@ const Manager = () => {
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
     setShowInventory(false)
+    setShowIngredients(false)
     setshowPop(false)
     setshowExcessReport(false)
     setshowRestock(false)
@@ -536,6 +656,7 @@ const Manager = () => {
     setShowOrderHistory(false)
     setShowEmployeeTable(false)
     setShowInventory(false)
+    setShowIngredients(false)
     setshowExcessReport(false)
     setshowRestock(false)
     setshowSalessRep(false)
@@ -562,6 +683,7 @@ const Manager = () => {
                 setShowOrderHistory(false);
                 setshowPop(false)
                 setShowInventory(false)
+                setShowIngredients(false)
                 setshowExcessReport(false)
                 setshowRestock(false)
                 setshowSalessRep(false)
@@ -578,6 +700,7 @@ const Manager = () => {
                 setShowEmployeeTable(false);
                 setshowPop(false)
                 setShowInventory(false)
+                setShowIngredients(false)
                 setShowOrderHistory(!showOrderHistory);
                 setshowExcessReport(false)
                 setshowRestock(false)
@@ -607,6 +730,10 @@ const Manager = () => {
             >
               Inventory
             </button>
+          </div>
+
+          <div className="Ingredients">
+            <button onClick={() => handleFetchIngredients()}>Ingredients</button>
           </div>
 
           <div className="SalesReport">
@@ -852,6 +979,58 @@ const Manager = () => {
           
         </div>
       )}
+
+      {showIngredients && (
+        <div>
+          <h2>Ingredients: </h2>
+          {/* Add New ingredient Form */}
+          <div>
+                  <label htmlFor="newName">Name:</label>
+                  <input
+                    type="text"
+                    id="newName"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                  />
+                  <label htmlFor="newQuantity">Quantity:</label>
+                  <input
+                    type="text"
+                    id="newQuantity"
+                    value={newIngQuantity}
+                    onChange={(e) => setNewIngQuantity(e.target.value)}
+                  />
+                  <button onClick={handleAddIngredient}>Add Inventory Item</button>
+                </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ingredients.map(ingredient => (
+                <tr key={ingredient.id}>
+                  <td>{ingredient.name}</td>
+                  <td>{ingredient.quantity}</td>
+                  <td>
+                    {/* <input
+                      type="text"
+                      placeholder="New Quantity"
+                      value={newQuantities[ingredient.id] || ''}
+                      onChange={(e) => handleNewQuantityChange(ingredient.id, e.target.value)}
+                    /> */}
+                    {/* <button onClick={() => handleEditIngredient(ingredient.name, newQuantities[ingredient.name])}>Edit</button> */}
+                    <button onClick={() => handleDeleteIngredient(ingredient.name)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          
+        </div>
+      )}
+      
 
       {showSalesRep && (
         <div>
