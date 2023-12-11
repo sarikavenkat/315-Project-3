@@ -17,7 +17,7 @@ const config = {
   authRequired: false,
   auth0Logout: true,
   secret: keys.auth0.clientSecret,
-  baseURL: 'http://3.17.222.225:3000',
+  baseURL: 'http://www.pauljwbae.com:3000',
   clientID: keys.auth0.clientID,
   issuerBaseURL: keys.auth0.baseURL
 };
