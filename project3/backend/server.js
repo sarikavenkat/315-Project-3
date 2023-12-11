@@ -17,7 +17,7 @@ const config = {
   authRequired: false,
   auth0Logout: true,
   secret: keys.auth0.clientSecret,
-  baseURL: 'http://pauljwbae.com:3000',
+  baseURL: 'http://www.pauljwbae.com:3000',
   clientID: keys.auth0.clientID,
   issuerBaseURL: keys.auth0.baseURL
 };
@@ -32,6 +32,10 @@ app.use(cors());
 app.use(express.json()); 
 
 app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://www.pauljwbae.com'); 
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+
   res.header('Access-Control-Allow-Origin', 'http://pauljwbae.com'); 
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');

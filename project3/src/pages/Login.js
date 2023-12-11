@@ -71,7 +71,7 @@ const Login = () => {
                 alert("Password not provided, try again.");
             } else {
                 try {
-                    const response = await fetch(`http://pauljwbae.com:5000/api/login?name=${username}&id=${password}`, {
+                    const response = await fetch(`http://www.pauljwbae.com:5000/api/login?name=${username}&id=${password}`, {
                         method: "GET",
                         headers: {
                         'Content-Type': 'application/json',

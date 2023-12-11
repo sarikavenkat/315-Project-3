@@ -44,7 +44,7 @@ const Manager = () => {
    */
   const fetchOrders = async () => {
     try {
-      const response = await fetch("http://pauljwbae.com:5000/api/orders");
+      const response = await fetch("http://www.pauljwbae.com:5000/api/orders");
       if (response.ok) {
         console.log("fetchorders");
         const data = await response.json();
@@ -62,7 +62,7 @@ const Manager = () => {
    */
   const fetchEmployees = async () => {
     try {
-      const response = await fetch("http://pauljwbae.com:5000/api/employees");
+      const response = await fetch("http://www.pauljwbae.com:5000/api/employees");
       if (response.ok) {
         console.log("fetchemployees");
         const data = await response.json();
@@ -101,7 +101,7 @@ const Manager = () => {
     console.log('handlePositionSwitch called with:', employeeId, newPosition);
     try {
       // Update the employee's position
-      const response = await fetch(`http://pauljwbae.com:5000/api/employees/${employeeId}`, {
+      const response = await fetch(`http://www.pauljwbae.com:5000/api/employees/${employeeId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ const Manager = () => {
 
       // Update the employee's password based on the new position
       const newPassword = newPosition === 'manager' ? '66666' : '11111';
-      const passwordResponse = await fetch(`http://pauljwbae.com:5000/api/employees/${employeeId}`, {
+      const passwordResponse = await fetch(`http://www.pauljwbae.com:5000/api/employees/${employeeId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ const Manager = () => {
 
   const handleDeleteEmployee = async (employeeId) => {
     try {
-      const response = await fetch(`http://pauljwbae.com:5000/api/employees/${employeeId}`, {
+      const response = await fetch(`http://www.pauljwbae.com:5000/api/employees/${employeeId}`, {
         method: 'DELETE',
       });
   
@@ -172,7 +172,7 @@ const Manager = () => {
 
   const handleAddUser = async () => {
     try {
-      const response = await fetch('http://pauljwbae.com:5000/api/employees', {
+      const response = await fetch('http://www.pauljwbae.com:5000/api/employees', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -228,7 +228,7 @@ const Manager = () => {
   //   try {
   //     const newQuantity = newQuantities[name];
   
-  //     const response = await fetch(`http://pauljwbae.com:5000/api/ingredients/${name}`, {
+  //     const response = await fetch(`http://www.pauljwbae.com:5000/api/ingredients/${name}`, {
   //       method: "PUT",
   //       headers: {
   //         "Content-Type": "application/json",
@@ -259,7 +259,7 @@ const Manager = () => {
   const handleDeleteIngredient = async (id) => {
     console.log("hello");
     try {
-      const response = await fetch(`http://pauljwbae.com:5000/api/ingredients/${id}`, {
+      const response = await fetch(`http://www.pauljwbae.com:5000/api/ingredients/${id}`, {
         method: 'DELETE',
       });
   
@@ -276,7 +276,7 @@ const Manager = () => {
   
   const handleAddIngredient = async () => {
     try {
-      const response = await fetch('http://pauljwbae.com:5000/api/ingredients', {
+      const response = await fetch('http://www.pauljwbae.com:5000/api/ingredients', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -333,7 +333,7 @@ const Manager = () => {
   //const handleDeleteOrderItems = async (orderId) => {
     
   //   try {
-  //     const response = await fetch(`http://pauljwbae.com:5000/api/removeorder/${orderId}`, {
+  //     const response = await fetch(`http://www.pauljwbae.com:5000/api/removeorder/${orderId}`, {
   //       method: 'DELETE',
   //     });
   //     console.log("try");
@@ -370,7 +370,7 @@ const Manager = () => {
    */
   const processProductUsageChart = () => {
     if (PRODstartDate && setPRODStartDate) {
-      fetch(`http://pauljwbae.com:5000/api/product-usage-chart?start=${PRODstartDate}&end=${PRODendDate}`)
+      fetch(`http://www.pauljwbae.com:5000/api/product-usage-chart?start=${PRODstartDate}&end=${PRODendDate}`)
         .then(response => response.json())
         .then(data => setProductUsageData(data))
         .catch(error => console.error('Error:', error));
@@ -405,11 +405,11 @@ const Manager = () => {
   // TODO
   useEffect(() => {
     // Fetch inventory data on component mount
-    fetch('http://pauljwbae.com:5000/api/inventory')
+    fetch('http://www.pauljwbae.com:5000/api/inventory')
       .then(response => response.json())
       .then(data => setInventory(data))
       .catch(error => console.error('Error:', error));
-    fetch('http://pauljwbae.com:5000/api/ingredients')
+    fetch('http://www.pauljwbae.com:5000/api/ingredients')
       .then(response => response.json())
       .then(data => setIngredients(data))
       .catch(error => console.error('Error:', error));
@@ -444,7 +444,7 @@ const Manager = () => {
   const handleQuantityUpdate = () => {
     // Update quantity when the button is clicked
     if (selectedItem && newQuantity !== '') {
-      fetch(`http://pauljwbae.com:5000/api/inventory/${selectedItem}`, {
+      fetch(`http://www.pauljwbae.com:5000/api/inventory/${selectedItem}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -455,7 +455,7 @@ const Manager = () => {
         .then(data => {
           alert(data.message);
           // Refresh the inventory data after updating quantity
-          fetch('http://pauljwbae.com:5000/api/inventory')
+          fetch('http://www.pauljwbae.com:5000/api/inventory')
             .then(response => response.json())
             .then(data => setInventory(data))
             .catch(error => console.error('Error:', error));
@@ -492,7 +492,7 @@ const Manager = () => {
   const processSalesReport = () => {
     console.log(SALEstartDate, SALEendDate)
     if (SALEstartDate && SALEendDate) {
-      fetch(`http://pauljwbae.com:5000/api/sales-report?start=${SALEstartDate}&end=${SALEendDate}`)
+      fetch(`http://www.pauljwbae.com:5000/api/sales-report?start=${SALEstartDate}&end=${SALEendDate}`)
         .then(response => response.json())
         .then(data => setSalesData(data))
         .catch(error => console.error('Error:', error));
@@ -527,7 +527,7 @@ const Manager = () => {
    */
   const processExcessReport = () => {
     if (thresholdDate) {
-      fetch(`http://pauljwbae.com:5000/api/excess-report?thresholdDate=${thresholdDate}`)
+      fetch(`http://www.pauljwbae.com:5000/api/excess-report?thresholdDate=${thresholdDate}`)
         .then(response => response.json())
         .then(data => setExcessData(data))
         .catch(error => console.error('Error:', error));
@@ -559,7 +559,7 @@ const Manager = () => {
    * @alias module:Manager.processRestockReport
    */
   const processRestockReport = () => {
-    fetch('http://pauljwbae.com:5000/api/restock-report')
+    fetch('http://www.pauljwbae.com:5000/api/restock-report')
       .then(response => response.json())
       .then(data => setRestockData(data))
       .catch(error => console.error('Error:', error));
@@ -583,7 +583,7 @@ const Manager = () => {
    * @alias module:Manager.fetchItems
    */
   const fetchItems = () => {
-    fetch('http://pauljwbae.com:5000/api/items')
+    fetch('http://www.pauljwbae.com:5000/api/items')
       .then(response => response.json())
       .then(data => {
           setItems(data);
@@ -618,7 +618,7 @@ const Manager = () => {
    * @alias module:Manager.handleAddItem
    */
   const handleAddItem = () => {
-    fetch('http://pauljwbae.com:5000/api/items', {
+    fetch('http://www.pauljwbae.com:5000/api/items', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -647,7 +647,7 @@ const Manager = () => {
    * @alias module:Manager.handleDeleteItem
    */
   const handleDeleteItem = (name) => {
-    fetch(`http://pauljwbae.com:5000/api/items/${name}`, {
+    fetch(`http://www.pauljwbae.com:5000/api/items/${name}`, {
       method: 'DELETE',
     })
       .then(response => response.json())
@@ -683,7 +683,7 @@ const Manager = () => {
    */
   const processTrendReport = () => {
     if (PAIRstartDate && PAIRendDate) {
-      fetch(`http://pauljwbae.com:5000/api/trend-report?start=${PAIRstartDate}&end=${PAIRendDate}`)
+      fetch(`http://www.pauljwbae.com:5000/api/trend-report?start=${PAIRstartDate}&end=${PAIRendDate}`)
         .then(response => response.json())
         .then(data => setTrendReportData(data))
         .catch(error => console.error('Error:', error));
@@ -700,7 +700,7 @@ const Manager = () => {
    */
   const processPopularityAnalysis = () => {
     if (startDate && endDate) {
-      fetch(`http://pauljwbae.com:5000/api/popularity-analysis?start=${startDate}&end=${endDate}`)
+      fetch(`http://www.pauljwbae.com:5000/api/popularity-analysis?start=${startDate}&end=${endDate}`)
         .then(response => response.json())
         .then(data => setPopularityData(data))
         .catch(error => console.error('Error:', error));
