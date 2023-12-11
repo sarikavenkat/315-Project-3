@@ -50,7 +50,7 @@ const Order = () => {
    */
   const fetchMenuItems = async () => {
     try {
-      const response = await fetch("http://www.pauljwbae.com:5000/api/items");
+      const response = await fetch("http://pauljwbae.com:5000/api/items");
       console.log(response);
 
       if (response.ok) {
@@ -141,7 +141,7 @@ const Order = () => {
       alert("Please enter your name before submitting the order.");
     } else {
   
-      await fetch("http://www.pauljwbae.com:5000/api/order", {
+      await fetch("http://pauljwbae.com:5000/api/order", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
