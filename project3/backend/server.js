@@ -3,12 +3,14 @@ const express = require("express");
 //const authRoutes = require("./auth-routes");
 //const passportSetup = require('./passport');
 //const mongoose = require('mongoose');
-const keys = require('./keys');
+//const keys = require('./keys');
 //const cookieSession = require('cookie-session');
 const { Pool } = require("pg");
 
 const app = express();
 const cors = require("cors");
+
+/*
 const { auth } = require('express-openid-connect');
 
 const config = {
@@ -22,11 +24,21 @@ const config = {
 
 app.use(cors());
 app.use(express.json());
+*/
 
 ////const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json()); 
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://www.pauljwbae.com'); 
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
+
 
 /*app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,

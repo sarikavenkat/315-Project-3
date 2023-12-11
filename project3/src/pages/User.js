@@ -23,8 +23,8 @@ const User = () => {
   return (
     <Layout>
       <div className="usersField">
-        <h1 className='title'>Welcome Sarika!</h1>
-        <h1 className='title'>you have 3000 sweet paris points!</h1>
+        <h1 className='title'>Welcome Paul!</h1>
+        <h1 className='title'>I hope you have a good day!</h1>
 
         {/*<div className="userInfo">
           <p>Name: {name}</p>
